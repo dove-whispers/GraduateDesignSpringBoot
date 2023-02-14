@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Side</title>
+</head>
+<body>
+<div th:fragment="side">
+    <aside class="lyear-layout-sidebar">
+        <!-- logo -->
+        <div id="logo" class="sidebar-header img-logo">
+            <a href="/main"><img src="../static/images/main_logo.png"/></a>
+        </div>
+        <div class="lyear-layout-sidebar-scroll">
+            <nav class="sidebar-main">
+                <ul class="nav nav-drawer">
+                    <li class="nav-item active"><a href="/main"><i class="mdi mdi-home"></i> 后台首页</a></li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)"><i class="mdi mdi-file-document-box"></i> 报销单</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)"><i class="mdi mdi-pen"></i> 填写报销单</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/department/toList"><i class="mdi mdi-ethernet"></i> 部门管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)"><i class="mdi mdi-sitemap"></i> 职位管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)"><i class="mdi mdi-account-settings"></i> 员工管理</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p class="copyright">Copyright &copy; 2023. <a target="_blank" href="http://lyear.itshubao.com">XXXXX</a></p>
+            </div>
+        </div>
+    </aside>
+</div>
+</body>
+</html>

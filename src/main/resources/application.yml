@@ -1,0 +1,24 @@
+logging:
+  level:
+    root: warn
+    com.dove.controller: info
+    com.dove.aspect: info
+    com.dove.interceptor: info
+    com.dove.dao: info
+  pattern:
+    console: "%d --- %-5level [%thread] %logger{0}: %msg%n"
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/graduate_design?useUnicode=true&characterEncoding=utf8&useSSL=false&useServerPrepStmts=true&cachePrepStmts=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: cao100200
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    host: 192.168.254.128
+  mvc:
+    static-path-pattern: /static/**
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

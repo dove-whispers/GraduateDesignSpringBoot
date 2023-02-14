@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dove.dao.EmployeeDao">
+
+    <resultMap type="com.dove.entity.Employee" id="EmployeeMap">
+        <result property="emId" column="em_id" jdbcType="INTEGER"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
+        <result property="depId" column="dep_id" jdbcType="INTEGER"/>
+        <result property="positionId" column="position_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap type="com.dove.dto.EmployeeDTO" id="UserInfoMap">
+        <result property="emId" column="em_id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="loginName" column="login_name" jdbcType="VARCHAR"/>
+        <result property="depId" column="dep_id" jdbcType="INTEGER"/>
+        <result property="positionId" column="position_id" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <association property="department" column="dep_id" select="com.dove.dao.DepartmentDao.queryById" jdbcType="INTEGER"/>
+        <association property="position" column="position_id" select="com.dove.dao.PositionDao.queryById" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="queryEmInfoByUserNameAndPassword" resultMap="UserInfoMap">
+        SELECT em_id,
+               password,
+               name,
+               login_name,
+               dep_id,
+               position_id,
+               status
+        FROM employee
+        WHERE login_name = #{userName}
+          AND password = #{password}
+    </select>
+
+
+</mapper>
+

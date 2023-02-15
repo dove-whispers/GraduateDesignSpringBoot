@@ -73,9 +73,11 @@ $(function () {
                 }),
                 success: function (data) {
                     if (data.success) {
-                        console.log("修改状态成功")
+                        lightyear.notify('修改状态成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
+                        getList()
                     } else {
-                        console.log("修改状态失败")
+                        lightyear.notify('修改状态失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                        getList()
                     }
                 }
             })

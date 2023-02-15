@@ -72,6 +72,7 @@ public class IndexController extends BaseController {
     @ApiOperation(value = "跳转主页面")
     @RequestMapping("/main")
     public ModelAndView toMain() {
+        request.getSession().setAttribute("pageName", "后台首页");
         return new ModelAndView("main");
     }
 

@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -108,6 +110,7 @@ public class DepartmentServiceImpl implements DepartmentService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Map<String, Object> toggleStatus(ToggleDepartmentRequestDTO requestDTO) {
         Map<String, Object> map = new HashMap<>(2);
         Integer status = requestDTO.getStatus();
@@ -115,12 +118,14 @@ public class DepartmentServiceImpl implements DepartmentService {
         try {
             if (1 == status) {
                 departmentDao.updateFailureStatusById(depId);
+
             } else {
                 departmentDao.updateSuccessStatusById(depId);
             }
             map.put("success", true);
         } catch (Exception e) {
             //TODO:应该抛出自定义异常
+            e.printStackTrace();
             throw e;
         }
         return map;

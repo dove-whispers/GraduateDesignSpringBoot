@@ -36,6 +36,14 @@ public class DepartmentController extends BaseController {
         return new ModelAndView("department-list");
     }
 
+    @ApiOperation(value = "跳转至新增部门的路由")
+    @GetMapping("/toAddDepartment")
+    public ModelAndView toAddDepartment() {
+        log.info("新增部门");
+        request.getSession().setAttribute("pageName", "新增部门");
+        return new ModelAndView("department-add");
+    }
+
     @ApiOperation(value = "查询列表数据(包括分页,模糊查询,条件查询)")
     @PostMapping("/getList")
     @ResponseBody
@@ -57,7 +65,7 @@ public class DepartmentController extends BaseController {
     @ResponseBody
     public Map<String, Object> toggleDepartmentStatus(@RequestBody ToggleDepartmentRequestDTO requestDTO) {
         log.info("修改状态");
-        Map<String, Object> map = null;
+        Map<String, Object> map = new HashMap<>(2);
         try {
             if (null == requestDTO) {
                 map.put("success", false);
@@ -66,7 +74,27 @@ public class DepartmentController extends BaseController {
             }
             map = departmentService.toggleStatus(requestDTO);
         } catch (Exception e) {
-            map = new HashMap<>(2);
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "新增部门信息")
+    @PostMapping("/insertDepartment")
+    @ResponseBody
+    public Map<String, Object> insertDepartment(@RequestBody DepartmentListRequestDTO requestDTO) {
+        log.info("新增部门");
+        System.out.println(requestDTO);
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            if (null == requestDTO) {
+                map.put("success", false);
+                map.put("errMsg", "空数据错误");
+                return map;
+            }
+            map.put("success",true);
+        } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());
         }

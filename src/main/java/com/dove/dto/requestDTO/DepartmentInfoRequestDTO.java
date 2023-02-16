@@ -9,17 +9,19 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 部门列表请求dto
+ * 部门信息请求dto
  *
  * @author dove_whispers
- * @date 2023-02-14
+ * @date 2023-02-16
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "获取部门列表的RequestDTO")
-public class DepartmentListRequestDTO implements Serializable {
-    private static final long serialVersionUID = -5025737214684222583L;
+@ApiModel(description = "获取部门信息的RequestDTO")
+public class DepartmentInfoRequestDTO implements Serializable {
+    private static final long serialVersionUID = -3247824570025497634L;
+    @ApiModelProperty(value = "部门id",example = "")
+    private Integer depId;
     @ApiModelProperty(value = "部门名称",example = "")
     private String name;
     @ApiModelProperty(value = "部门地址",example = "")

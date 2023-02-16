@@ -1,14 +1,26 @@
 $(function () {
+    //定义渲染列表时的条件
+    let request_condition = {}
     $('.search-bar .dropdown-menu a').click(function () {
         let field = $(this).data('field') || '';
         $('#search-field').val(field);
         $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
     });
 
-    getList()
+    $('#status-switch').change(function () {
+        if ($('#status-switch').is(':checked')) {
+            request_condition.status = 1
+            getList(request_condition)
+        } else {
+            request_condition.status = null
+            getList(request_condition)
+        }
+    })
+
+    getList(request_condition)
 
     //获取部门列表
-    function getList() {
+    function getList(data) {
         $.ajax({
             url: '/department/getList',
             type: 'POST',
@@ -16,6 +28,7 @@ $(function () {
             cache: false,
             dataType: 'json',
             contentType: 'application/json;charset=utf-8',
+            data: JSON.stringify(data),
             success: function (data) {
                 if (data.success) {
                     //动态渲染列表数据
@@ -39,8 +52,8 @@ $(function () {
                 + departmentStatus(item.status)
                 + '<td>'
                 + '<div class="btn-group">'
-                + '<a class="btn btn-xs btn-default" href="#!" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>'
-                + '<a class="btn btn-xs btn-default" href="#!" title="查看" data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>'
+                + '<a class="btn btn-xs btn-default" href="/department/goDepartmentEdit?edit=true&depId=' + (item.depId) + '" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>'
+                + '<a class="btn btn-xs btn-default" href="/department/goDepartment?depId=' + (item.depId) + '" title="查看" data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>'
                 + updateDepartmentStatus(item.depId, item.status)
                 + '</div>'
                 + '</td>'
@@ -74,10 +87,10 @@ $(function () {
                 success: function (data) {
                     if (data.success) {
                         lightyear.notify('修改状态成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
-                        getList()
+                        getList(request_condition)
                     } else {
                         lightyear.notify('修改状态失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
-                        getList()
+                        getList(request_condition)
                     }
                 }
             })

@@ -60,10 +60,6 @@
             </if>
         </where>
     </select>
-    <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO">
-        SELECT dep_id, name, address, status
-        FROM department
-    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="depId" useGeneratedKeys="true">
@@ -107,11 +103,29 @@
         </set>
         where dep_id = #{depId}
     </update>
+
+    <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO" parameterType="com.dove.dto.requestDTO.DepartmentListRequestDTO">
+        SELECT dep_id, name, address, status
+        FROM department
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%',#{name}'%')
+            </if>
+            <if test="address != null and address != ''">
+                AND address LIKE CONCAT('%',#{address}'%')
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+
     <update id="updateFailureStatusById">
         UPDATE department
         SET status = 0
         WHERE dep_id = #{depId}
     </update>
+
     <update id="updateSuccessStatusById">
         UPDATE department
         SET status = 1

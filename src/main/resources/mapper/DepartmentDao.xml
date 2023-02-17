@@ -103,21 +103,11 @@
         </set>
         where dep_id = #{depId}
     </update>
-
-    <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO" parameterType="com.dove.dto.requestDTO.DepartmentListRequestDTO">
-        SELECT dep_id, name, address, status
-        FROM department
-        <where>
-            <if test="name != null and name != ''">
-                AND name LIKE CONCAT('%',#{name}'%')
-            </if>
-            <if test="address != null and address != ''">
-                AND address LIKE CONCAT('%',#{address}'%')
-            </if>
-            <if test="status != null">
-                AND status = #{status}
-            </if>
-        </where>
+    <!-- 条件查询(包括MybatisPlus分页查询) -->
+    <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO">
+#         SELECT dep_id, name, address, status
+        SELECT *
+        FROM department ${ew.customSqlSegment}
     </select>
 
     <update id="updateFailureStatusById">

@@ -7,6 +7,22 @@ $(function () {
         $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
     });
 
+    $('#search-input').keydown(function (e) {
+        //13代表回车键
+        if (13 === e.keyCode) {
+            let type = $('#search-field').val()
+            let keyword = $(this).val()
+            if ('name' === type) {
+                request_condition.name = keyword
+                request_condition.address = null
+            } else {
+                request_condition.name = null
+                request_condition.address = keyword
+            }
+            getList(request_condition)
+        }
+    })
+
     $('#status-switch').change(function () {
         if ($('#status-switch').is(':checked')) {
             request_condition.status = 1
@@ -32,9 +48,12 @@ $(function () {
             success: function (data) {
                 if (data.success) {
                     //动态渲染列表数据
-                    handleList(data.data)
+                    if (0 === data.data.record.length) {
+                        lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                    }
+                    handleList(data.data.record)
                 } else {
-                    //TODO
+                    lightyear.notify(data.errMsg, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                 }
             }
         })

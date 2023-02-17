@@ -1,5 +1,7 @@
 package com.dove.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.DepartmentDao;
 import com.dove.dto.requestDTO.DepartmentListRequestDTO;
 import com.dove.dto.requestDTO.ToggleDepartmentRequestDTO;
@@ -15,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,13 +93,23 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Map<String, Object> queryPageList(DepartmentListRequestDTO requestDTO) {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            List<DepartmentListResponseDTO> departments = departmentDao.queryPageList(requestDTO);
+            QueryWrapper<DepartmentListRequestDTO> wrapper = new QueryWrapper<>();
+            if (null != requestDTO.getName()) {
+                wrapper.like("name", requestDTO.getName());
+            }
+            if (null != requestDTO.getAddress()) {
+                wrapper.like("address", requestDTO.getAddress());
+            }
+            if (null != requestDTO.getStatus()) {
+                wrapper.eq("status", requestDTO.getStatus());
+            }
+            com.baomidou.mybatisplus.extension.plugins.pagination.Page<DepartmentListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
+            IPage<DepartmentListResponseDTO> departments = departmentDao.queryPageList(page, wrapper);
             map.put("success", true);
             map.put("data", departments);
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());
-            //如果用到了Spring事务声明,在catch中捕获异常之后,一定要抛出,否则事务失效
         }
         return map;
     }

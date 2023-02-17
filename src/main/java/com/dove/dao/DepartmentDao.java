@@ -1,6 +1,7 @@
 package com.dove.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author makejava
  * @since 2023-02-10 16:26:38
  */
-public interface DepartmentDao {
+public interface DepartmentDao extends BaseMapper<Department> {
 
     /**
      * 通过ID查询单条数据
@@ -51,6 +52,7 @@ public interface DepartmentDao {
      * @param department 实例对象
      * @return 影响行数
      */
+    @Override
     int insert(Department department);
 
     /**
@@ -91,11 +93,11 @@ public interface DepartmentDao {
      * 分页+筛选部门列表
      * 使用MybatisPlus分页
      *
-     * @param requestDTO   请求dto
+     * @param page         请求dto
      * @param queryWrapper 请求条件
      * @return {@link IPage}<{@link DepartmentListResponseDTO}>
      */
-    IPage<DepartmentListResponseDTO> queryPageList(Page<DepartmentListRequestDTO> requestDTO, @Param(Constants.WRAPPER) Wrapper<DepartmentListRequestDTO> queryWrapper);
+    IPage<DepartmentListResponseDTO> queryPageList(Page<DepartmentListRequestDTO> page, @Param(Constants.WRAPPER) Wrapper<DepartmentListRequestDTO> queryWrapper);
 
     /**
      * 将指定部门状态修改为0

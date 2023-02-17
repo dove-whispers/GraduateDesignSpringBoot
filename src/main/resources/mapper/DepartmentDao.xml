@@ -105,8 +105,7 @@
     </update>
     <!-- 条件查询(包括MybatisPlus分页查询) -->
     <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO">
-#         SELECT dep_id, name, address, status
-        SELECT *
+        SELECT dep_id, name, address, status
         FROM department ${ew.customSqlSegment}
     </select>
 

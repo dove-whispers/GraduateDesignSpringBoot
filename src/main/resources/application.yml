@@ -14,8 +14,6 @@ spring:
     username: root
     password: cao100200
     type: com.alibaba.druid.pool.DruidDataSource
-  redis:
-    host: 192.168.254.128
   mvc:
     static-path-pattern: /static/**
 mybatis:

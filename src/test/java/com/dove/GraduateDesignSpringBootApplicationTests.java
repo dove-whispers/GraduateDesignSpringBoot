@@ -8,7 +8,6 @@ import com.dove.dao.EmployeeDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.DepartmentListRequestDTO;
 import com.dove.dto.responseDTO.DepartmentListResponseDTO;
-import com.dove.service.impl.DepartmentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -28,12 +27,17 @@ class GraduateDesignSpringBootApplicationTests {
     }
 
     @Test
-    void test1() {
+    void queryPageList() {
         QueryWrapper<DepartmentListRequestDTO> wrapper = new QueryWrapper<>();
-        Page<DepartmentListRequestDTO> page = new Page<>(1, 10);
-        wrapper.like("name", "教");
+        Page<DepartmentListRequestDTO> page = new Page<>(1, 1);
+        wrapper.like("name", "测试");
+        wrapper.eq("status", 1);
         IPage<DepartmentListResponseDTO> iPage = departmentDao.queryPageList(page, wrapper);
-        System.out.println(iPage);
+        System.out.println("当前页码值："+iPage.getCurrent());
+        System.out.println("每页显示数："+iPage.getSize());
+        System.out.println("一共多少页："+iPage.getPages());
+        System.out.println("一共多少条数据："+iPage.getTotal());
+        System.out.println("数据："+iPage.getRecords());
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * @author makejava
  * @since 2023-02-10 16:26:38
  */
-public interface DepartmentDao extends BaseMapper<Department> {
+public interface DepartmentDao {
 
     /**
      * 通过ID查询单条数据
@@ -52,7 +52,6 @@ public interface DepartmentDao extends BaseMapper<Department> {
      * @param department 实例对象
      * @return 影响行数
      */
-    @Override
     int insert(Department department);
 
     /**

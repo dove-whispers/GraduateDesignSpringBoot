@@ -1,6 +1,8 @@
 $(function () {
     //定义渲染列表时的条件
     let request_condition = {}
+    //是否初始化分页插件
+    let flag = true
     $('.search-bar .dropdown-menu a').click(function () {
         let field = $(this).data('field') || '';
         $('#search-field').val(field);
@@ -8,6 +10,9 @@ $(function () {
     });
 
     $('#search-input').keydown(function (e) {
+        //初始化分页插件
+        flag = true
+        request_condition.current = 1
         //13代表回车键
         if (13 === e.keyCode) {
             let type = $('#search-field').val()
@@ -24,6 +29,9 @@ $(function () {
     })
 
     $('#status-switch').change(function () {
+        //初始化分页插件
+        flag = true
+        request_condition.current = 1
         if ($('#status-switch').is(':checked')) {
             request_condition.status = 1
             getList(request_condition)
@@ -50,6 +58,10 @@ $(function () {
                     //动态渲染列表数据
                     if (0 === data.data.records.length) {
                         lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                    }
+                    if (flag) {
+                        getPageInfo(data.data)
+                        flag = false
                     }
                     handleList(data.data.records)
                 } else {
@@ -93,26 +105,29 @@ $(function () {
         if ($(this).hasClass('department-status-btn')) {
             let depId = target.dataset.id
             let status = target.dataset.status
-            $.ajax({
-                url: '/department/toggleDepartmentStatus',
-                type: 'POST',
-                async: true,
-                cache: false,
-                dataType: 'json',
-                contentType: 'application/json;charset=utf-8',
-                data: JSON.stringify({
-                    depId, status
-                }),
-                success: function (data) {
-                    if (data.success) {
-                        lightyear.notify('修改状态成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
+            if (1 === request_condition.status){
+                flag = true
+                request_condition.current = 1
+            }
+                $.ajax({
+                    url: '/department/toggleDepartmentStatus',
+                    type: 'POST',
+                    async: true,
+                    cache: false,
+                    dataType: 'json',
+                    contentType: 'application/json;charset=utf-8',
+                    data: JSON.stringify({
+                        depId, status
+                    }),
+                    success: function (data) {
                         getList(request_condition)
-                    } else {
-                        lightyear.notify('修改状态失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
-                        getList(request_condition)
+                        if (data.success) {
+                            lightyear.notify('修改状态成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
+                        } else {
+                            lightyear.notify('修改状态失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                        }
                     }
-                }
-            })
+                })
 
         }
     })
@@ -122,5 +137,16 @@ $(function () {
             return '<td><font class="text-success">有效</font></td>'
         }
         return '<td><font class="text-danger">失效</font></td>'
+    }
+
+    function getPageInfo(data) {
+        $('#jq-page').pagination({
+            pageCount: data.pages,
+            coping: true,
+            callback: function (e) {
+                request_condition.current = e.getCurrent()
+                getList(request_condition)
+            }
+        })
     }
 })

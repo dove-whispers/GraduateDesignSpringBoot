@@ -12,7 +12,7 @@ import java.util.List;
  * @author makejava
  * @since 2023-02-10 16:26:38
  */
-public interface PositionDao extends BaseMapper<Position> {
+public interface PositionDao {
 
     /**
      * 通过ID查询单条数据

@@ -6,7 +6,8 @@ logging:
     com.dove.interceptor: info
     com.dove.dao: info
   pattern:
-    console: "%d --- %-5level [%thread] %logger{0}: %msg%n"
+#    console: "%d --- %-5level [%thread] %logger{0}: %msg%n"
+    console: "%d{yyyy/MM/dd-HH:mm:ss} [%thread] --- %-5level %logger: %msg%n"
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/graduate_design?useUnicode=true&characterEncoding=utf8&useSSL=false&useServerPrepStmts=true&cachePrepStmts=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
@@ -16,16 +17,16 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   mvc:
     static-path-pattern: /static/**
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       id-type: auto

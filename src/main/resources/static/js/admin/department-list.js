@@ -105,29 +105,25 @@ $(function () {
         if ($(this).hasClass('department-status-btn')) {
             let depId = target.dataset.id
             let status = target.dataset.status
-            if (1 === request_condition.status){
-                flag = true
-                request_condition.current = 1
-            }
-                $.ajax({
-                    url: '/department/toggleDepartmentStatus',
-                    type: 'POST',
-                    async: true,
-                    cache: false,
-                    dataType: 'json',
-                    contentType: 'application/json;charset=utf-8',
-                    data: JSON.stringify({
-                        depId, status
-                    }),
-                    success: function (data) {
-                        getList(request_condition)
-                        if (data.success) {
-                            lightyear.notify('修改状态成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
-                        } else {
-                            lightyear.notify('修改状态失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
-                        }
+            $.ajax({
+                url: '/department/toggleDepartmentStatus',
+                type: 'POST',
+                async: true,
+                cache: false,
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                data: JSON.stringify({
+                    depId, status
+                }),
+                success: function (data) {
+                    getList(request_condition)
+                    if (data.success) {
+                        lightyear.notify('修改状态成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
+                    } else {
+                        lightyear.notify('修改状态失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                     }
-                })
+                }
+            })
 
         }
     })

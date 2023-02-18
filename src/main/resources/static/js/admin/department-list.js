@@ -48,10 +48,10 @@ $(function () {
             success: function (data) {
                 if (data.success) {
                     //动态渲染列表数据
-                    if (0 === data.data.record.length) {
+                    if (0 === data.data.records.length) {
                         lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                     }
-                    handleList(data.data.record)
+                    handleList(data.data.records)
                 } else {
                     lightyear.notify(data.errMsg, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                 }

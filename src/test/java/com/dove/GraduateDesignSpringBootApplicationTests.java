@@ -29,7 +29,7 @@ class GraduateDesignSpringBootApplicationTests {
     @Test
     void queryPageList() {
         QueryWrapper<DepartmentListRequestDTO> wrapper = new QueryWrapper<>();
-        Page<DepartmentListRequestDTO> page = new Page<>(1, 1);
+        Page<DepartmentListRequestDTO> page = new Page<>(1, 5);
         wrapper.like("name", "测试");
         wrapper.eq("status", 1);
         IPage<DepartmentListResponseDTO> iPage = departmentDao.queryPageList(page, wrapper);

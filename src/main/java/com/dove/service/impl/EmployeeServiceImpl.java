@@ -1,11 +1,19 @@
 package com.dove.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.EmployeeDao;
 import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.dto.requestDTO.PositionListRequestDTO;
+import com.dove.dto.responseDTO.EmployeeListResponseDTO;
+import com.dove.dto.responseDTO.PositionListResponseDTO;
 import com.dove.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 员工服务impl
@@ -28,6 +36,34 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO checkUserByUserNameAndPassword(String userName, String password) {
         return employeeDao.queryEmInfoByUserNameAndPassword(userName, password);
+    }
+
+    /**
+     * 查询员工页面列表
+     *
+     * @param requestDTO 雇员列表请求dto
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> queryPageList(EmployeeListRequestDTO requestDTO) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            QueryWrapper<EmployeeListRequestDTO> wrapper = new QueryWrapper<>();
+            if (null != requestDTO.getName()) {
+                wrapper.like("name", requestDTO.getName());
+            }
+            if (null != requestDTO.getStatus()) {
+                wrapper.eq("status", requestDTO.getStatus());
+            }
+            com.baomidou.mybatisplus.extension.plugins.pagination.Page<EmployeeListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
+            IPage<EmployeeListResponseDTO> employees = employeeDao.queryPageList(page, wrapper);
+            map.put("success", true);
+            map.put("data", employees);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
     }
 }
 

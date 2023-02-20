@@ -34,6 +34,24 @@
           AND password = #{password}
     </select>
 
+    <!-- 条件查询(包括MybatisPlus分页查询) -->
+    <select id="queryPageList" resultType="com.dove.dto.responseDTO.EmployeeListResponseDTO">
+        SELECT em_id, password, name, login_name, dep_id, position_id, status
+        FROM employee ${ew.customSqlSegment}
+    </select>
+
+    <update id="updateFailureStatusById">
+        UPDATE employee
+        SET status = 0
+        WHERE em_id = #{emId}
+    </update>
+
+    <update id="updateSuccessStatusById">
+        UPDATE employee
+        SET status = 1
+        WHERE em_id = #{emId}
+    </update>
+
 
 </mapper>
 

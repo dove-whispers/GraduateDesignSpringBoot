@@ -61,8 +61,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="positionId" useGeneratedKeys="true">
-        insert into position(position_name, create_time, status)
-        values (#{positionName}, #{createTime}, #{status})
+        insert into position (position_name, status)
+        values (#{positionName}, #{status})
     </insert>
 
     <insert id="insertBatch" keyProperty="positionId" useGeneratedKeys="true">
@@ -106,6 +106,24 @@
     <delete id="deleteById">
         delete from position where position_id = #{positionId}
     </delete>
+
+    <!-- 条件查询(包括MybatisPlus分页查询) -->
+    <select id="queryPageList" resultType="com.dove.dto.responseDTO.PositionListResponseDTO">
+        SELECT position_id, position_name, create_time, status
+        FROM position ${ew.customSqlSegment}
+    </select>
+
+    <update id="updateFailureStatusById">
+        UPDATE position
+        SET status = 0
+        WHERE position_id = #{positionId}
+    </update>
+
+    <update id="updateSuccessStatusById">
+        UPDATE position
+        SET status = 1
+        WHERE position_id = #{positionId}
+    </update>
 
 </mapper>
 

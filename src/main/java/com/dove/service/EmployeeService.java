@@ -1,6 +1,9 @@
 package com.dove.service;
 
 import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+
+import java.util.Map;
 
 /**
  * 员工服务
@@ -16,5 +19,13 @@ public interface EmployeeService {
      * @return
      */
     EmployeeDTO checkUserByUserNameAndPassword(String userName, String password);
+
+    /**
+     * 查询员工页面列表
+     *
+     * @param employeeListRequestDTO 雇员列表请求dto
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryPageList(EmployeeListRequestDTO employeeListRequestDTO);
 }
 

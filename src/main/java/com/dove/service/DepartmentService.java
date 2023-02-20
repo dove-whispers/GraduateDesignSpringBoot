@@ -58,7 +58,7 @@ public interface DepartmentService {
     boolean deleteById(Integer depId);
 
     /**
-     * 查询页面列表
+     * 查询部门页面列表
      *
      * @param departmentListRequestDTO 部门列表请求dto
      * @return {@link Map}<{@link String}, {@link Object}>
@@ -68,7 +68,7 @@ public interface DepartmentService {
     /**
      * 单个部门切换状态
      *
-     * @param requestDTO 请求dto
+     * @param toggleDepartmentRequestDTO 请求dto
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> toggleStatus(ToggleDepartmentRequestDTO toggleDepartmentRequestDTO);

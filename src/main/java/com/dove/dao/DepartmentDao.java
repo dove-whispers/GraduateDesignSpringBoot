@@ -88,7 +88,7 @@ public interface DepartmentDao {
     int deleteById(Integer depId);
 
     /**
-     * 查询页面列表
+     * 查询部门页面列表
      * 分页+筛选部门列表
      * 使用MybatisPlus分页
      *

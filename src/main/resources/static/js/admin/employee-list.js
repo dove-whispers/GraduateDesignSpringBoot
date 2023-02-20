@@ -3,11 +3,6 @@ $(function () {
     let request_condition = {}
     //是否初始化分页插件
     let flag = true
-    $('.search-bar .dropdown-menu a').click(function () {
-        let field = $(this).data('field') || '';
-        $('#search-field').val(field);
-        $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
-    });
 
     $('#search-input').keydown(function (e) {
         //初始化分页插件
@@ -15,15 +10,7 @@ $(function () {
         request_condition.current = 1
         //13代表回车键
         if (13 === e.keyCode) {
-            let type = $('#search-field').val()
-            let keyword = $(this).val()
-            if ('name' === type) {
-                request_condition.name = keyword
-                request_condition.address = null
-            } else {
-                request_condition.name = null
-                request_condition.address = keyword
-            }
+            request_condition.name = $(this).val()
             getList(request_condition)
         }
     })
@@ -45,7 +32,7 @@ $(function () {
     //获取部门列表
     function getList(data) {
         $.ajax({
-            url: '/department/getList',
+            url: '/employee/getList',
             type: 'POST',
             async: false,
             cache: false,
@@ -78,41 +65,43 @@ $(function () {
             html += '<tr>'
                 + '<td>' + (i++) + '</td>'
                 + '<td data-toggle="tooltip" title="' + item.name + '">' + item.name + '</td>'
-                + '<td data-toggle="tooltip" title="' + item.address + '">' + item.address + '</td>'
-                + departmentStatus(item.status)
+                + '<td data-toggle="tooltip" title="' + item.loginName + '">' + item.loginName + '</td>'
+                + '<td data-toggle="tooltip" title="' + item.department.name + '">' + item.department.name + '</td>'
+                + '<td data-toggle="tooltip" title="' + item.position.positionName + '">' + item.position.positionName + '</td>'
+                + employeeStatus(item.status)
                 + '<td>'
                 + '<div class="btn-group">'
-                + '<a class="btn btn-xs btn-default" href="/department/goDepartmentEdit?edit=true&depId=' + (item.depId) + '" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>'
-                + '<a class="btn btn-xs btn-default" href="/department/goDepartment?depId=' + (item.depId) + '" title="查看" data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>'
-                + updateDepartmentStatus(item.depId, item.status)
+                + '<a class="btn btn-xs btn-default" href="/employee/goEmployeeEdit?edit=true&emId=' + (item.emId) + '" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>'
+                + '<a class="btn btn-xs btn-default" href="/employee/goEmployee?emId=' + (item.emId) + '" title="查看" data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>'
+                + updateEmployeeStatus(item.emId, item.status)
                 + '</div>'
                 + '</td>'
                 + '</tr>'
         })
-        $('.department-wrap').html(html)
+        $('.employee-wrap').html(html)
     }
 
-    function updateDepartmentStatus(depId, status) {
+    function updateEmployeeStatus(emId, status) {
         if (status === 1) {
-            return '<a class="btn btn-xs btn-default department-status-btn" href="#!" title="修改状态" data-id=' + depId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch"></i></a>'
+            return '<a class="btn btn-xs btn-default employee-status-btn" href="#!" title="修改状态" data-id=' + emId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch"></i></a>'
         }
-        return '<a class="btn btn-xs btn-default department-status-btn" href="#!" title="修改状态" data-id=' + depId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch-off"></i></a>'
+        return '<a class="btn btn-xs btn-default employee-status-btn" href="#!" title="修改状态" data-id=' + emId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch-off"></i></a>'
     }
 
-    $('.department-wrap').on('click', 'a', function (e) {
+    $('.employee-wrap').on('click', 'a', function (e) {
         let target = e.currentTarget;
-        if ($(this).hasClass('department-status-btn')) {
-            let depId = target.dataset.id
+        if ($(this).hasClass('employee-status-btn')) {
+            let emId = target.dataset.id
             let status = target.dataset.status
             $.ajax({
-                url: '/department/toggleDepartmentStatus',
+                url: '/employee/toggleEmployeeStatus',
                 type: 'POST',
                 async: false,
                 cache: false,
                 dataType: 'json',
                 contentType: 'application/json;charset=utf-8',
                 data: JSON.stringify({
-                    depId, status
+                    emId, status
                 }),
                 success: function (data) {
                     getList(request_condition)
@@ -127,11 +116,11 @@ $(function () {
         }
     })
 
-    function departmentStatus(status) {
+    function employeeStatus(status) {
         if (status === 1) {
-            return '<td><font class="text-success">有效</font></td>'
+            return '<td><font class="text-success">在职</font></td>'
         }
-        return '<td><font class="text-danger">失效</font></td>'
+        return '<td><font class="text-danger">离职</font></td>'
     }
 
     function getPageInfo(data) {

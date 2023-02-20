@@ -67,7 +67,7 @@ public class DepartmentController extends BaseController {
     @PostMapping("/getList")
     @ResponseBody
     public Map<String, Object> getList(@RequestBody DepartmentListRequestDTO requestDTO) {
-        log.info("查询数据");
+        log.info("查询部门数据");
         Map<String, Object> map = null;
         try {
             map = departmentService.queryPageList(requestDTO);
@@ -83,7 +83,7 @@ public class DepartmentController extends BaseController {
     @PostMapping("/toggleDepartmentStatus")
     @ResponseBody
     public Map<String, Object> toggleDepartmentStatus(@RequestBody ToggleDepartmentRequestDTO requestDTO) {
-        log.info("修改状态");
+        log.info("修改部门状态");
         Map<String, Object> map = new HashMap<>(2);
         try {
             if (null == requestDTO) {

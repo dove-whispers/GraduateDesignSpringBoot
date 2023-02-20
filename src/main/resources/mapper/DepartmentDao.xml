@@ -63,7 +63,7 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="depId" useGeneratedKeys="true">
-        insert into department(name, address, status)
+        insert into department (name, address, status)
         values (#{name}, #{address}, #{status})
     </insert>
 
@@ -103,6 +103,14 @@
         </set>
         where dep_id = #{depId}
     </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from department
+        where dep_id = #{depId}
+    </delete>
+
     <!-- 条件查询(包括MybatisPlus分页查询) -->
     <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO">
         SELECT dep_id, name, address, status
@@ -120,13 +128,6 @@
         SET status = 1
         WHERE dep_id = #{depId}
     </update>
-
-    <!--通过主键删除-->
-    <delete id="deleteById">
-        delete
-        from department
-        where dep_id = #{depId}
-    </delete>
 
 </mapper>
 

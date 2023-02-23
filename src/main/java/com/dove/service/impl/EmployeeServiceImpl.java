@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 员工服务impl
@@ -48,9 +49,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             QueryWrapper<EmployeeListRequestDTO> wrapper = new QueryWrapper<>();
             wrapper.like(StrUtil.isNotEmpty(requestDTO.getName()), "name", requestDTO.getName())
-                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getDepId())), "dep_id", requestDTO.getDepId())
-                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getPositionId())), "position_id", requestDTO.getPositionId())
-                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getStatus())), "status", requestDTO.getStatus());
+                    .eq(Objects.nonNull(requestDTO.getDepId()), "dep_id", requestDTO.getDepId())
+                    .eq(Objects.nonNull(requestDTO.getPositionId()), "position_id", requestDTO.getPositionId())
+                    .eq(Objects.nonNull(requestDTO.getStatus()), "status", requestDTO.getStatus());
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<EmployeeListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
             IPage<EmployeeDTO> employees = employeeDao.queryPageList(page, wrapper);
             map.put("success", true);

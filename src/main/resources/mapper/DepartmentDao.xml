@@ -117,6 +117,12 @@
         FROM department ${ew.customSqlSegment}
     </select>
 
+    <select id="queryActiveDepartmentList" resultType="com.dove.dto.responseDTO.ActiveDepartmentListResponseDTO">
+        SELECT dep_id, name
+        FROM department
+        WHERE status = 1
+    </select>
+
     <update id="updateFailureStatusById">
         UPDATE department
         SET status = 0

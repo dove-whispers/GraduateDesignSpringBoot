@@ -72,4 +72,11 @@ public interface DepartmentService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> toggleStatus(ToggleDepartmentRequestDTO toggleDepartmentRequestDTO);
+
+    /**
+     * 查询活动部门列表
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryActiveDepartmentList();
 }

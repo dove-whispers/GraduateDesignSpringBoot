@@ -20,16 +20,16 @@ import java.io.Serializable;
 @ApiModel(description = "获取员工列表ResponseDTO")
 public class EmployeeListResponseDTO implements Serializable {
     private static final long serialVersionUID = -5130126866582147728L;
-    @ApiModelProperty(value = "员工id", example = "")
+    @ApiModelProperty(value = "员工id")
     private Integer emId;
-    @ApiModelProperty(value = "姓名", example = "")
+    @ApiModelProperty(value = "姓名")
     private String name;
-    @ApiModelProperty(value = "手机", example = "")
+    @ApiModelProperty(value = "手机")
     private String loginName;
-    @ApiModelProperty(value = "部门id", example = "")
+    @ApiModelProperty(value = "部门id")
     private Integer depId;
-    @ApiModelProperty(value = "职位id", example = "")
+    @ApiModelProperty(value = "职位id")
     private Integer positionId;
-    @ApiModelProperty(value = "状态:1有效,0无效", example = "")
+    @ApiModelProperty(value = "状态:1有效,0无效")
     private Integer status;
 }

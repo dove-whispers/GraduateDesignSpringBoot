@@ -9,6 +9,7 @@
     <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="../static/css/style.min.css" rel="stylesheet">
     <link href="../static/css/pagination.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-select/bootstrap-select.css" rel="stylesheet">
 </head>
 
 <body>
@@ -42,6 +43,21 @@
                                     <label class="lyear-switch switch-info">
                                         <input id="status-switch" type="checkbox">筛选状态
                                         <span></span>
+                                    </label>
+                                </div>
+                                <div class="pull-right">
+                                    <label>筛选部门
+                                        <select id="department-select" class="selectpicker" data-width="fit" data-size="4" title="请选择">
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="pull-right">
+                                    <label>筛选职位
+                                        <select id="position-select" class="selectpicker" data-width="fit" data-size="4" title="请选择">
+                                            <option value="1">English</option>
+                                            <option value="2">Ketchup</option>
+                                            <option value="3">Barbecue</option>
+                                        </select>
                                     </label>
                                 </div>
                                 <div class="toolbar-btn-action">
@@ -95,7 +111,7 @@
 <script type="text/javascript" src="../static/js/admin/logout.js"></script>
 <script type="text/javascript" src="../static/js/admin/common.js"></script>
 <script type="text/javascript" src="../static/js/admin/employee-list.js"></script>
-<script type="text/javascript">
-</script>
+<script type="text/javascript" src="../static/js/bootstrap-select/bootstrap-select.js"></script>
+<script type="text/javascript" src="../static/js/admin/select.js"></script>
 </body>
 </html>

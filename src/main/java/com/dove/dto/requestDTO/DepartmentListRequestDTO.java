@@ -21,10 +21,10 @@ import java.io.Serializable;
 @ApiModel(description = "获取部门列表的RequestDTO")
 public class DepartmentListRequestDTO extends PageDTO implements Serializable {
     private static final long serialVersionUID = -5025737214684222583L;
-    @ApiModelProperty(value = "部门名称",example = "")
+    @ApiModelProperty(value = "部门名称")
     private String name;
-    @ApiModelProperty(value = "部门地址",example = "")
+    @ApiModelProperty(value = "部门地址")
     private String address;
-    @ApiModelProperty(value = "状态:1有效,0无效",example = "")
+    @ApiModelProperty(value = "状态:1有效,0无效")
     private Integer status;
 }

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dove.dto.requestDTO.DepartmentListRequestDTO;
+import com.dove.dto.responseDTO.ActiveDepartmentListResponseDTO;
 import com.dove.dto.responseDTO.DepartmentListResponseDTO;
 import com.dove.entity.Department;
 import org.apache.ibatis.annotations.Param;
@@ -111,5 +112,12 @@ public interface DepartmentDao {
      * @param depId 部门id
      */
     void updateSuccessStatusById(Integer depId);
+
+    /**
+     * 查询活动部门列表
+     *
+     * @return {@link List}<{@link ActiveDepartmentListResponseDTO}>
+     */
+    List<ActiveDepartmentListResponseDTO> queryActiveDepartmentList();
 }
 

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 职位表(Position)表服务实现类
@@ -102,7 +103,7 @@ public class PositionServiceImpl implements PositionService {
         try {
             QueryWrapper<PositionListRequestDTO> wrapper = new QueryWrapper<>();
             wrapper.like(StrUtil.isNotEmpty(requestDTO.getPositionName()), "position_name", requestDTO.getPositionName())
-                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getStatus())), "status", requestDTO.getStatus());
+                    .eq(Objects.nonNull(requestDTO.getStatus()), "status", requestDTO.getStatus());
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<PositionListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
             IPage<PositionListResponseDTO> positions = positionDao.queryPageList(page, wrapper);
             map.put("success", true);

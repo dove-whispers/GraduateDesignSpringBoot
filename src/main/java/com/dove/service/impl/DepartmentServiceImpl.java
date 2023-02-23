@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.DepartmentDao;
 import com.dove.dto.requestDTO.DepartmentListRequestDTO;
 import com.dove.dto.requestDTO.ToggleDepartmentRequestDTO;
+import com.dove.dto.responseDTO.ActiveDepartmentListResponseDTO;
 import com.dove.dto.responseDTO.DepartmentListResponseDTO;
 import com.dove.entity.Department;
 import com.dove.service.DepartmentService;
@@ -18,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 部门表(Department)表服务实现类
@@ -97,7 +100,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             QueryWrapper<DepartmentListRequestDTO> wrapper = new QueryWrapper<>();
             wrapper.like(StrUtil.isNotEmpty(requestDTO.getName()), "name", requestDTO.getName())
                     .like(StrUtil.isNotEmpty(requestDTO.getAddress()), "address", requestDTO.getAddress())
-                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getStatus())), "status", requestDTO.getStatus());
+                    .eq(Objects.nonNull(requestDTO.getStatus()), "status", requestDTO.getStatus());
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<DepartmentListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
             IPage<DepartmentListResponseDTO> departments = departmentDao.queryPageList(page, wrapper);
             map.put("success", true);
@@ -133,6 +136,25 @@ public class DepartmentServiceImpl implements DepartmentService {
             //TODO:应该抛出自定义异常
             e.printStackTrace();
             throw e;
+        }
+        return map;
+    }
+
+    /**
+     * 查询活动部门列表
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> queryActiveDepartmentList() {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            List<ActiveDepartmentListResponseDTO> departments = departmentDao.queryActiveDepartmentList();
+            map.put("success", true);
+            map.put("data", departments);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
         }
         return map;
     }

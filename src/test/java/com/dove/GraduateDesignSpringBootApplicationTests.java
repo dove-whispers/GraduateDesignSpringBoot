@@ -1,5 +1,6 @@
 package com.dove;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -33,11 +34,16 @@ class GraduateDesignSpringBootApplicationTests {
         wrapper.like("name", "测试");
         wrapper.eq("status", 1);
         IPage<DepartmentListResponseDTO> iPage = departmentDao.queryPageList(page, wrapper);
-        System.out.println("当前页码值："+iPage.getCurrent());
-        System.out.println("每页显示数："+iPage.getSize());
-        System.out.println("一共多少页："+iPage.getPages());
-        System.out.println("一共多少条数据："+iPage.getTotal());
-        System.out.println("数据："+iPage.getRecords());
+        System.out.println("当前页码值：" + iPage.getCurrent());
+        System.out.println("每页显示数：" + iPage.getSize());
+        System.out.println("一共多少页：" + iPage.getPages());
+        System.out.println("一共多少条数据：" + iPage.getTotal());
+        System.out.println("数据：" + iPage.getRecords());
+    }
+
+    @Test
+    void common() {
+        System.out.println(StrUtil.isNotEmpty(StrUtil.toString("")));
     }
 
 }

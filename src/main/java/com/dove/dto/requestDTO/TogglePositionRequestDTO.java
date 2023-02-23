@@ -20,8 +20,8 @@ import java.io.Serializable;
 @ApiModel(description = "切换单个职位状态的RequestDTO")
 public class TogglePositionRequestDTO implements Serializable {
     private static final long serialVersionUID = 170068117115799721L;
-    @ApiModelProperty(value = "职位id",example = "")
+    @ApiModelProperty(value = "职位id")
     private Integer positionId;
-    @ApiModelProperty(value = "状态:1有效,0无效",example = "")
+    @ApiModelProperty(value = "状态:1有效,0无效")
     private Integer status;
 }

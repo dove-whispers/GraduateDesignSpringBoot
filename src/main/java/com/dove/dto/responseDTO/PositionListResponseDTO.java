@@ -22,13 +22,13 @@ import java.util.Date;
 @ApiModel(description = "获取职位列表ResponseDTO")
 public class PositionListResponseDTO implements Serializable {
     private static final long serialVersionUID = -6243977661133172355L;
-    @ApiModelProperty(value = "职位id", example = "")
+    @ApiModelProperty(value = "职位id")
     private Integer positionId;
-    @ApiModelProperty(value = "职位名称", example = "")
+    @ApiModelProperty(value = "职位名称")
     private String positionName;
-    @ApiModelProperty(value = "创建时间", example = "")
+    @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
-    @ApiModelProperty(value = "状态:1有效,0无效", example = "")
+    @ApiModelProperty(value = "状态:1有效,0无效")
     private Integer status;
 }

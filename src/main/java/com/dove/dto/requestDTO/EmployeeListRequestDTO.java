@@ -21,12 +21,12 @@ import java.io.Serializable;
 @ApiModel(description = "获取员工列表的RequestDTO")
 public class EmployeeListRequestDTO extends PageDTO implements Serializable {
     private static final long serialVersionUID = -7601935052854149512L;
-    @ApiModelProperty(value = "姓名", example = "")
+    @ApiModelProperty(value = "姓名")
     private String name;
-    @ApiModelProperty(value = "部门", example = "")
+    @ApiModelProperty(value = "部门")
     private Integer depId;
-    @ApiModelProperty(value = "职位", example = "")
+    @ApiModelProperty(value = "职位")
     private Integer positionId;
-    @ApiModelProperty(value = "状态:1有效,0无效", example = "")
+    @ApiModelProperty(value = "状态:1有效,0无效")
     private Integer status;
 }

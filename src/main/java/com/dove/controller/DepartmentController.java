@@ -147,4 +147,20 @@ public class DepartmentController extends BaseController {
         map.put("data", department);
         return map;
     }
+
+    @ApiOperation(value = "查询status=1的列表数据")
+    @PostMapping("/queryActiveDepartmentList")
+    @ResponseBody
+    public Map<String, Object> queryActiveDepartmentList() {
+        log.info("查询部门数据");
+        Map<String, Object> map;
+        try {
+            map = departmentService.queryActiveDepartmentList();
+        } catch (Exception e) {
+            map = new HashMap<>(2);
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
 }

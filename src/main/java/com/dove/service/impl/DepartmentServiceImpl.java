@@ -1,5 +1,6 @@
 package com.dove.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.DepartmentDao;
@@ -94,15 +95,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         Map<String, Object> map = new HashMap<>(2);
         try {
             QueryWrapper<DepartmentListRequestDTO> wrapper = new QueryWrapper<>();
-            if (null != requestDTO.getName()) {
-                wrapper.like("name", requestDTO.getName());
-            }
-            if (null != requestDTO.getAddress()) {
-                wrapper.like("address", requestDTO.getAddress());
-            }
-            if (null != requestDTO.getStatus()) {
-                wrapper.eq("status", requestDTO.getStatus());
-            }
+            wrapper.like(StrUtil.isNotEmpty(requestDTO.getName()), "name", requestDTO.getName())
+                    .like(StrUtil.isNotEmpty(requestDTO.getAddress()), "address", requestDTO.getAddress())
+                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getStatus())), "status", requestDTO.getStatus());
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<DepartmentListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
             IPage<DepartmentListResponseDTO> departments = departmentDao.queryPageList(page, wrapper);
             map.put("success", true);

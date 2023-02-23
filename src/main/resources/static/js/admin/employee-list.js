@@ -59,6 +59,7 @@ $(function () {
 
     //对列表数据进行渲染
     function handleList(data) {
+        console.log(data)
         let i = 1
         let html = ''
         data.map(function (item, index) {

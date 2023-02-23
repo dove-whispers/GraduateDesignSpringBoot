@@ -52,7 +52,7 @@ public class IndexController extends BaseController {
         if (!StrUtil.isEmpty(username) && !StrUtil.isEmpty(password)) {
             EmployeeDTO userInfo = employeeService.checkUserByUserNameAndPassword(username, password);
             if (null != userInfo) {
-                log.info("用户" + userInfo.getLoginName() + "登录了");
+                log.info("用户" + userInfo.getName() + "登录了");
                 resultMap.put("success", true);
                 resultMap.put("username", userInfo.getName());
                 request.getSession().setAttribute("userInfo", userInfo);

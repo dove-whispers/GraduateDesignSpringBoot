@@ -68,7 +68,7 @@ public class DepartmentController extends BaseController {
     @ResponseBody
     public Map<String, Object> getList(@RequestBody DepartmentListRequestDTO requestDTO) {
         log.info("查询部门数据");
-        Map<String, Object> map = null;
+        Map<String, Object> map;
         try {
             map = departmentService.queryPageList(requestDTO);
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public class DepartmentController extends BaseController {
     public Map<String, Object> queryDepartment(Integer departmentId) {
         log.info("查看部门");
         Map<String, Object> map = new HashMap<>(2);
-        Department department = null;
+        Department department;
         try {
             if (null == departmentId) {
                 map.put("success", false);

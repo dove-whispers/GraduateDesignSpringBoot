@@ -1,13 +1,11 @@
 package com.dove.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.EmployeeDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
-import com.dove.dto.requestDTO.PositionListRequestDTO;
-import com.dove.dto.responseDTO.EmployeeListResponseDTO;
-import com.dove.dto.responseDTO.PositionListResponseDTO;
 import com.dove.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
@@ -49,14 +47,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         Map<String, Object> map = new HashMap<>(2);
         try {
             QueryWrapper<EmployeeListRequestDTO> wrapper = new QueryWrapper<>();
-            if (null != requestDTO.getName()) {
-                wrapper.like("name", requestDTO.getName());
-            }
-            if (null != requestDTO.getStatus()) {
-                wrapper.eq("status", requestDTO.getStatus());
-            }
+            wrapper.like(StrUtil.isNotEmpty(requestDTO.getName()), "name", requestDTO.getName())
+                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getDepId())), "dep_id", requestDTO.getDepId())
+                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getPositionId())), "position_id", requestDTO.getPositionId())
+                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getStatus())), "status", requestDTO.getStatus());
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<EmployeeListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
-            IPage<EmployeeListResponseDTO> employees = employeeDao.queryPageList(page, wrapper);
+            IPage<EmployeeDTO> employees = employeeDao.queryPageList(page, wrapper);
             map.put("success", true);
             map.put("data", employees);
         } catch (Exception e) {

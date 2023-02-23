@@ -35,8 +35,8 @@ public interface EmployeeDao extends BaseMapper<Employee> {
      *
      * @param page    页面
      * @param wrapper 包装器
-     * @return {@link IPage}<{@link EmployeeListResponseDTO}>
+     * @return {@link IPage}<{@link EmployeeDTO}>
      */
-    IPage<EmployeeListResponseDTO> queryPageList(Page<EmployeeListRequestDTO> page, @Param(Constants.WRAPPER) QueryWrapper<EmployeeListRequestDTO> wrapper);
+    IPage<EmployeeDTO> queryPageList(Page<EmployeeListRequestDTO> page, @Param(Constants.WRAPPER) QueryWrapper<EmployeeListRequestDTO> wrapper);
 }
 

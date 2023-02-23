@@ -64,7 +64,7 @@ public class EmployeeController extends BaseController {
     @ResponseBody
     public Map<String, Object> getList(@RequestBody EmployeeListRequestDTO requestDTO) {
         log.info("查询员工数据");
-        Map<String, Object> map = null;
+        Map<String, Object> map;
         try {
             map = employeeService.queryPageList(requestDTO);
         } catch (Exception e) {

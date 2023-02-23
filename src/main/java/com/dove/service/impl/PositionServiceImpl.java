@@ -1,5 +1,6 @@
 package com.dove.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.PositionDao;
@@ -100,12 +101,8 @@ public class PositionServiceImpl implements PositionService {
         Map<String, Object> map = new HashMap<>(2);
         try {
             QueryWrapper<PositionListRequestDTO> wrapper = new QueryWrapper<>();
-            if (null != requestDTO.getPositionName()) {
-                wrapper.like("position_name", requestDTO.getPositionName());
-            }
-            if (null != requestDTO.getStatus()) {
-                wrapper.eq("status", requestDTO.getStatus());
-            }
+            wrapper.like(StrUtil.isNotEmpty(requestDTO.getPositionName()), "position_name", requestDTO.getPositionName())
+                    .eq(StrUtil.isNotEmpty(StrUtil.toString(requestDTO.getStatus())), "status", requestDTO.getStatus());
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<PositionListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
             IPage<PositionListResponseDTO> positions = positionDao.queryPageList(page, wrapper);
             map.put("success", true);

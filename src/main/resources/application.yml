@@ -17,11 +17,11 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   mvc:
     static-path-pattern: /static/** 
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:

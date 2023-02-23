@@ -68,7 +68,7 @@ public class PositionController extends BaseController {
     @ResponseBody
     public Map<String, Object> getList(@RequestBody PositionListRequestDTO requestDTO) {
         log.info("查询职位数据");
-        Map<String, Object> map = null;
+        Map<String, Object> map;
         try {
             map = positionService.queryPageList(requestDTO);
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class PositionController extends BaseController {
     public Map<String, Object> queryPosition(Integer positionId) {
         log.info("查看职位");
         Map<String, Object> map = new HashMap<>(2);
-        Position position = null;
+        Position position;
         try {
             if (null == positionId) {
                 map.put("success", false);

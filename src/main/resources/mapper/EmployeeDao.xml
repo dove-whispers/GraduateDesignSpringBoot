@@ -18,8 +18,10 @@
         <result property="depId" column="dep_id" jdbcType="INTEGER"/>
         <result property="positionId" column="position_id" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
-        <association property="department" column="dep_id" select="com.dove.dao.DepartmentDao.queryById" jdbcType="INTEGER"/>
-        <association property="position" column="position_id" select="com.dove.dao.PositionDao.queryById" jdbcType="INTEGER"/>
+        <association property="department" column="dep_id" select="com.dove.dao.DepartmentDao.queryById"
+                     jdbcType="INTEGER"/>
+        <association property="position" column="position_id" select="com.dove.dao.PositionDao.queryById"
+                     jdbcType="INTEGER"/>
     </resultMap>
     <select id="queryEmInfoByUserNameAndPassword" resultMap="UserInfoMap">
         SELECT em_id,
@@ -35,22 +37,28 @@
     </select>
 
     <!-- 条件查询(包括MybatisPlus分页查询) -->
-    <select id="queryPageList" resultType="com.dove.dto.responseDTO.EmployeeListResponseDTO">
-        SELECT em_id, password, name, login_name, dep_id, position_id, status
+    <select id="queryPageList" resultMap="UserInfoMap">
+        SELECT em_id,
+               password,
+               name,
+               login_name,
+               dep_id,
+               position_id,
+               status
         FROM employee ${ew.customSqlSegment}
     </select>
 
-    <update id="updateFailureStatusById">
-        UPDATE employee
-        SET status = 0
-        WHERE em_id = #{emId}
-    </update>
+<!--    <update id="updateFailureStatusById">-->
+<!--        UPDATE employee-->
+<!--        SET status = 0-->
+<!--        WHERE em_id = #{emId}-->
+<!--    </update>-->
 
-    <update id="updateSuccessStatusById">
-        UPDATE employee
-        SET status = 1
-        WHERE em_id = #{emId}
-    </update>
+<!--    <update id="updateSuccessStatusById">-->
+<!--        UPDATE employee-->
+<!--        SET status = 1-->
+<!--        WHERE em_id = #{emId}-->
+<!--    </update>-->
 
 
 </mapper>

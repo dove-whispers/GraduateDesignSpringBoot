@@ -1,8 +1,13 @@
 $(function () {
+    //列表
+    let wrap = $('.employee-wrap')
     //定义渲染列表时的条件
     let request_condition = {}
     //是否初始化分页插件
     let flag = true
+    //下拉列表初始化
+    let queryActiveDepartmentListUrl = '/department/queryActiveDepartmentList'
+    let queryActivePositionListUrl = '/position/queryActivePositionList'
 
     $('#search-input').keydown(function (e) {
         //初始化分页插件
@@ -28,6 +33,65 @@ $(function () {
     })
 
     getList(request_condition)
+
+    //获取下拉列表数据
+    $.ajax({
+        url: queryActivePositionListUrl,
+        type: 'POST',
+        async: false,
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                let activeList = data.data
+                let target = $('#position-select')
+                activeList.map(function (item, index) {
+                    let option = $('<option></option>')
+                    option.prop('value', item.positionId)
+                    option.text(item.positionName)
+                    target.append(option)
+                })
+                target.selectpicker('refresh');
+                target.selectpicker('render');
+            }
+        }
+    })
+
+    $.ajax({
+        url: queryActiveDepartmentListUrl,
+        type: 'POST',
+        async: false,
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                let activeList = data.data
+                let target = $('#department-select')
+                activeList.map(function (item, index) {
+                    let option = $('<option></option>')
+                    option.prop('value', item.depId)
+                    option.text(item.name)
+                    target.append(option)
+                })
+                target.selectpicker('refresh');
+                target.selectpicker('render');
+            }
+        }
+    })
+
+    $('#department-select').change(function () {
+        request_condition.depId = $(this).val()
+        flag = true
+        request_condition.current = 1
+        getList(request_condition)
+    })
+
+    $('#position-select').change(function () {
+        request_condition.positionId = $(this).val()
+        flag = true
+        request_condition.current = 1
+        getList(request_condition)
+    })
 
     //获取部门列表
     function getList(data) {
@@ -78,7 +142,7 @@ $(function () {
                 + '</td>'
                 + '</tr>'
         })
-        $('.employee-wrap').html(html)
+        wrap.html(html)
     }
 
     function updateEmployeeStatus(emId, status) {
@@ -88,7 +152,7 @@ $(function () {
         return '<a class="btn btn-xs btn-default employee-status-btn" href="#!" title="修改状态" data-id=' + emId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch-off"></i></a>'
     }
 
-    $('.employee-wrap').on('click', 'a', function (e) {
+    wrap.on('click', 'a', function (e) {
         let target = e.currentTarget;
         if ($(this).hasClass('employee-status-btn')) {
             let emId = target.dataset.id

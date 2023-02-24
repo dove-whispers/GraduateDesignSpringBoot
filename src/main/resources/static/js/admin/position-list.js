@@ -1,4 +1,6 @@
 $(function () {
+    //列表
+    let wrap = $('.position-wrap')
     //定义渲染列表时的条件
     let request_condition = {}
     //是否初始化分页插件
@@ -76,7 +78,7 @@ $(function () {
                 + '</td>'
                 + '</tr>'
         })
-        $('.position-wrap').html(html)
+        wrap.html(html)
     }
 
     function updatePositionStatus(positionId, status) {
@@ -86,7 +88,7 @@ $(function () {
         return '<a class="btn btn-xs btn-default position-status-btn" href="#!" title="修改状态" data-id=' + positionId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch-off"></i></a>'
     }
 
-    $('.position-wrap').on('click', 'a', function (e) {
+    wrap.on('click', 'a', function (e) {
         let target = e.currentTarget;
         if ($(this).hasClass('position-status-btn')) {
             let positionId = target.dataset.id

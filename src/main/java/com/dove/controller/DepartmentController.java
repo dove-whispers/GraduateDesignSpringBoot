@@ -152,7 +152,6 @@ public class DepartmentController extends BaseController {
     @PostMapping("/queryActiveDepartmentList")
     @ResponseBody
     public Map<String, Object> queryActiveDepartmentList() {
-        log.info("查询部门数据");
         Map<String, Object> map;
         try {
             map = departmentService.queryActiveDepartmentList();

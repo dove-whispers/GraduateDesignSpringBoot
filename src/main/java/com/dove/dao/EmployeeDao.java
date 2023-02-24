@@ -1,13 +1,11 @@
 package com.dove.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
-import com.dove.dto.responseDTO.EmployeeListResponseDTO;
 import com.dove.entity.Employee;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
  * @author dove_whispers
  * @date 2023-02-10
  */
-public interface EmployeeDao extends BaseMapper<Employee> {
+public interface EmployeeDao {
     /**
      * 通过账户名密码联合查询
      *
@@ -38,5 +36,27 @@ public interface EmployeeDao extends BaseMapper<Employee> {
      * @return {@link IPage}<{@link EmployeeDTO}>
      */
     IPage<EmployeeDTO> queryPageList(Page<EmployeeListRequestDTO> page, @Param(Constants.WRAPPER) QueryWrapper<EmployeeListRequestDTO> wrapper);
+
+    /**
+     * 通过id查询员工
+     *
+     * @param emId em id
+     * @return {@link Employee}
+     */
+    Employee queryById(Integer emId);
+
+    /**
+     * 插入员工信息
+     *
+     * @param employee 员工
+     */
+    void insert(Employee employee);
+
+    /**
+     * 更新员工信息
+     *
+     * @param employee 员工
+     */
+    void update(Employee employee);
 }
 

@@ -1,4 +1,6 @@
 $(function () {
+    //列表
+    let wrap = $('.department-wrap')
     //定义渲染列表时的条件
     let request_condition = {}
     //是否初始化分页插件
@@ -89,7 +91,7 @@ $(function () {
                 + '</td>'
                 + '</tr>'
         })
-        $('.department-wrap').html(html)
+        wrap.html(html)
     }
 
     function updateDepartmentStatus(depId, status) {
@@ -99,7 +101,7 @@ $(function () {
         return '<a class="btn btn-xs btn-default department-status-btn" href="#!" title="修改状态" data-id=' + depId + ' data-status=' + status + ' data-toggle="tooltip"><i class="mdi mdi-toggle-switch-off"></i></a>'
     }
 
-    $('.department-wrap').on('click', 'a', function (e) {
+    wrap.on('click', 'a', function (e) {
         let target = e.currentTarget;
         if ($(this).hasClass('department-status-btn')) {
             let depId = target.dataset.id

@@ -11,12 +11,12 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="DepartmentMap">
-        select dep_id,
+        SELECT dep_id,
                name,
                address,
                status
-        from department
-        where dep_id = #{depId}
+        FROM department
+        WHERE dep_id = #{depId}
     </select>
 
     <!--查询指定行数据-->

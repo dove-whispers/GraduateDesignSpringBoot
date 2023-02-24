@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.EmployeeDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.entity.Employee;
 import com.dove.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +62,34 @@ public class EmployeeServiceImpl implements EmployeeService {
             map.put("errMsg", e.getMessage());
         }
         return map;
+    }
+
+    /**
+     * 通过id查询员工
+     *
+     * @param emId em id
+     * @return {@link Employee}
+     */
+    @Override
+    public Employee queryById(Integer emId) {
+        return this.employeeDao.queryById(emId);
+    }
+
+    /**
+     * 插入员工
+     *
+     * @param employee 员工
+     */
+    @Override
+    public Employee insert(Employee employee) {
+        this.employeeDao.insert(employee);
+        return employee;
+    }
+
+    @Override
+    public Employee update(Employee employee) {
+        this.employeeDao.update(employee);
+        return this.queryById(employee.getEmId());
     }
 }
 

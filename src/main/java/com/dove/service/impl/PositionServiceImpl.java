@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.PositionDao;
 import com.dove.dto.requestDTO.PositionListRequestDTO;
 import com.dove.dto.requestDTO.TogglePositionRequestDTO;
+import com.dove.dto.responseDTO.ActivePositionListResponseDTO;
 import com.dove.dto.responseDTO.PositionListResponseDTO;
 import com.dove.entity.Position;
 import com.dove.service.PositionService;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -133,6 +135,25 @@ public class PositionServiceImpl implements PositionService {
             //TODO:应该抛出自定义异常
             e.printStackTrace();
             throw e;
+        }
+        return map;
+    }
+
+    /**
+     * 查询活动职位列表
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> queryActivePositionList() {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            List<ActivePositionListResponseDTO> activePositions = positionDao.queryActivePositionList();
+            map.put("success", true);
+            map.put("data", activePositions);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
         }
         return map;
     }

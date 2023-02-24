@@ -149,9 +149,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Map<String, Object> queryActiveDepartmentList() {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            List<ActiveDepartmentListResponseDTO> departments = departmentDao.queryActiveDepartmentList();
+            List<ActiveDepartmentListResponseDTO> activeDepartments = departmentDao.queryActiveDepartmentList();
             map.put("success", true);
-            map.put("data", departments);
+            map.put("data", activeDepartments);
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());

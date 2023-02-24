@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dove.dto.requestDTO.PositionListRequestDTO;
+import com.dove.dto.responseDTO.ActivePositionListResponseDTO;
 import com.dove.dto.responseDTO.PositionListResponseDTO;
 import com.dove.entity.Position;
 import org.apache.ibatis.annotations.Param;
@@ -110,5 +111,13 @@ public interface PositionDao {
      * @param positionId 职位id
      */
     void updateSuccessStatusById(Integer positionId);
+
+    /**
+     * 查询活动职位列表
+     *
+     * @return {@link List}<{@link ActivePositionListResponseDTO}>
+     */
+    List<ActivePositionListResponseDTO> queryActivePositionList();
+
 }
 

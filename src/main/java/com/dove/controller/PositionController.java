@@ -148,4 +148,19 @@ public class PositionController extends BaseController {
         map.put("data", position);
         return map;
     }
+
+    @ApiOperation(value = "查询status=1的列表数据")
+    @PostMapping("/queryActivePositionList")
+    @ResponseBody
+    public Map<String, Object> queryActivePositionList() {
+        Map<String, Object> map;
+        try {
+            map = positionService.queryActivePositionList();
+        } catch (Exception e) {
+            map = new HashMap<>(2);
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
 }

@@ -11,8 +11,10 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="PositionMap">
-        select
-          position_id, position_name, create_time, status
+        select position_id,
+               position_name,
+               create_time,
+               status
         from position
         where position_id = #{positionId}
     </select>
@@ -20,7 +22,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="PositionMap">
         select
-          position_id, position_name, create_time, status
+        position_id, position_name, create_time, status
         from position
         <where>
             <if test="positionId != null">
@@ -69,7 +71,7 @@
         insert into position(position_name, create_time, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.positionName}, #{entity.createTime}, #{entity.status})
+            (#{entity.positionName}, #{entity.createTime}, #{entity.status})
         </foreach>
     </insert>
 
@@ -104,13 +106,21 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from position where position_id = #{positionId}
+        delete
+        from position
+        where position_id = #{positionId}
     </delete>
 
     <!-- 条件查询(包括MybatisPlus分页查询) -->
     <select id="queryPageList" resultType="com.dove.dto.responseDTO.PositionListResponseDTO">
         SELECT position_id, position_name, create_time, status
         FROM position ${ew.customSqlSegment}
+    </select>
+
+    <select id="queryActivePositionList" resultType="com.dove.dto.responseDTO.ActivePositionListResponseDTO">
+        SELECT position_id, position_name
+        FROM position
+        WHERE status = 1
     </select>
 
     <update id="updateFailureStatusById">

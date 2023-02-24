@@ -74,4 +74,10 @@ public interface PositionService {
      */
     Map<String, Object> toggleStatus(TogglePositionRequestDTO togglePositionRequestDTO);
 
+    /**
+     * 查询活动职位列表
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryActivePositionList();
 }

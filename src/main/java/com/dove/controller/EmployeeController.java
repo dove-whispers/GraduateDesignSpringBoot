@@ -1,7 +1,13 @@
 package com.dove.controller;
 
+import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.DepartmentInfoRequestDTO;
+import com.dove.dto.requestDTO.EmployeeInfoRequestDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.entity.Department;
+import com.dove.entity.Employee;
 import com.dove.service.impl.EmployeeServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +78,56 @@ public class EmployeeController extends BaseController {
             map.put("success", false);
             map.put("errMsg", e.getMessage());
         }
+        return map;
+    }
+    @ApiOperation(value = "处理(新增或修改)员工信息")
+    @PostMapping("/operateEmployee")
+    @ResponseBody
+    public Map<String, Object> operateEmployee(@RequestBody EmployeeInfoRequestDTO requestDTO) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            if (null == requestDTO) {
+                map.put("success", false);
+                map.put("errMsg", "员工数据不能为空");
+                return map;
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            //默认密码
+            requestDTO.setPassword("123456");
+            if (null == requestDTO.getEmId()) {
+                employeeService.insert(mapper.readValue(mapper.writeValueAsString(requestDTO), Employee.class));
+            } else {
+                employeeService.update(mapper.readValue(mapper.writeValueAsString(requestDTO), Employee.class));
+            }
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "查看员工信息")
+    @PostMapping("/queryEmployee")
+    @ResponseBody
+    public Map<String, Object> queryDepartment(Integer emId) {
+        log.info("查看员工信息");
+        Map<String, Object> map = new HashMap<>(2);
+        Employee employee;
+        try {
+            if (null == emId) {
+                map.put("success", false);
+                map.put("errMsg", "员工id不能为空");
+                return map;
+            }
+            employee = employeeService.queryById(emId);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+            return map;
+        }
+        map.put("success", true);
+        map.put("data", employee);
         return map;
     }
 }

@@ -92,8 +92,6 @@ public class EmployeeController extends BaseController {
                 return map;
             }
             ObjectMapper mapper = new ObjectMapper();
-            //默认密码
-            requestDTO.setPassword("123456");
             if (null == requestDTO.getEmId()) {
                 employeeService.insert(mapper.readValue(mapper.writeValueAsString(requestDTO), Employee.class));
             } else {

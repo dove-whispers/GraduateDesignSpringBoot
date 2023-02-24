@@ -72,7 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee queryById(Integer emId) {
-        return this.employeeDao.queryById(emId);
+        return this.employeeDao.selectById(emId);
     }
 
     /**
@@ -82,13 +82,23 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee insert(Employee employee) {
+        employee.setPassword("123456");
         this.employeeDao.insert(employee);
         return employee;
     }
 
     @Override
     public Employee update(Employee employee) {
-        this.employeeDao.update(employee);
+//        UpdateWrapper<Employee> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.eq("em_id", employee.getEmId())
+//                .set("password", employee.getPassword())
+//                .set("name", employee.getName())
+//                .set("login_name", employee.getLoginName())
+//                .set("dep_id", employee.getDepId())
+//                .set("position_id", employee.getPositionId())
+//                .set("status", employee.getStatus());
+//        this.employeeDao.update(null, updateWrapper);
+        this.employeeDao.updateById(employee);
         return this.queryById(employee.getEmId());
     }
 }

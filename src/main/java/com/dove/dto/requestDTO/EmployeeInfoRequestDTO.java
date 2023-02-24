@@ -22,8 +22,6 @@ public class EmployeeInfoRequestDTO implements Serializable {
     private static final long serialVersionUID = -5660422344697028207L;
     @ApiModelProperty("员工id")
     private Integer emId;
-    @ApiModelProperty("密码")
-    private String password;
     @ApiModelProperty("姓名")
     private String name;
     @ApiModelProperty("用户名")

@@ -26,45 +26,6 @@
                      jdbcType="INTEGER"/>
     </resultMap>
 
-    <!--新增所有列-->
-    <insert id="insert" keyProperty="emId" useGeneratedKeys="true">
-        INSERT INTO employee (password, name, login_name, dep_id, position_id, status)
-        VALUES (#{password}, #{name}, #{loginName}, #{depId}, #{positionId}, #{status})
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="update">
-        UPDATE employee
-        <set>
-            <if test="password != null and password != ''">
-                password = #{password},
-            </if>
-            <if test="name != null and name != ''">
-                name = #{name},
-            </if>
-            <if test="loginName != null and loginName != ''">
-                login_name = #{loginName},
-            </if>
-            <if test="depId != null">
-                dep_id = #{depId},
-            </if>
-            <if test="positionId != null">
-                position_id = #{positionId},
-            </if>
-            <if test="status != null">
-                status = #{status},
-            </if>
-        </set>
-        WHERE em_id = #{emId}
-    </update>
-
-    <!--查询单个-->
-    <select id="queryById" resultMap="EmployeeMap">
-        SELECT em_id, password, name, login_name, dep_id, position_id, status
-        FROM employee
-        WHERE em_id = #{emId}
-    </select>
-
     <select id="queryEmInfoByUserNameAndPassword" resultMap="UserInfoMap">
         SELECT em_id,
                password,

@@ -1,9 +1,7 @@
 package com.dove.controller;
 
 import com.dove.dto.EmployeeDTO;
-import com.dove.dto.requestDTO.DepartmentInfoRequestDTO;
-import com.dove.dto.requestDTO.EmployeeInfoRequestDTO;
-import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.dto.requestDTO.*;
 import com.dove.entity.Department;
 import com.dove.entity.Employee;
 import com.dove.service.impl.EmployeeServiceImpl;
@@ -80,6 +78,27 @@ public class EmployeeController extends BaseController {
         }
         return map;
     }
+
+    @ApiOperation(value = "对单个员工状态进行切换")
+    @PostMapping("/toggleEmployeeStatus")
+    @ResponseBody
+    public Map<String, Object> toggleEmployeeStatus(@RequestBody ToggleEmployeeRequestDTO requestDTO) {
+        log.info("修改员工状态");
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            if (null == requestDTO) {
+                map.put("success", false);
+                map.put("errMsg", "状态丢失");
+                return map;
+            }
+            map = employeeService.toggleStatus(requestDTO);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
     @ApiOperation(value = "处理(新增或修改)员工信息")
     @PostMapping("/operateEmployee")
     @ResponseBody

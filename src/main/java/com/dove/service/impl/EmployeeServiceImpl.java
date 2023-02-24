@@ -6,9 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.EmployeeDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.dto.requestDTO.ToggleEmployeeRequestDTO;
 import com.dove.entity.Employee;
 import com.dove.service.EmployeeService;
+import com.dove.util.MD5Util;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -35,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public EmployeeDTO checkUserByUserNameAndPassword(String userName, String password) {
-        return employeeDao.queryEmInfoByUserNameAndPassword(userName, password);
+        return employeeDao.queryEmInfoByUserNameAndPassword(userName, MD5Util.getMD5(password));
     }
 
     /**
@@ -82,7 +86,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public Employee insert(Employee employee) {
-        employee.setPassword("123456");
+        //设置默认密码
+        employee.setPassword(MD5Util.getMD5("123456"));
         this.employeeDao.insert(employee);
         return employee;
     }
@@ -100,6 +105,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        this.employeeDao.update(null, updateWrapper);
         this.employeeDao.updateById(employee);
         return this.queryById(employee.getEmId());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public Map<String, Object> toggleStatus(ToggleEmployeeRequestDTO requestDTO) {
+        Map<String, Object> map = new HashMap<>(2);
+        Integer status = requestDTO.getStatus();
+        Integer emId = requestDTO.getEmId();
+        try {
+            if (1 == status) {
+                employeeDao.updateFailureStatusById(emId);
+            } else {
+                employeeDao.updateSuccessStatusById(emId);
+            }
+            map.put("success", true);
+        } catch (Exception e) {
+            //TODO:应该抛出自定义异常
+            e.printStackTrace();
+            throw e;
+        }
+        return map;
     }
 }
 

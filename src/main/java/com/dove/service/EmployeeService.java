@@ -2,6 +2,7 @@ package com.dove.service;
 
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.dto.requestDTO.ToggleEmployeeRequestDTO;
 import com.dove.entity.Department;
 import com.dove.entity.Employee;
 
@@ -53,5 +54,13 @@ public interface EmployeeService {
      * @return {@link Employee}
      */
     Employee update(Employee employee);
+
+    /**
+     * 切换员工状态
+     *
+     * @param requestDTO 请求dto
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> toggleStatus(ToggleEmployeeRequestDTO requestDTO);
 }
 

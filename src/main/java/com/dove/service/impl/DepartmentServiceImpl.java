@@ -127,7 +127,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         try {
             if (1 == status) {
                 departmentDao.updateFailureStatusById(depId);
-
             } else {
                 departmentDao.updateSuccessStatusById(depId);
             }

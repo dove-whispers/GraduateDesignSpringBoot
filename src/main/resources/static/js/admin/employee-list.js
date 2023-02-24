@@ -45,6 +45,7 @@ $(function () {
             if (data.success) {
                 let activeList = data.data
                 let target = $('#position-select')
+                target.append($('<option value="">全部职位</option>'))
                 activeList.map(function (item, index) {
                     let option = $('<option></option>')
                     option.prop('value', item.positionId)
@@ -67,6 +68,7 @@ $(function () {
             if (data.success) {
                 let activeList = data.data
                 let target = $('#department-select')
+                target.append($('<option value="">全部部门</option>'))
                 activeList.map(function (item, index) {
                     let option = $('<option></option>')
                     option.prop('value', item.depId)

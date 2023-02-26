@@ -7,27 +7,9 @@ $(function () {
     //下拉列表初始化
     let queryActiveDepartmentListUrl = '/department/queryActiveDepartmentList'
     let queryActivePositionListUrl = '/position/queryActivePositionList'
-    $.ajax({
-        url: queryActivePositionListUrl,
-        type: 'POST',
-        async: false,
-        cache: false,
-        dataType: 'json',
-        success: function (data) {
-            if (data.success) {
-                let activeList = data.data
-                let target = $('#position-select')
-                activeList.map(function (item, index) {
-                    let option = $('<option></option>')
-                    option.prop('value', item.positionId)
-                    option.text(item.positionName)
-                    target.append(option)
-                })
-                target.selectpicker('refresh');
-                target.selectpicker('render');
-            }
-        }
-    })
+    //有效下拉信息
+    let activeDepartmentList = {}
+    let activePositionList = {}
 
     $.ajax({
         url: queryActiveDepartmentListUrl,
@@ -37,22 +19,27 @@ $(function () {
         dataType: 'json',
         success: function (data) {
             if (data.success) {
-                let activeList = data.data
-                let target = $('#department-select')
-                activeList.map(function (item, index) {
-                    let option = $('<option></option>')
-                    option.prop('value', item.depId)
-                    option.text(item.name)
-                    target.append(option)
-                })
-                target.selectpicker('refresh');
-                target.selectpicker('render');
+                activeDepartmentList = data.data
+            }
+        }
+    })
+    $.ajax({
+        url: queryActivePositionListUrl,
+        type: 'POST',
+        async: false,
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            if (data.success) {
+                activePositionList = data.data
             }
         }
     })
     //非空则说明用户在查看或编辑
     if (em_id) {
-        //从后端填充值
+        let employee = {}
+        let department_select = $('#department-select')
+        let position_select = $('#position-select')
         $.ajax({
             url: queryEmployeeUrl,
             type: 'POST',
@@ -60,11 +47,11 @@ $(function () {
             cache: false,
             dataType: 'json',
             data: {
-                employeeId: em_id,
+                emId: em_id,
             },
             success: function (data) {
                 if (data.success) {
-                    let employee = data.data
+                    employee = data.data
                     $('#employee-name').val(employee.name)
                     $('#login-name').val(employee.loginName)
                     if (1 === employee.status) {
@@ -79,6 +66,61 @@ $(function () {
                 }
             }
         })
+        if (is_edit) {
+            activeDepartmentList.map(function (item, index) {
+                let department_option = $('<option></option>')
+                department_option.prop('value', item.depId)
+                department_option.text(item.name)
+                department_select.append(department_option)
+            })
+            department_select.selectpicker('refresh')
+            department_select.selectpicker('val',employee.depId)
+            activePositionList.map(function (item, index) {
+                let position_option = $('<option></option>')
+                position_option.prop('value', item.positionId)
+                position_option.text(item.positionName)
+                position_select.append(position_option)
+            })
+            position_select.selectpicker('refresh')
+            position_select.selectpicker('val',employee.positionId)
+        } else {
+            activeDepartmentList.map(function (item, index) {
+                if (employee.depId === item.depId) {
+                    department_option.text(item.name)
+                    department_select.append(department_option)
+                    department_select.selectpicker('refresh')
+                    department_select.selectpicker('render')
+                }
+            })
+            activePositionList.map(function (item, index) {
+                if (employee.positionId === item.positionId) {
+                    position_option.text(item.positionName)
+                    position_select.append(position_option)
+                    position_select.selectpicker('refresh')
+                    position_select.selectpicker('render')
+                }
+            })
+        }
+
+    } else {
+        let department_target = $('#department-select')
+        activeDepartmentList.map(function (item, index) {
+            let department_option = $('<option></option>')
+            department_option.prop('value', item.depId)
+            department_option.text(item.name)
+            department_target.append(department_option)
+        })
+        department_target.selectpicker('refresh')
+        department_target.selectpicker('render')
+        let position_target = $('#position-select')
+        activePositionList.map(function (item, index) {
+            let position_option = $('<option></option>')
+            position_option.prop('value', item.positionId)
+            position_option.text(item.positionName)
+            position_target.append(position_option)
+        })
+        position_target.selectpicker('refresh')
+        position_target.selectpicker('render')
     }
     $('#submit').click(function () {
         let name = $('#employee-name').val()

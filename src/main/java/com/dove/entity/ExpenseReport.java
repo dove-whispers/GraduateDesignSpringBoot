@@ -7,22 +7,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.io.Serializable;
 
 /**
  * 报销单表(ExpenseReport)实体类
  *
  * @author dove_whispers
- * @date 2023-02-27
+ * @date 2023-03-02
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("expense_report")
 public class ExpenseReport implements Serializable {
-    private static final long serialVersionUID = -14166010263611148L;
+    private static final long serialVersionUID = 965476388182794094L;
     /**
      * 报销单id
      */

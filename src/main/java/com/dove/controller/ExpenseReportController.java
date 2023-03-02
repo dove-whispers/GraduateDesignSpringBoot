@@ -14,23 +14,27 @@ import javax.annotation.Resource;
 /**
  * 报销单表(ExpenseReport)表控制层
  *
- * @author makejava
- * @since 2023-02-27 16:30:07
+ * @author dove_whispers
+ * @date 2023-03-02
  */
-@Api(tags = "报销单管理模块")
+@Api(tags = "报销单细节管理模块")
 @Controller
 @RequestMapping("expenseReport")
 @Slf4j
 public class ExpenseReportController extends BaseController {
+    /**
+     * 服务对象
+     */
     @Resource
     private ExpenseReportServiceImpl expenseReportService;
 
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
     public ModelAndView toAddExpenseReport() {
-        log.info("进入报销单列表");
+        log.info("进入新增报销单页面");
         request.getSession().setAttribute("pageName", "新增报销单");
         return new ModelAndView("expense-report-add");
     }
+
 }
 

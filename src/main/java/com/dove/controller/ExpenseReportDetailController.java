@@ -30,7 +30,7 @@ public class ExpenseReportDetailController extends BaseController {
     public ModelAndView toAddExpenseReportDetail() {
         log.info("进入报销单细节列表");
         request.getSession().setAttribute("pageName", "新增报销单细节");
-        return new ModelAndView("expense-report-add");
+        return new ModelAndView("expense-report-detail-add");
     }
 }
 

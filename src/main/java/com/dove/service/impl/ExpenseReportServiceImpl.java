@@ -1,12 +1,12 @@
 package com.dove.service.impl;
 
-import com.dove.dao.ExpenseReportDao;
 import com.dove.entity.ExpenseReport;
+import com.dove.dao.ExpenseReportDao;
 import com.dove.service.ExpenseReportService;
+import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * 报销单表(ExpenseReport)表服务实现类
  *
  * @author dove_whispers
- * @date 2023-02-27
+ * @date 2023-03-02
  */
 @Service("expenseReportService")
 public class ExpenseReportServiceImpl implements ExpenseReportService {
@@ -36,7 +36,7 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
      * 分页查询
      *
      * @param expenseReport 筛选条件
-     * @param pageRequest   分页对象
+     * @param pageRequest      分页对象
      * @return 查询结果
      */
     @Override

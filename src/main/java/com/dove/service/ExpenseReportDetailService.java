@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
  * 报销单细节表(ExpenseReportDetail)表服务接口
  *
  * @author dove_whispers
- * @date 2023-02-27
+ * @date 2023-03-02
  */
 public interface ExpenseReportDetailService {
 
@@ -24,7 +24,7 @@ public interface ExpenseReportDetailService {
      * 分页查询
      *
      * @param expenseReportDetail 筛选条件
-     * @param pageRequest         分页对象
+     * @param pageRequest      分页对象
      * @return 查询结果
      */
     Page<ExpenseReportDetail> queryByPage(ExpenseReportDetail expenseReportDetail, PageRequest pageRequest);

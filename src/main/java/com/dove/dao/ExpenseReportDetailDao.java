@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * 报销单细节表(ExpenseReportDetail)表数据库访问层
+ * 报销单细节表(ExpenseReportDetail)表数据库访问层费用报告细节刀
  *
  * @author dove_whispers
- * @date 2023-02-27
+ * @date 2023-03-02
  */
 public interface ExpenseReportDetailDao {
 

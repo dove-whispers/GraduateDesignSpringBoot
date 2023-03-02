@@ -141,6 +141,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+		<!-- Spring Boot 配置注解执行器 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
   		<!-- 谷歌开源验证码 -->
 		<dependency>
 			<groupId>com.github.penggle</groupId>

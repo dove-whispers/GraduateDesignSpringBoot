@@ -9,6 +9,7 @@ import com.dove.dao.EmployeeDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.DepartmentListRequestDTO;
 import com.dove.dto.responseDTO.DepartmentListResponseDTO;
+import com.dove.property.KeyProperty;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,6 +21,8 @@ class GraduateDesignSpringBootApplicationTests {
     private EmployeeDao employeeDao;
     @Resource
     private DepartmentDao departmentDao;
+    @Resource
+    private KeyProperty keyProperty;
 
     @Test
     void contextLoads() {
@@ -43,7 +46,7 @@ class GraduateDesignSpringBootApplicationTests {
 
     @Test
     void common() {
-        System.out.println(StrUtil.isNotEmpty(StrUtil.toString("")));
+        System.out.println(keyProperty);
     }
 
 }

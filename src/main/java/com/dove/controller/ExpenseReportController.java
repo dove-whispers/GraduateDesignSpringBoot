@@ -28,7 +28,7 @@ public class ExpenseReportController extends BaseController {
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
     public ModelAndView toAddExpenseReport() {
-        log.info("进入职位列表");
+        log.info("进入报销单列表");
         request.getSession().setAttribute("pageName", "新增报销单");
         return new ModelAndView("expense-report-add");
     }

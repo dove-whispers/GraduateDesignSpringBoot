@@ -1,8 +1,10 @@
 package com.dove;
 
+import com.dove.property.KeyProperty;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -15,11 +17,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EnableCaching
+@EnableConfigurationProperties({KeyProperty.class})
 @MapperScan("com.dove.dao")
 public class GraduateDesignSpringBootApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GraduateDesignSpringBootApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GraduateDesignSpringBootApplication.class, args);
+    }
 
 }

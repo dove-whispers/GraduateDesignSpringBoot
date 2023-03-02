@@ -8,6 +8,9 @@
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="../static/css/style.min.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <link href="../static/css/style.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -34,32 +37,75 @@
                                     <div class="divider text-uppercase">报销原因</div>
                                     <div class="form-group col-md-12">
                                         <label for="expense-cause">报销原因</label>
-                                        <input type="text" class="form-control" id="expense-cause" name="expense-cause" placeholder="请输入报销原因" value=""/>
+                                        <input type="text" class="form-control" id="expense-cause" name="expense-cause"
+                                               placeholder="请输入报销原因" value=""/>
                                     </div>
                                     <div class="divider text-uppercase">报销明细</div>
                                     <div class="col-md-12">
-                                        <table class="table">
+                                        <!--                                        <table class="table">-->
+                                        <!--                                            <thead>-->
+                                        <!--                                            <tr>-->
+                                        <!--                                                <th colspan="2">选择</th>-->
+                                        <!--                                                <th colspan="2">费用项目</th>-->
+                                        <!--                                                <th colspan="6">费用说明</th>-->
+                                        <!--                                                <th colspan="2">报销金额</th>-->
+                                        <!--                                            </tr>-->
+                                        <!--                                            </thead>-->
+                                        <!--                                            <tbody>-->
+                                        <!--                                            <tr>-->
+                                        <!--                                                <td colspan="2">-->
+                                        <!--                                                    <a class="btn btn-default" id="deleteItem">x</a>-->
+                                        <!--                                                </td>-->
+                                        <!--                                                <td colspan="2">-->
+                                        <!--                                                    <select class="form-control" id="item-select"-->
+                                        <!--                                                            name="item-select"></select>-->
+                                        <!--                                                </td>-->
+                                        <!--                                                <td colspan="6">-->
+                                        <!--                                                    <input type="text" class="form-control" id="item-descript"/>-->
+                                        <!--                                                </td>-->
+                                        <!--                                                <td colspan="2">-->
+                                        <!--                                                    <input type="text" class="form-control" id="item-amount"/>-->
+                                        <!--                                                </td>-->
+                                        <!--                                            </tr>-->
+                                        <!--                                            </tbody>-->
+                                        <!--                                        </table>-->
+                                        <table class="table table-hover">
                                             <thead>
                                             <tr>
-                                                <th colspan="2">选择</th>
-                                                <th colspan="2">费用项目</th>
-                                                <th colspan="6">费用说明</th>
-                                                <th colspan="2">报销金额</th>
+                                                <th>#</th>
+                                                <th>费用项目</th>
+                                                <th>开票日期</th>
+                                                <th>类别</th>
+                                                <th>发票代码</th>
+                                                <th>发票号码</th>
+                                                <th>报销金额</th>
+                                                <th>发票</th>
+                                                <th>选择</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td colspan="2">
-                                                    <a class="btn btn-default" id="deleteItem">x</a>
+                                                <th scope="row">1</th>
+                                                <td>坐地铁</td>
+                                                <td>2013</td>
+                                                <td>定额发票</td>
+                                                <td>131001361804</td>
+                                                <td>03984801</td>
+                                                <td>8</td>
+                                                <td>
+                                                    <input type="file" id="example-file-input"
+                                                           name="example-file-input" style="width: 174px">
                                                 </td>
-                                                <td colspan="2">
-                                                    <select class="form-control" id="item-select" name="item-select"></select>
-                                                </td>
-                                                <td colspan="6">
-                                                    <input type="text" class="form-control" id="item-descript"/>
-                                                </td>
-                                                <td colspan="2">
-                                                    <input type="text" class="form-control" id="item-amount"/>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-xs btn-default" href="#!" title="编辑"
+                                                           data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
+                                                        <a class="btn btn-xs btn-default" href="#!" title="查看"
+                                                           data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>
+                                                        <a class="btn btn-xs btn-default" href="#!" title="删除"
+                                                           data-toggle="tooltip"><i
+                                                                class="mdi mdi-window-close"></i></a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -110,6 +156,13 @@
 <script type="text/javascript" src="../static/js/jquery.min.js"></script>
 <script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../static/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+        src="../static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript" src="../static/js/main.min.js"></script>
 <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
 <script type="text/javascript" src="../static/js/lightyear.js"></script>
 <script type="text/javascript" src="../static/js/main.min.js"></script>

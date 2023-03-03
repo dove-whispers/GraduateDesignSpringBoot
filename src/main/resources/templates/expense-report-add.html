@@ -7,9 +7,9 @@
     <link rel="icon" href="../static/favicon.ico" type="image/ico">
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="../static/css/style.min.css" rel="stylesheet">
     <link href="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="../static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <link href="../static/js/jconfirm/jquery-confirm.min.css" rel="stylesheet">
     <link href="../static/css/style.min.css" rel="stylesheet">
     <link href="../static/css/input-file.css" rel="stylesheet">
 </head>
@@ -27,9 +27,7 @@
 
         <!--页面主要内容-->
         <main class="lyear-layout-content">
-
             <div class="container-fluid">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
@@ -42,35 +40,11 @@
                                                placeholder="请输入报销原因" value=""/>
                                     </div>
                                     <div class="divider text-uppercase">报销明细</div>
+                                    <div class="form-group col-md-12">
+                                        <button id="add" class="btn btn-info btn-round">添 加</button>
+                                    </div>
                                     <div class="col-md-12">
-                                        <!--                                        <table class="table">-->
-                                        <!--                                            <thead>-->
-                                        <!--                                            <tr>-->
-                                        <!--                                                <th colspan="2">选择</th>-->
-                                        <!--                                                <th colspan="2">费用项目</th>-->
-                                        <!--                                                <th colspan="6">费用说明</th>-->
-                                        <!--                                                <th colspan="2">报销金额</th>-->
-                                        <!--                                            </tr>-->
-                                        <!--                                            </thead>-->
-                                        <!--                                            <tbody>-->
-                                        <!--                                            <tr>-->
-                                        <!--                                                <td colspan="2">-->
-                                        <!--                                                    <a class="btn btn-default" id="deleteItem">x</a>-->
-                                        <!--                                                </td>-->
-                                        <!--                                                <td colspan="2">-->
-                                        <!--                                                    <select class="form-control" id="item-select"-->
-                                        <!--                                                            name="item-select"></select>-->
-                                        <!--                                                </td>-->
-                                        <!--                                                <td colspan="6">-->
-                                        <!--                                                    <input type="text" class="form-control" id="item-descript"/>-->
-                                        <!--                                                </td>-->
-                                        <!--                                                <td colspan="2">-->
-                                        <!--                                                    <input type="text" class="form-control" id="item-amount"/>-->
-                                        <!--                                                </td>-->
-                                        <!--                                            </tr>-->
-                                        <!--                                            </tbody>-->
-                                        <!--                                        </table>-->
-                                        <table class="table table-hover">
+                                        <table class="table table-hover" id="detail-table">
                                             <thead>
                                             <tr>
                                                 <th>#</th>
@@ -84,28 +58,40 @@
                                                 <th>选择</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="detail-body">
                                             <tr>
                                                 <th scope="row">1</th>
-                                                <td>坐地铁</td>
-                                                <td>2013</td>
-                                                <td>定额发票</td>
-                                                <td>131001361804</td>
-                                                <td>03984801</td>
-                                                <td>8</td>
                                                 <td>
-                                                    <input type="file" id="example-file-input"
-                                                           name="example-file-input" style="width: 174px">
+                                                    <input class="form-control detail_item" type="text" placeholder="费用项目">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control datepicker detail_time" type="text"
+                                                           placeholder="请选择日期">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_type" type="text" placeholder="类别">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_code" type="text" placeholder="发票代码">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_num" type="text" placeholder="发票号码">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_amount" type="text" placeholder="报销金额">
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:void(0)" class="file">选择文件
+                                                        <input type="file" class="detail_image"
+                                                               accept="image/jpg,image/jpeg,image/png">
+                                                    </a>
+                                                    <a class="btn btn-link pre-view" href="javascript:void(0)">预览</a>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a class="btn btn-xs btn-default" href="#!" title="编辑"
-                                                           data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
-                                                        <a class="btn btn-xs btn-default" href="#!" title="查看"
-                                                           data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>
-                                                        <a class="btn btn-xs btn-default" href="#!" title="删除"
-                                                           data-toggle="tooltip"><i
-                                                                class="mdi mdi-window-close"></i></a>
+                                                        <a class="btn btn-xs btn-default del">
+                                                            <i class="mdi mdi-window-close"></i>
+                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -113,24 +99,11 @@
                                         </table>
                                     </div>
                                     <div class="col-md-2">
-                                        <label>总金额</label>
+                                        <label for="total_amount">总金额</label>
                                         <div class="input-group m-b-10">
                                             <a class="btn btn-default input-group-addon">+</a>
-                                            <input type="text" class="form-control" disabled/>
+                                            <input type="text" id="total_amount" class="form-control text-right" disabled value="0"/>
                                             <span class="input-group-addon">元</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-12">
-                                        <label>状态</label>
-                                        <div class="clearfix">
-                                            <label class="lyear-radio radio-inline radio-primary">
-                                                <input id="status-off" type="radio" name="status"
-                                                       value="0"><span>禁用</span>
-                                            </label>
-                                            <label class="lyear-radio radio-inline radio-primary">
-                                                <input id="status-on" type="radio" name="status" value="1"
-                                                       checked><span>启用</span>
-                                            </label>
                                         </div>
                                     </div>
                                     <div class="form-group col-md-12">
@@ -166,6 +139,7 @@
 <script type="text/javascript" src="../static/js/main.min.js"></script>
 <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
 <script type="text/javascript" src="../static/js/lightyear.js"></script>
+<script type="text/javascript" src="../static/js/jconfirm/jquery-confirm.min.js"></script>
 <script type="text/javascript" src="../static/js/main.min.js"></script>
 <script type="text/javascript" src="../static/js/admin/common.js"></script>
 <script type="text/javascript" src="../static/js/admin/logout.js"></script>

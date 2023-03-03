@@ -15,7 +15,9 @@ spring:
     password: cao100200
     type: com.alibaba.druid.pool.DruidDataSource
   mvc:
-    static-path-pattern: /static/** 
+    static-path-pattern: /static/**
+server:
+  port: 8083
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:

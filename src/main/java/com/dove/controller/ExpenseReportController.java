@@ -1,15 +1,19 @@
 package com.dove.controller;
 
+import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
 import com.dove.service.impl.ExpenseReportServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 报销单表(ExpenseReport)表控制层
@@ -34,6 +38,28 @@ public class ExpenseReportController extends BaseController {
         log.info("进入新增报销单页面");
         request.getSession().setAttribute("pageName", "新增报销单");
         return new ModelAndView("expense-report-add");
+    }
+
+    @ApiOperation(value = "新增报销单")
+    @PostMapping("/addExpenseReport")
+    @ResponseBody
+    public Map<String, Object> addExpenseReport(@RequestBody List<ExpenseReportRequestDTO> requestDTOs) {
+        log.info("新增报销单");
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        for (ExpenseReportRequestDTO requestDTO : requestDTOs) {
+            System.out.println(requestDTO);
+            System.out.println("时间" + sdf.format(requestDTO.getTime()));
+        }
+//        Map<String, Object> map;
+//        try {
+//            map = departmentService.queryPageList(requestDTO);
+//        } catch (Exception e) {
+//            map = new HashMap<>(2);
+//            map.put("success", false);
+//            map.put("errMsg", e.getMessage());
+//        }
+//        return map;
+        return null;
     }
 
 }

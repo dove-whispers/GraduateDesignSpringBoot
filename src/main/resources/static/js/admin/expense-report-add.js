@@ -4,7 +4,7 @@ $(function () {
     }).on('click', '.pre-view', function () {
         const img = new Image()
         img.src = $(this).prev().children().data('base64Str')
-        const newWin = window.open('', '预览', 'top=10,left=300,width=1200,height=800')
+        const newWin = window.open('', '预览', 'top=10,left=200,width=1200,height=800')
         newWin.document.write(img.outerHTML)
         newWin.document.title = "预览图片"
         newWin.document.close()
@@ -33,7 +33,6 @@ $(function () {
         })
     }).on('change', '.datepicker', function () {
         $(this).data('time', $(this).val())
-        console.log($(this).data('time'))
     }).on('input', '.detail_amount', function () {
         let total_amount = 0
         $('#detail-body').find(".detail_amount").each(function (index, element) {
@@ -79,15 +78,77 @@ $(function () {
     // $(".date-picker").datepicker("update", new Date(data.inputDate));
 
     $('#submit').click(function () {
+        let flag = 1
+        let report_details = []
         $('#detail-body').find("tr").each(function (rowIndex, rowElement) {
-            let detail_data = []
+            if (flag === 0) return
+            let item = ''
+            let time = ''
+            let type = ''
+            let code = ''
+            let num = ''
+            let amount = ''
+            let image = ''
             $(rowElement).find("td").each(function (colIndex, colElement) {
-                console.log("行:"+rowIndex+",列:"+colIndex)
-                console.log(colElement)
-                // detail_data.push($(colElement).children())
+                switch (colIndex) {
+                    case 0:
+                        item = $(colElement).children().val()
+                        if (!item) {
+                            $.alert('费用项目不能为空!')
+                            flag = 0
+                            return
+                        }
+                        break
+                    case 1:
+                        time = $(colElement).children().val()
+                        break
+                    case 2:
+                        type = $(colElement).children().val()
+                        break
+                    case 3:
+                        code = $(colElement).children().val()
+                        break
+                    case 4:
+                        num = $(colElement).children().val()
+                        break
+                    case 5:
+                        amount = $(colElement).children().val()
+                        if (!amount) {
+                            $.alert('报销金额不能为空!')
+                            flag = 0
+                            return
+                        }
+                        break
+                    case 6:
+                        image = $(colElement).find("input").data("base64Str")
+                        image = image ? image.substring(image.indexOf(",") + 1) : ''
+                        break
+                    default:
+                }
             })
-            let report_detail = createReportDetail()
+            let report_detail = createReportDetail(item, time, type, code, num, amount, image)
+            report_details.push(report_detail)
         })
+        if (flag === 1) {
+            //TODO:ajax到后端
+            //traditional :true, //如果要传数组,要设置为true ★
+            console.log(report_details)
+            $.ajax({
+                url: '/expenseReport/addExpenseReport',
+                type: 'POST',
+                async: false,
+                cache: false,
+                dataType: 'json',
+                contentType: 'application/json;charset=utf-8',
+                data: JSON.stringify(report_details),
+                success: function (data) {
+
+                }
+            })
+
+        } else {
+            console.log('空结束,新增报销单失败')
+        }
     })
 
     function createReportDetail(item, time, type, code, num, amount, image) {

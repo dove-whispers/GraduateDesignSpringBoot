@@ -15,14 +15,14 @@ import java.io.Serializable;
  * 报销单表(ExpenseReport)实体类
  *
  * @author dove_whispers
- * @date 2023-03-02
+ * @date 2023-03-04
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("expense_report")
 public class ExpenseReport implements Serializable {
-    private static final long serialVersionUID = 965476388182794094L;
+    private static final long serialVersionUID = -83610460970276624L;
     /**
      * 报销单id
      */
@@ -40,6 +40,10 @@ public class ExpenseReport implements Serializable {
      * 创建时间
      */
     private Date createTime;
+    /**
+     * 截止时间
+     */
+    private Date endTime;
     /**
      * 待处理人
      */

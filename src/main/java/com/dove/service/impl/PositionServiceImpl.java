@@ -157,4 +157,14 @@ public class PositionServiceImpl implements PositionService {
         }
         return map;
     }
+
+    /**
+     * 查询部门经理id
+     *
+     * @return {@link Integer}
+     */
+    @Override
+    public Integer queryIdByName(String name) {
+        return positionDao.findPositionIdByPositionName(name);
+    }
 }

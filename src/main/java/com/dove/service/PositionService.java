@@ -80,4 +80,12 @@ public interface PositionService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> queryActivePositionList();
+
+    /**
+     * 通过名称查询id
+     *
+     * @param name 名字
+     * @return {@link Integer}
+     */
+    Integer queryIdByName(String name);
 }

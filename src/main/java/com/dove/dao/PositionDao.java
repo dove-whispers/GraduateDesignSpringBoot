@@ -119,5 +119,13 @@ public interface PositionDao {
      */
     List<ActivePositionListResponseDTO> queryActivePositionList();
 
+
+    /**
+     * 找到位置id职位名称
+     *
+     * @param positionName 职位名称
+     * @return {@link Integer}
+     */
+    Integer findPositionIdByPositionName(String positionName);
 }
 

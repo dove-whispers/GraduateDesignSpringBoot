@@ -78,6 +78,12 @@ $(function () {
     // $(".date-picker").datepicker("update", new Date(data.inputDate));
 
     $('#submit').click(function () {
+        let cause = $('#expense-cause').val()
+        let total_amount = $('#total_amount').val()
+        if (!cause) {
+            $.alert('报销原因不能为空!')
+            return
+        }
         let flag = 1
         let report_details = []
         $('#detail-body').find("tr").each(function (rowIndex, rowElement) {
@@ -131,8 +137,6 @@ $(function () {
         })
         if (flag === 1) {
             //TODO:ajax到后端
-            //traditional :true, //如果要传数组,要设置为true ★
-            console.log(report_details)
             $.ajax({
                 url: '/expenseReport/addExpenseReport',
                 type: 'POST',
@@ -140,9 +144,17 @@ $(function () {
                 cache: false,
                 dataType: 'json',
                 contentType: 'application/json;charset=utf-8',
-                data: JSON.stringify(report_details),
+                data: JSON.stringify({
+                    expenseReportDetails: report_details,
+                    cause,
+                    totalAmount: total_amount
+                }),
                 success: function (data) {
-
+                    if (data.success){
+                        lightyear.notify('新增报销单成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center', '/main')
+                    }else {
+                        lightyear.notify('新增失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                    }
                 }
             })
 

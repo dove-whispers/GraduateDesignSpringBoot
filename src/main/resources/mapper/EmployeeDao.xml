@@ -62,5 +62,12 @@
         SET status = 1
         WHERE em_id = #{emId}
     </update>
+
+    <select id="queryNextDealEmIdByDepAndPosition" resultType="java.lang.Integer">
+        SELECT em_id
+        FROM employee
+        WHERE dep_id = #{depId}
+          AND position_id = #{depManagerId}
+    </select>
 </mapper>
 

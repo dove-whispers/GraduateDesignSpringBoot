@@ -7,6 +7,7 @@
         <result property="cause" column="cause" jdbcType="VARCHAR"/>
         <result property="emId" column="em_id" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
         <result property="nextDealEm" column="next_deal_em" jdbcType="INTEGER"/>
         <result property="totalAmount" column="total_amount" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
@@ -15,7 +16,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ExpenseReportMap">
         select
-          expense_id, cause, em_id, create_time, next_deal_em, total_amount, status
+          expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
         from expense_report
         where expense_id = #{expenseId}
     </select>
@@ -23,7 +24,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ExpenseReportMap">
         select
-          expense_id, cause, em_id, create_time, next_deal_em, total_amount, status
+          expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
         from expense_report
         <where>
             <if test="expenseId != null">
@@ -37,6 +38,9 @@
             </if>
             <if test="createTime != null">
                 and create_time = #{createTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
             </if>
             <if test="nextDealEm != null">
                 and next_deal_em = #{nextDealEm}
@@ -68,6 +72,9 @@
             <if test="createTime != null">
                 and create_time = #{createTime}
             </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
             <if test="nextDealEm != null">
                 and next_deal_em = #{nextDealEm}
             </if>
@@ -82,28 +89,29 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="expenseId" useGeneratedKeys="true">
-        insert into expense_report(cause, em_id, create_time, next_deal_em, total_amount, status)
-        values (#{cause}, #{emId}, #{createTime}, #{nextDealEm}, #{totalAmount}, #{status})
+        insert into expense_report(cause, em_id, create_time, end_time, next_deal_em, total_amount, status)
+        values (#{cause}, #{emId}, #{createTime}, #{endTime}, #{nextDealEm}, #{totalAmount}, #{status})
     </insert>
 
     <insert id="insertBatch" keyProperty="expenseId" useGeneratedKeys="true">
-        insert into expense_report(cause, em_id, create_time, next_deal_em, total_amount, status)
+        insert into expense_report(cause, em_id, create_time, end_time, next_deal_em, total_amount, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.nextDealEm}, #{entity.totalAmount}, #{entity.status})
+        (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.endTime}, #{entity.nextDealEm}, #{entity.totalAmount}, #{entity.status})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="expenseId" useGeneratedKeys="true">
-        insert into expense_report(cause, em_id, create_time, next_deal_em, total_amount, status)
+        insert into expense_report(cause, em_id, create_time, end_time, next_deal_em, total_amount, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.nextDealEm}, #{entity.totalAmount}, #{entity.status})
+            (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.endTime}, #{entity.nextDealEm}, #{entity.totalAmount}, #{entity.status})
         </foreach>
         on duplicate key update
         cause = values(cause),
         em_id = values(em_id),
         create_time = values(create_time),
+        end_time = values(end_time),
         next_deal_em = values(next_deal_em),
         total_amount = values(total_amount),
         status = values(status)
@@ -121,6 +129,9 @@
             </if>
             <if test="createTime != null">
                 create_time = #{createTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
             </if>
             <if test="nextDealEm != null">
                 next_deal_em = #{nextDealEm},

@@ -1,7 +1,16 @@
 package com.dove.controller;
 
+import cn.hutool.core.date.DateUtil;
+import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
+import com.dove.entity.ExpenseReport;
+import com.dove.entity.ExpenseReportDetail;
+import com.dove.service.impl.EmployeeServiceImpl;
+import com.dove.service.impl.ExpenseReportDetailServiceImpl;
 import com.dove.service.impl.ExpenseReportServiceImpl;
+import com.dove.service.impl.PositionServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,11 +36,14 @@ import java.util.Map;
 @RequestMapping("expenseReport")
 @Slf4j
 public class ExpenseReportController extends BaseController {
-    /**
-     * 服务对象
-     */
     @Resource
     private ExpenseReportServiceImpl expenseReportService;
+    @Resource
+    private ExpenseReportDetailServiceImpl expenseReportDetailService;
+    @Resource
+    private EmployeeServiceImpl employeeService;
+    @Resource
+    private PositionServiceImpl positionService;
 
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
@@ -43,23 +56,37 @@ public class ExpenseReportController extends BaseController {
     @ApiOperation(value = "新增报销单")
     @PostMapping("/addExpenseReport")
     @ResponseBody
-    public Map<String, Object> addExpenseReport(@RequestBody List<ExpenseReportRequestDTO> requestDTOs) {
+    public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportRequestDTO requestDTO) {
         log.info("新增报销单");
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        for (ExpenseReportRequestDTO requestDTO : requestDTOs) {
-            System.out.println(requestDTO);
-            System.out.println("时间" + sdf.format(requestDTO.getTime()));
+        //TODO:session写死部分
+        Object userObj = request.getSession().getAttribute("userInfo");
+        EmployeeDTO userInfo = (EmployeeDTO) userObj;
+        Integer emId = userInfo.getEmId();
+        Integer depId = userInfo.getDepId();
+//        Integer emId = 1;
+//        Integer depId = 1;
+        Map<String, Object> map = new HashMap<>(2);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Integer depManagerId = positionService.queryIdByName("部门经理");
+            Integer nextDealEmId = employeeService.queryNextDealEmIdByDepAndPosition(depId, depManagerId);
+            ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), "新创建");
+            expenseReport = expenseReportService.insert(expenseReport);
+            Integer expenseId = expenseReport.getExpenseId();
+            for (ExpenseReportDetailRequestDTO expenseReportDetailRequestDTO : requestDTO.getExpenseReportDetails()) {
+                String image = expenseReportDetailRequestDTO.getImage();
+                expenseReportDetailRequestDTO.setImage("");
+                ExpenseReportDetail expenseReportDetail = mapper.readValue(mapper.writeValueAsString(expenseReportDetailRequestDTO), ExpenseReportDetail.class);
+                expenseReportDetail.setExpensiveId(expenseId);
+                expenseReportDetail.setImage(image.getBytes(StandardCharsets.UTF_8));
+                expenseReportDetailService.insert(expenseReportDetail);
+            }
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
         }
-//        Map<String, Object> map;
-//        try {
-//            map = departmentService.queryPageList(requestDTO);
-//        } catch (Exception e) {
-//            map = new HashMap<>(2);
-//            map.put("success", false);
-//            map.put("errMsg", e.getMessage());
-//        }
-//        return map;
-        return null;
+        return map;
     }
 
 }

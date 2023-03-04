@@ -135,5 +135,11 @@
         WHERE position_id = #{positionId}
     </update>
 
+    <select id="findPositionIdByPositionName" resultType="java.lang.Integer">
+        SELECT position_id
+        FROM position
+        WHERE position_name = #{positionName}
+    </select>
+
 </mapper>
 

@@ -62,5 +62,15 @@ public interface EmployeeService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> toggleStatus(ToggleEmployeeRequestDTO requestDTO);
+
+    /**
+     * 通过部门和职位查询
+     *
+     * @param depId        部门id
+     * @param depManagerId 部门经理id
+     * @return {@link Integer}
+     */
+    Integer queryNextDealEmIdByDepAndPosition(Integer depId, Integer depManagerId);
+
 }
 

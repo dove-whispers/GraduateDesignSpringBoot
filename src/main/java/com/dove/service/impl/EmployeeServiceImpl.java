@@ -118,5 +118,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return map;
     }
+
+
+    /**
+     * 通过部门和职位查询
+     *
+     * @param depId        部门id
+     * @param depManagerId 部门经理id
+     * @return {@link Integer}
+     */
+    @Override
+    public Integer queryNextDealEmIdByDepAndPosition(Integer depId, Integer depManagerId) {
+        return employeeDao.queryNextDealEmIdByDepAndPosition(depId, depManagerId);
+    }
 }
 

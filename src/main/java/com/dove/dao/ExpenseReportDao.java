@@ -3,13 +3,14 @@ package com.dove.dao;
 import com.dove.entity.ExpenseReport;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 /**
  * 报销单表(ExpenseReport)表数据库访问层
  *
  * @author dove_whispers
- * @date 2023-03-02
+ * @date 2023-03-04
  */
 public interface ExpenseReportDao {
 
@@ -25,7 +26,7 @@ public interface ExpenseReportDao {
      * 查询指定行数据
      *
      * @param expenseReport 查询条件
-     * @param pageable         分页对象
+     * @param pageable      分页对象
      * @return 对象列表
      */
     List<ExpenseReport> queryAllByLimit(ExpenseReport expenseReport, @Param("pageable") Pageable pageable);

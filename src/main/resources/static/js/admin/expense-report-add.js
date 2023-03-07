@@ -11,6 +11,10 @@ $(function () {
     }).on('click', '.del', function () {
         let line = $(this).parent().parent().parent()
         let count = line.find("th").text()
+        if (1 === line.parent().children().length) {
+            $.alert('必须至少有一个报销项!')
+            return
+        }
         $.confirm({
             title: '确认删除第[' + count + ']项吗?',
             content: '此项操作无法追回',
@@ -150,9 +154,9 @@ $(function () {
                     totalAmount: total_amount
                 }),
                 success: function (data) {
-                    if (data.success){
+                    if (data.success) {
                         lightyear.notify('新增报销单成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center', '/main')
-                    }else {
+                    } else {
                         lightyear.notify('新增失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                     }
                 }

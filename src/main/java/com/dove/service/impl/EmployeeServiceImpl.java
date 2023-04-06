@@ -4,10 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.EmployeeDao;
+import com.dove.dao.PositionDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.EmployeeListRequestDTO;
 import com.dove.dto.requestDTO.ToggleEmployeeRequestDTO;
 import com.dove.entity.Employee;
+import com.dove.entity.Position;
 import com.dove.service.EmployeeService;
 import com.dove.util.MD5Util;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,8 @@ import java.util.Objects;
 public class EmployeeServiceImpl implements EmployeeService {
     @Resource
     private EmployeeDao employeeDao;
+    @Resource
+    private PositionDao positionDao;
 
     /**
      * 通过账户名密码联合查询
@@ -119,17 +123,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         return map;
     }
 
-
     /**
-     * 通过部门和职位查询
+     * 查询下一个待处理人的Id
      *
-     * @param depId        部门id
-     * @param depManagerId 部门经理id
+     * @param emId  em id
+     * @param depId 部门id
      * @return {@link Integer}
      */
     @Override
-    public Integer queryNextDealEmIdByDepAndPosition(Integer depId, Integer depManagerId) {
-        return employeeDao.queryNextDealEmIdByDepAndPosition(depId, depManagerId);
+    public Integer queryNextDealEmId(Integer emId, Integer depId) {
+        Employee employee = employeeDao.selectById(emId);
+        Integer positionId = employee.getPositionId();
+        Position position = positionDao.queryById(positionId);
+        String positionName = position.getPositionName();
+        String nextPositionName;
+        String staff = "普通员工";
+        String depManager = "部门经理";
+        String generalManager = "总经理";
+        if (staff.equals(positionName)) {
+            nextPositionName = "部门经理";
+        } else if (depManager.equals(positionName)) {
+            nextPositionName = "总经理";
+        } else if (generalManager.equals(positionName)) {
+            nextPositionName = "财务";
+        } else {
+            nextPositionName = "无";
+        }
+        return positionDao.findPositionIdByPositionName(nextPositionName);
     }
 }
 

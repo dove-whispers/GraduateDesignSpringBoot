@@ -127,5 +127,6 @@ public interface PositionDao {
      * @return {@link Integer}
      */
     Integer findPositionIdByPositionName(String positionName);
+
 }
 

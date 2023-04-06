@@ -64,13 +64,12 @@ public interface EmployeeService {
     Map<String, Object> toggleStatus(ToggleEmployeeRequestDTO requestDTO);
 
     /**
-     * 通过部门和职位查询
+     * 查询下一个待处理人的Id
      *
-     * @param depId        部门id
-     * @param depManagerId 部门经理id
+     * @param emId  em id
+     * @param depId 部门id
      * @return {@link Integer}
      */
-    Integer queryNextDealEmIdByDepAndPosition(Integer depId, Integer depManagerId);
-
+    Integer queryNextDealEmId(Integer emId, Integer depId);
 }
 

@@ -1,9 +1,18 @@
 $(function () {
     $('#detail-body').on('change', '.detail_image', async function (e) {
-        $(this).data('base64Str', await changeFileIntoBase64($(this)[0].files[0]))
+        let fileStr = await changeFileIntoBase64($(this)[0].files[0])
+        $(this).data('base64Str', fileStr)
+        let ttd = $(this).parent().parent().parent().next()
+        if (fileStr) {
+            ttd.find("a").removeClass("hide")
+            ttd.find("small").addClass("hide")
+        } else {
+            ttd.find("a").addClass("hide")
+            ttd.find("small").removeClass("hide")
+        }
     }).on('click', '.pre-view', function () {
         const img = new Image()
-        img.src = $(this).prev().children().data('base64Str')
+        img.src = $(this).parent().parent().prev().find("input").data('base64Str')
         const newWin = window.open('', '预览', 'top=10,left=200,width=1200,height=800')
         newWin.document.write(img.outerHTML)
         newWin.document.title = "预览图片"
@@ -56,7 +65,25 @@ $(function () {
         let td4 = $('<td><input class="form-control detail_code" type="text" placeholder="发票代码"></td>')
         let td5 = $('<td><input class="form-control detail_num" type="text" placeholder="发票号码"></td>')
         let td6 = $('<td><input class="form-control detail_amount" type="text" placeholder="报销金额"></td>')
-        let td7 = $('<td><a href="javascript:void(0)" class="file">选择文件<input type="file" class="detail_image" accept="image/jpg,image/jpeg,image/png"><a class="btn btn-link pre-view" href="javascript:void(0)">预览</a></a></td>')
+        let td7 = $('<td>\n' +
+            '                                                    <table>\n' +
+            '                                                        <tr>\n' +
+            '                                                            <td>\n' +
+            '                                                                <a href="javascript:void(0)" class="file text-truncate">选择文件\n' +
+            '                                                                    <input type="file" class="detail_image"\n' +
+            '                                                                           accept="image/jpg,image/jpeg,image/png">\n' +
+            '                                                                </a>\n' +
+            '                                                            </td>\n' +
+            '                                                        </tr>\n' +
+            '                                                        <tr>\n' +
+            '                                                            <td>\n' +
+            '                                                                <a class="btn btn-link pre-view hide"\n' +
+            '                                                                   href="javascript:void(0)">预览</a>\n' +
+            '                                                                <small class="none-tip text-truncate">未选择任何文件</small>\n' +
+            '                                                            </td>\n' +
+            '                                                        </tr>\n' +
+            '                                                    </table>\n' +
+            '                                                </td>')
         let td8 = $('<td><div class="btn-group"><a class="btn btn-xs btn-default del"><i class="mdi mdi-window-close"></i></a></div></td>')
         tr.append(th).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8)
         target.append(tr)
@@ -90,7 +117,7 @@ $(function () {
         }
         let flag = 1
         let report_details = []
-        $('#detail-body').find("tr").each(function (rowIndex, rowElement) {
+        $('#detail-body').children("tr").each(function (rowIndex, rowElement) {
             if (flag === 0) return
             let item = ''
             let time = ''
@@ -99,7 +126,7 @@ $(function () {
             let num = ''
             let amount = ''
             let image = ''
-            $(rowElement).find("td").each(function (colIndex, colElement) {
+            $(rowElement).children("td").each(function (colIndex, colElement) {
                 switch (colIndex) {
                     case 0:
                         item = $(colElement).children().val()
@@ -140,7 +167,6 @@ $(function () {
             report_details.push(report_detail)
         })
         if (flag === 1) {
-            //TODO:ajax到后端
             $.ajax({
                 url: '/expenseReport/addExpenseReport',
                 type: 'POST',

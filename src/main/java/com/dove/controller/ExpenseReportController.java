@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,18 +57,14 @@ public class ExpenseReportController extends BaseController {
     @ResponseBody
     public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportRequestDTO requestDTO) {
         log.info("新增报销单");
-        //TODO:session写死部分
         Object userObj = request.getSession().getAttribute("userInfo");
         EmployeeDTO userInfo = (EmployeeDTO) userObj;
         Integer emId = userInfo.getEmId();
         Integer depId = userInfo.getDepId();
-//        Integer emId = 1;
-//        Integer depId = 1;
         Map<String, Object> map = new HashMap<>(2);
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Integer depManagerId = positionService.queryIdByName("部门经理");
-            Integer nextDealEmId = employeeService.queryNextDealEmIdByDepAndPosition(depId, depManagerId);
+            Integer nextDealEmId = employeeService.queryNextDealEmId(emId, depId);
             ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), "新创建");
             expenseReport = expenseReportService.insert(expenseReport);
             Integer expenseId = expenseReport.getExpenseId();

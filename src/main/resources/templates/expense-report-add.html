@@ -12,6 +12,7 @@
     <link href="../static/js/jconfirm/jquery-confirm.min.css" rel="stylesheet">
     <link href="../static/css/style.min.css" rel="stylesheet">
     <link href="../static/css/input-file.css" rel="stylesheet">
+    <link href="../static/css/truncate.css" rel="stylesheet">
 </head>
 
 <body>
@@ -62,30 +63,47 @@
                                             <tr>
                                                 <th scope="row">1</th>
                                                 <td>
-                                                    <input class="form-control detail_item" type="text" placeholder="费用项目">
+                                                    <input class="form-control detail_item" type="text"
+                                                           placeholder="费用项目">
                                                 </td>
                                                 <td>
                                                     <input class="form-control datepicker detail_time" type="text"
                                                            placeholder="请选择日期">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control detail_type" type="text" placeholder="类别">
+                                                    <input class="form-control detail_type" type="text"
+                                                           placeholder="类别">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control detail_code" type="text" placeholder="发票代码">
+                                                    <input class="form-control detail_code" type="text"
+                                                           placeholder="发票代码">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control detail_num" type="text" placeholder="发票号码">
+                                                    <input class="form-control detail_num" type="text"
+                                                           placeholder="发票号码">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control detail_amount" type="text" placeholder="报销金额">
+                                                    <input class="form-control detail_amount" type="text"
+                                                           placeholder="报销金额">
                                                 </td>
                                                 <td>
-                                                    <a href="javascript:void(0)" class="file">选择文件
-                                                        <input type="file" class="detail_image"
-                                                               accept="image/jpg,image/jpeg,image/png">
-                                                    </a>
-                                                    <a class="btn btn-link pre-view" href="javascript:void(0)">预览</a>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <a href="javascript:void(0)" class="file text-truncate">选择文件
+                                                                    <input type="file" class="detail_image"
+                                                                           accept="image/jpg,image/jpeg,image/png">
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <a class="btn btn-link pre-view hide"
+                                                                   href="javascript:void(0)">预览</a>
+                                                                <small class="none-tip text-truncate">未选择任何文件</small>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
@@ -102,7 +120,8 @@
                                         <label for="total_amount">总金额</label>
                                         <div class="input-group m-b-10">
                                             <a class="btn btn-default input-group-addon">+</a>
-                                            <input type="text" id="total_amount" class="form-control text-right" disabled value="0"/>
+                                            <input type="text" id="total_amount" class="form-control text-right"
+                                                   disabled value="0"/>
                                             <span class="input-group-addon">元</span>
                                         </div>
                                     </div>
@@ -142,7 +161,7 @@
 <script type="text/javascript" src="../static/js/jconfirm/jquery-confirm.min.js"></script>
 <script type="text/javascript" src="../static/js/main.min.js"></script>
 <script type="text/javascript" src="../static/js/admin/common.js"></script>
-<script type="text/javascript" src="../static/js/admin/logout.js"></script>
+<script type="text/javascript" src="../static/js/admin/log-out.js"></script>
 <script type="text/javascript" src="../static/js/admin/expense-report-add.js"></script>
 </body>
 </html>

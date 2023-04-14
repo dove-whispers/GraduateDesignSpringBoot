@@ -13,10 +13,30 @@
         <result property="status" column="status" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap type="com.dove.dto.ExpenseReportDTO" id="ExpenseReportInfoMap">
+        <result property="expenseId" column="expense_id" jdbcType="INTEGER"/>
+        <result property="cause" column="cause" jdbcType="VARCHAR"/>
+        <result property="emId" column="em_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="nextDealEm" column="next_deal_em" jdbcType="INTEGER"/>
+        <result property="totalAmount" column="total_amount" jdbcType="VARCHAR"/>
+        <association property="createEmployee" javaType="com.dove.entity.Employee" column="em_id"
+                     select="com.dove.dao.EmployeeDao.queryById" jdbcType="INTEGER"/>
+        <association property="nextDealEmployee" javaType="com.dove.entity.Employee" column="next_deal_em"
+                     select="com.dove.dao.EmployeeDao.queryById" jdbcType="INTEGER"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="ExpenseReportMap">
-        select
-          expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
+        select expense_id,
+               cause,
+               em_id,
+               create_time,
+               end_time,
+               next_deal_em,
+               total_amount,
+               status
         from expense_report
         where expense_id = #{expenseId}
     </select>
@@ -24,7 +44,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ExpenseReportMap">
         select
-          expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
+        expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
         from expense_report
         <where>
             <if test="expenseId != null">
@@ -97,7 +117,8 @@
         insert into expense_report(cause, em_id, create_time, end_time, next_deal_em, total_amount, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.endTime}, #{entity.nextDealEm}, #{entity.totalAmount}, #{entity.status})
+            (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.endTime}, #{entity.nextDealEm},
+            #{entity.totalAmount}, #{entity.status})
         </foreach>
     </insert>
 
@@ -105,7 +126,8 @@
         insert into expense_report(cause, em_id, create_time, end_time, next_deal_em, total_amount, status)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.endTime}, #{entity.nextDealEm}, #{entity.totalAmount}, #{entity.status})
+            (#{entity.cause}, #{entity.emId}, #{entity.createTime}, #{entity.endTime}, #{entity.nextDealEm},
+            #{entity.totalAmount}, #{entity.status})
         </foreach>
         on duplicate key update
         cause = values(cause),
@@ -148,8 +170,14 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from expense_report where expense_id = #{expenseId}
+        DELETE
+        FROM expense_report
+        WHERE expense_id = #{expenseId}
     </delete>
 
+    <select id="queryMainPageList" resultMap="ExpenseReportInfoMap">
+        SELECT expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
+        FROM expense_report ${ew.customSqlSegment}
+    </select>
 </mapper>
 

@@ -26,7 +26,6 @@ import java.util.Map;
 @Api(tags = "部门管理模块")
 @Controller
 @RequestMapping("/department")
-@Slf4j
 public class DepartmentController extends BaseController {
     @Resource
     private DepartmentServiceImpl departmentService;
@@ -34,7 +33,6 @@ public class DepartmentController extends BaseController {
     @ApiOperation(value = "跳转至部门列表的路由")
     @GetMapping("/toList")
     public ModelAndView toList() {
-        log.info("进入部门列表");
         request.getSession().setAttribute("pageName", "部门管理");
         return new ModelAndView("department-list");
     }
@@ -42,7 +40,6 @@ public class DepartmentController extends BaseController {
     @ApiOperation(value = "跳转至新增部门的路由")
     @GetMapping("/toAddDepartment")
     public ModelAndView toAddDepartment() {
-        log.info("新增部门");
         request.getSession().setAttribute("pageName", "新增部门");
         return new ModelAndView("department-add");
     }
@@ -50,7 +47,6 @@ public class DepartmentController extends BaseController {
     @ApiOperation(value = "跳转至查看部门信息的路由")
     @GetMapping("/goDepartment")
     public ModelAndView goDepartment() {
-        log.info("查看部门信息");
         request.getSession().setAttribute("pageName", "部门详情");
         return new ModelAndView("department-info");
     }
@@ -58,7 +54,6 @@ public class DepartmentController extends BaseController {
     @ApiOperation(value = "跳转至查看部门信息的路由")
     @GetMapping("/goDepartmentEdit")
     public ModelAndView goDepartmentEdit() {
-        log.info("修改部门信息");
         request.getSession().setAttribute("pageName", "修改部门信息");
         return new ModelAndView("department-edit");
     }
@@ -67,7 +62,6 @@ public class DepartmentController extends BaseController {
     @PostMapping("/getList")
     @ResponseBody
     public Map<String, Object> getList(@RequestBody DepartmentListRequestDTO requestDTO) {
-        log.info("查询部门数据");
         Map<String, Object> map;
         try {
             map = departmentService.queryPageList(requestDTO);
@@ -83,7 +77,6 @@ public class DepartmentController extends BaseController {
     @PostMapping("/toggleDepartmentStatus")
     @ResponseBody
     public Map<String, Object> toggleDepartmentStatus(@RequestBody ToggleDepartmentRequestDTO requestDTO) {
-        log.info("修改部门状态");
         Map<String, Object> map = new HashMap<>(2);
         try {
             if (null == requestDTO) {
@@ -128,7 +121,6 @@ public class DepartmentController extends BaseController {
     @PostMapping("/queryDepartment")
     @ResponseBody
     public Map<String, Object> queryDepartment(Integer departmentId) {
-        log.info("查看部门");
         Map<String, Object> map = new HashMap<>(2);
         Department department;
         try {

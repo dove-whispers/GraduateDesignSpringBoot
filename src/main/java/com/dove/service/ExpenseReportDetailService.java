@@ -1,5 +1,6 @@
 package com.dove.service;
 
+import com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO;
 import com.dove.entity.ExpenseReportDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -53,4 +54,11 @@ public interface ExpenseReportDetailService {
      */
     boolean deleteById(Integer expensiveDetailId);
 
+    /**
+     * 报销单查重
+     *
+     * @param requestDTO 请求dto
+     * @return boolean
+     */
+    boolean checkExist(ExpenseReportCheckRequestDTO requestDTO);
 }

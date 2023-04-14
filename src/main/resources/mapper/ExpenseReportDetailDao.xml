@@ -17,8 +17,16 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="ExpenseReportDetailMap">
-        select
-          expensive_detail_id, expensive_id, item, time, type, code, num, amount, comment, image
+        select expensive_detail_id,
+               expensive_id,
+               item,
+               time,
+               type,
+               code,
+               num,
+               amount,
+               comment,
+               image
         from expense_report_detail
         where expensive_detail_id = #{expensiveDetailId}
     </select>
@@ -26,7 +34,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ExpenseReportDetailMap">
         select
-          expensive_detail_id, expensive_id, item, time, type, code, num, amount, comment, image
+        expensive_detail_id, expensive_id, item, time, type, code, num, amount, comment, image
         from expense_report_detail
         <where>
             <if test="expensiveDetailId != null">
@@ -111,7 +119,8 @@
         insert into expense_report_detail(expensive_id, item, time, type, code, num, amount, comment, image)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.expensiveId}, #{entity.item}, #{entity.time}, #{entity.type}, #{entity.code}, #{entity.num}, #{entity.amount}, #{entity.comment}, #{entity.image})
+            (#{entity.expensiveId}, #{entity.item}, #{entity.time}, #{entity.type}, #{entity.code}, #{entity.num},
+            #{entity.amount}, #{entity.comment}, #{entity.image})
         </foreach>
     </insert>
 
@@ -119,7 +128,8 @@
         insert into expense_report_detail(expensive_id, item, time, type, code, num, amount, comment, image)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.expensiveId}, #{entity.item}, #{entity.time}, #{entity.type}, #{entity.code}, #{entity.num}, #{entity.amount}, #{entity.comment}, #{entity.image})
+            (#{entity.expensiveId}, #{entity.item}, #{entity.time}, #{entity.type}, #{entity.code}, #{entity.num},
+            #{entity.amount}, #{entity.comment}, #{entity.image})
         </foreach>
         on duplicate key update
         expensive_id = values(expensive_id),
@@ -170,8 +180,19 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from expense_report_detail where expensive_detail_id = #{expensiveDetailId}
+        delete
+        from expense_report_detail
+        where expensive_detail_id = #{expensiveDetailId}
     </delete>
+
+    <select id="queryExistByCodeAndNum" resultType="java.lang.Integer"
+            parameterType="com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO">
+        SELECT 1
+        FROM expense_report_detail
+        WHERE code = #{code}
+          AND num = #{num}
+        LIMIT 1
+    </select>
 
 </mapper>
 

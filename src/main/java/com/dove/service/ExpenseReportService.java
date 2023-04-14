@@ -1,8 +1,13 @@
 package com.dove.service;
 
+import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
+import com.dove.entity.Department;
 import com.dove.entity.ExpenseReport;
+import com.dove.entity.Position;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.Map;
 
 /**
  * 报销单表(ExpenseReport)表服务接口
@@ -24,7 +29,7 @@ public interface ExpenseReportService {
      * 分页查询
      *
      * @param expenseReport 筛选条件
-     * @param pageRequest      分页对象
+     * @param pageRequest   分页对象
      * @return 查询结果
      */
     Page<ExpenseReport> queryByPage(ExpenseReport expenseReport, PageRequest pageRequest);
@@ -53,4 +58,14 @@ public interface ExpenseReportService {
      */
     boolean deleteById(Integer expenseId);
 
+    /**
+     * 主页查询报销单列表
+     *
+     * @param requestDTO 请求dto
+     * @param emId       登录人id
+     * @param department 登录人部门
+     * @param position   登录人位置
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryMainPageList(ExpenseReportMainListRequestDTO requestDTO, Integer emId, Department department, Position position);
 }

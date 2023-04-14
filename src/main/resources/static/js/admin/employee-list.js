@@ -123,13 +123,11 @@ $(function () {
         })
     }
 
-    //对列表数据进行渲染
     function handleList(data) {
-        let i = 1
         let html = ''
         data.map(function (item, index) {
             html += '<tr>'
-                + '<td>' + (i++) + '</td>'
+                + '<td>' + (index+1) + '</td>'
                 + '<td data-toggle="tooltip" title="' + item.name + '">' + item.name + '</td>'
                 + '<td data-toggle="tooltip" title="' + item.loginName + '">' + item.loginName + '</td>'
                 + '<td data-toggle="tooltip" title="' + item.department.name + '">' + item.department.name + '</td>'

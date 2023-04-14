@@ -1,12 +1,13 @@
 package com.dove.service.impl;
 
-import com.dove.entity.ExpenseReportDetail;
 import com.dove.dao.ExpenseReportDetailDao;
+import com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO;
+import com.dove.entity.ExpenseReportDetail;
 import com.dove.service.ExpenseReportDetailService;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -36,7 +37,7 @@ public class ExpenseReportDetailServiceImpl implements ExpenseReportDetailServic
      * 分页查询
      *
      * @param expenseReportDetail 筛选条件
-     * @param pageRequest      分页对象
+     * @param pageRequest         分页对象
      * @return 查询结果
      */
     @Override
@@ -78,5 +79,16 @@ public class ExpenseReportDetailServiceImpl implements ExpenseReportDetailServic
     @Override
     public boolean deleteById(Integer expensiveDetailId) {
         return this.expenseReportDetailDao.deleteById(expensiveDetailId) > 0;
+    }
+
+    /**
+     * 报销单查重
+     *
+     * @param requestDTO 请求dto
+     * @return boolean
+     */
+    @Override
+    public boolean checkExist(ExpenseReportCheckRequestDTO requestDTO) {
+        return expenseReportDetailDao.queryExistByCodeAndNum(requestDTO) != null;
     }
 }

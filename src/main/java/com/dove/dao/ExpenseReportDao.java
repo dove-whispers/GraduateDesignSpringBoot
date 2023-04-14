@@ -1,5 +1,11 @@
 package com.dove.dao;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dove.dto.ExpenseReportDTO;
+import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
 import com.dove.entity.ExpenseReport;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -80,5 +86,13 @@ public interface ExpenseReportDao {
      */
     int deleteById(Integer expenseId);
 
+    /**
+     * 主页查询报销单列表
+     *
+     * @param page         页面
+     * @param queryWrapper 查询包装
+     * @return {@link IPage}<{@link ExpenseReportDTO}>
+     */
+    IPage<ExpenseReportDTO> queryMainPageList(Page<ExpenseReportMainListRequestDTO> page, @Param(Constants.WRAPPER) Wrapper<ExpenseReportMainListRequestDTO> queryWrapper);
 }
 

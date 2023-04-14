@@ -52,6 +52,9 @@ $(function () {
             total_amount += $(this).val() * 1
         })
         $('#total_amount').val(total_amount)
+    }).on('change','.cc,.cn',function () {
+        $(this).removeClass("text-danger")
+        $(this).off('change')
     })
 
     $('#add').click(function () {
@@ -62,8 +65,8 @@ $(function () {
         let td1 = $('<td><input class="form-control detail_item" type="text" placeholder="费用项目"></td>')
         let td2 = $('<td><input class="form-control datepicker detail_time" type="text" placeholder="请选择日期"></td>')
         let td3 = $('<td><input class="form-control detail_type" type="text" placeholder="类别"></td>')
-        let td4 = $('<td><input class="form-control detail_code" type="text" placeholder="发票代码"></td>')
-        let td5 = $('<td><input class="form-control detail_num" type="text" placeholder="发票号码"></td>')
+        let td4 = $('<td><input class="form-control detail_code cc" type="text" placeholder="发票代码"></td>')
+        let td5 = $('<td><input class="form-control detail_num cn" type="text" placeholder="发票号码"></td>')
         let td6 = $('<td><input class="form-control detail_amount" type="text" placeholder="报销金额"></td>')
         let td7 = $('<td>\n' +
             '                                                    <table>\n' +
@@ -84,7 +87,7 @@ $(function () {
             '                                                        </tr>\n' +
             '                                                    </table>\n' +
             '                                                </td>')
-        let td8 = $('<td><div class="btn-group"><a class="btn btn-xs btn-default del"><i class="mdi mdi-window-close"></i></a></div></td>')
+        let td8 = $('<td><div class="btn-group"><a class="img-avatar img-avatar-48 bg-translucent del"><i class="mdi mdi-delete-forever fa-1-5x"></i></a></div></td>')
         tr.append(th).append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8)
         target.append(tr)
         td2.datepicker({
@@ -127,6 +130,7 @@ $(function () {
             let amount = ''
             let image = ''
             $(rowElement).children("td").each(function (colIndex, colElement) {
+                if (flag === 0) return
                 switch (colIndex) {
                     case 0:
                         item = $(colElement).children().val()
@@ -166,6 +170,7 @@ $(function () {
             let report_detail = createReportDetail(item, time, type, code, num, amount, image)
             report_details.push(report_detail)
         })
+
         if (flag === 1) {
             $.ajax({
                 url: '/expenseReport/addExpenseReport',
@@ -183,11 +188,26 @@ $(function () {
                     if (data.success) {
                         lightyear.notify('新增报销单成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center', '/main')
                     } else {
-                        lightyear.notify('新增失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                        $.confirm({
+                            title: '错误提示',
+                            content: '第'+data.errCount+'项报销单已存在!',
+                            type: 'red',
+                            typeAnimated: true,
+                            buttons: {
+                                tryAgain: {
+                                    text: '重试',
+                                    btnClass: 'btn-red',
+                                    action: function(){
+                                        let ctr = $('#detail-body').children("tr")[data.errCount-1]
+                                        $(ctr).find(".cc").addClass("text-danger")
+                                        $(ctr).find(".cn").addClass("text-danger")
+                                    }
+                                },
+                            }
+                        });
                     }
                 }
             })
-
         } else {
             console.log('空结束,新增报销单失败')
         }
@@ -214,19 +234,5 @@ $(function () {
                 resolve(base64Str);
             };
         });
-    }
-
-    function getFileSize(size) {//把字节转换成正常文件大小
-        if (!size) return "";
-        let num = 1024.00; //byte
-        if (size < num)
-            return size + "B";
-        if (size < Math.pow(num, 2))
-            return (size / num).toFixed(2) + "KB"; //kb
-        if (size < Math.pow(num, 3))
-            return (size / Math.pow(num, 2)).toFixed(2) + "MB"; //M
-        if (size < Math.pow(num, 4))
-            return (size / Math.pow(num, 3)).toFixed(2) + "G"; //G
-        return (size / Math.pow(num, 4)).toFixed(2) + "T"; //T
     }
 })

@@ -1,5 +1,6 @@
 package com.dove.dao;
 
+import com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO;
 import com.dove.entity.ExpenseReportDetail;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -79,5 +80,12 @@ public interface ExpenseReportDetailDao {
      */
     int deleteById(Integer expensiveDetailId);
 
+    /**
+     * 报销单查重
+     *
+     * @param requestDTO 请求dto
+     * @return {@link Integer}
+     */
+    Integer queryExistByCodeAndNum(ExpenseReportCheckRequestDTO requestDTO);
 }
 

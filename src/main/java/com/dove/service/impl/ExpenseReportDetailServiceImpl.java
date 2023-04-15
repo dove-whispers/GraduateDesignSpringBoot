@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 报销单细节表(ExpenseReportDetail)表服务实现类
@@ -89,6 +90,11 @@ public class ExpenseReportDetailServiceImpl implements ExpenseReportDetailServic
      */
     @Override
     public boolean checkExist(ExpenseReportCheckRequestDTO requestDTO) {
-        return expenseReportDetailDao.queryExistByCodeAndNum(requestDTO) != null;
+        return this.expenseReportDetailDao.queryExistByCodeAndNum(requestDTO) != null;
+    }
+
+    @Override
+    public List<ExpenseReportDetail> queryByExpensiveId(Integer expensiveId) {
+        return this.expenseReportDetailDao.queryByExpensiveId(expensiveId);
     }
 }

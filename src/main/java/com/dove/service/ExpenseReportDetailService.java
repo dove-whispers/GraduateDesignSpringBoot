@@ -5,6 +5,8 @@ import com.dove.entity.ExpenseReportDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 /**
  * 报销单细节表(ExpenseReportDetail)表服务接口
  *
@@ -61,4 +63,12 @@ public interface ExpenseReportDetailService {
      * @return boolean
      */
     boolean checkExist(ExpenseReportCheckRequestDTO requestDTO);
+
+    /**
+     * 查询通过报销单id查询报销单细节
+     *
+     * @param expensiveId 报销单id
+     * @return {@link List}<{@link ExpenseReportDetail}>
+     */
+    List<ExpenseReportDetail> queryByExpensiveId(Integer expensiveId);
 }

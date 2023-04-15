@@ -111,17 +111,17 @@ $(function () {
 
     function expenseReportProgress(status) {
         if (status === '新创建') {
-            return '<div class="progress-bar progress-bar-info" style="width: 25%;"></div>'
+            return '<div class="progress-bar progress-bar-info active" style="width: 25%;"></div>'
         } else if (status === '已打款') {
-            return '<div class="progress-bar progress-bar-success" style="width: 100%;"></div>'
+            return '<div class="progress-bar progress-bar-success active" style="width: 100%;"></div>'
         } else if (status === '总经理审核') {
-            return '<div class="progress-bar progress-bar-info" style="width: 50%;"></div>'
+            return '<div class="progress-bar progress-bar-info active" style="width: 50%;"></div>'
         } else if (status === '财务审核') {
-            return '<div class="progress-bar progress-bar-info" style="width: 75%;"></div>'
+            return '<div class="progress-bar progress-bar-info active" style="width: 75%;"></div>'
         } else if (status === '已终止') {
-            return '<div class="progress-bar progress-bar-danger" style="width: 100%;"></div>'
+            return '<div class="progress-bar progress-bar-danger active" style="width: 100%;"></div>'
         } else {
-            return '<div class="progress-bar progress-bar-warning" style="width: 50%;"></div>'
+            return '<div class="progress-bar progress-bar-warning active" style="width: 50%;"></div>'
         }
     }
 

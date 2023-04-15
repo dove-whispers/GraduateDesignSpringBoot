@@ -193,6 +193,20 @@
           AND num = #{num}
         LIMIT 1
     </select>
+    <select id="queryByExpensiveId" resultType="com.dove.entity.ExpenseReportDetail">
+        SELECT expensive_detail_id,
+               expensive_id,
+               item,
+               time,
+               type,
+               code,
+               num,
+               amount,
+               comment,
+               image
+        FROM expense_report_detail
+        WHERE expensive_id = #{expensiveId}
+    </select>
 
 </mapper>
 

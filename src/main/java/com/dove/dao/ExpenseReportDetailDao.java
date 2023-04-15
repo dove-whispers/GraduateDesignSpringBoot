@@ -87,5 +87,13 @@ public interface ExpenseReportDetailDao {
      * @return {@link Integer}
      */
     Integer queryExistByCodeAndNum(ExpenseReportCheckRequestDTO requestDTO);
+
+    /**
+     * 查询通过报销单id查询报销单细节
+     *
+     * @param expensiveId 报销单id
+     * @return {@link List}<{@link ExpenseReportDetail}>
+     */
+    List<ExpenseReportDetail> queryByExpensiveId(Integer expensiveId);
 }
 

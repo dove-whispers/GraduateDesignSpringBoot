@@ -44,9 +44,7 @@ public interface Constants {
      */
     interface Way {
         String CREATE = "创建";
-        String PASS = "审核通过";
-        String REPULSE = "打回";
-        String TERMINATE = "终止";
+        String AUDIT = "审核";
         String EDIT = "修改";
     }
 
@@ -57,6 +55,11 @@ public interface Constants {
      * @date 2023-04-17
      */
     interface Result {
-
+        String CREATED = "已创建";
+        String PASS = "通过";
+        String REPULSE = "打回";
+        String REMITTANCE = "已打款";
+        String TERMINATED = "终止";
+        String EDITED = "已修改";
     }
 }

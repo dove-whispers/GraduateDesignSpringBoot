@@ -1,6 +1,7 @@
 $(function () {
     $('#detail-body').on('change', '.detail_image', async function (e) {
         let fileStr = await changeFileIntoBase64($(this)[0].files[0])
+        console.log(fileStr)
         $(this).data('base64Str', fileStr)
         let ttd = $(this).parent().parent().parent().next()
         if (fileStr) {
@@ -52,9 +53,12 @@ $(function () {
             total_amount += $(this).val() * 1
         })
         $('#total_amount').val(total_amount)
-    }).on('change','.cc,.cn',function () {
-        $(this).removeClass("text-danger")
-        $(this).off('change')
+    }).on('focus', '.ci,.cc,.cn', function () {
+        $(this).removeClass("my-error")
+    })
+
+    $('#expense-cause').focus(function () {
+        $(this).removeClass("my-error")
     })
 
     $('#add').click(function () {
@@ -62,7 +66,7 @@ $(function () {
         let count = target.children(":last-child").find("th").text() * 1 + 1
         let tr = $('<tr></tr>')
         let th = $('<th scope="row">' + (count) + '</th>')
-        let td1 = $('<td><input class="form-control detail_item" type="text" placeholder="费用项目"></td>')
+        let td1 = $('<td><input class="form-control detail_item ci" type="text" placeholder="费用项目"></td>')
         let td2 = $('<td><input class="form-control datepicker detail_time" type="text" placeholder="请选择日期"></td>')
         let td3 = $('<td><input class="form-control detail_type" type="text" placeholder="类别"></td>')
         let td4 = $('<td><input class="form-control detail_code cc" type="text" placeholder="发票代码"></td>')
@@ -115,7 +119,21 @@ $(function () {
         let cause = $('#expense-cause').val()
         let total_amount = $('#total_amount').val()
         if (!cause) {
-            $.alert('报销原因不能为空!')
+            $.confirm({
+                title: '错误提示',
+                content: '报销原因不能为空!',
+                type: 'red',
+                typeAnimated: true,
+                buttons: {
+                    tryAgain: {
+                        text: '重试',
+                        btnClass: 'btn-red',
+                        action: function () {
+                            $('#expense-cause').addClass("my-error")
+                        }
+                    },
+                }
+            });
             return
         }
         let flag = 1
@@ -135,7 +153,23 @@ $(function () {
                     case 0:
                         item = $(colElement).children().val()
                         if (!item) {
-                            $.alert('费用项目不能为空!')
+                            $.confirm({
+                                title: '错误提示',
+                                content: '第' + (rowIndex + 1) + '项报销项目不能为空!',
+                                type: 'red',
+                                typeAnimated: true,
+                                buttons: {
+                                    tryAgain: {
+                                        text: '重试',
+                                        btnClass: 'btn-red',
+                                        action: function () {
+                                            let detail_body = $('#detail-body')
+                                            let ctr1 = $(detail_body).children("tr")[rowIndex]
+                                            $(ctr1).find(".ci").addClass("my-error")
+                                        }
+                                    },
+                                }
+                            });
                             flag = 0
                             return
                         }
@@ -168,6 +202,34 @@ $(function () {
                 }
             })
             let report_detail = createReportDetail(item, time, type, code, num, amount, image)
+            for (let i = 0; i < report_details.length; i++) {
+                let temp_num = report_details[i].num
+                let temp_code = report_details[i].code
+                if (temp_num === num && temp_code === code) {
+                    flag = 0
+                    $.confirm({
+                        title: '错误提示',
+                        content: '第' + (i + 1) + '项报销单和第' + (report_details.length + 1) + '项报销单不能相同!',
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            tryAgain: {
+                                text: '重试',
+                                btnClass: 'btn-red',
+                                action: function () {
+                                    let detail_body = $('#detail-body')
+                                    let ctr1 = $(detail_body).children("tr")[i]
+                                    $(ctr1).find(".cc").addClass("my-error")
+                                    $(ctr1).find(".cn").addClass("my-error")
+                                    let ctr2 = $(detail_body).children("tr")[report_details.length - 1]
+                                    $(ctr2).find(".cc").addClass("my-error")
+                                    $(ctr2).find(".cn").addClass("my-error")
+                                }
+                            },
+                        }
+                    });
+                }
+            }
             report_details.push(report_detail)
         })
 
@@ -190,17 +252,17 @@ $(function () {
                     } else {
                         $.confirm({
                             title: '错误提示',
-                            content: '第'+data.errCount+'项报销单已存在!',
+                            content: '第' + data.errCount + '项报销单已存在!',
                             type: 'red',
                             typeAnimated: true,
                             buttons: {
                                 tryAgain: {
                                     text: '重试',
                                     btnClass: 'btn-red',
-                                    action: function(){
-                                        let ctr = $('#detail-body').children("tr")[data.errCount-1]
-                                        $(ctr).find(".cc").addClass("text-danger")
-                                        $(ctr).find(".cn").addClass("text-danger")
+                                    action: function () {
+                                        let ctr = $('#detail-body').children("tr")[data.errCount - 1]
+                                        $(ctr).find(".cc").addClass("my-error")
+                                        $(ctr).find(".cn").addClass("my-error")
                                     }
                                 },
                             }
@@ -209,7 +271,7 @@ $(function () {
                 }
             })
         } else {
-            console.log('空结束,新增报销单失败')
+            console.log('新增报销单失败')
         }
     })
 

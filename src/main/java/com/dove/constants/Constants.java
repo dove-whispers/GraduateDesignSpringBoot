@@ -35,4 +35,28 @@ public interface Constants {
         String FINANCIAL_SUPERVISOR = "财务";
         String TENTATIVE = "无";
     }
+
+    /**
+     * 处理方式
+     *
+     * @author dove_whispers
+     * @date 2023-04-17
+     */
+    interface Way {
+        String CREATE = "创建";
+        String PASS = "审核通过";
+        String REPULSE = "打回";
+        String TERMINATE = "终止";
+        String EDIT = "修改";
+    }
+
+    /**
+     * 处理结果
+     *
+     * @author dove_whispers
+     * @date 2023-04-17
+     */
+    interface Result {
+
+    }
 }

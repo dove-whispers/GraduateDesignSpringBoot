@@ -1,6 +1,7 @@
 $(function () {
     let expenseId = getQueryParam('expenseId')
     let body = $('#detail-body')
+    const pre = 'data:image/jpeg;base64,'
     if (expenseId) {
         $.ajax({
             url: '/expenseReportDetail/queryExpenseReportDetail',
@@ -20,8 +21,11 @@ $(function () {
     }
 
     function handleList(data) {
+        console.log(data)
+        $('#expense-cause').val(data.cause)
+        $('#total_amount').val(data.totalAmount)
         let html = ''
-        data.map(function (item, index) {
+        data.expenseReportDetails.map(function (item, index) {
             html += '<tr>'
                 + '<th scope="row">' + (index + 1) + '</th>'
                 + '<td><input class="form-control detail_item" type="text" disabled value="' + item.item + '"></td>'
@@ -37,12 +41,33 @@ $(function () {
                 + '<tr>'
                 + '<td colspan="8" class="collapse" id="collapse' + (index + 1) + '">'
                 + '<div class="well m-b-0">'
-                + '笑谈渴饮匈奴血，壮志饥餐胡虏肉。'
+                + '<table style="table-layout:fixed;width:100%;">'
+                + '<tr>'
+                + setComment(item.comment)
+                + setImage(item.image)
+                + '</tr>'
+                + '</table>'
                 + '</div>'
                 + '</td>'
                 + '</tr>'
         })
         body.html(html)
+    }
+
+    function setComment(comment) {
+        if (comment) {
+            return '<td><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" disabled style="resize:none">' + comment + '</textarea></td>'
+        } else {
+            return '<td><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" placeholder="暂无备注" disabled style="resize:none"></textarea></td>'
+        }
+    }
+
+    function setImage(image) {
+        if (image) {
+            return '<td><label class="col-xs-12">发票:</label><img class="col-xs-12 img-f" src="' + (pre + image) + '" alt="点击放大" style="cursor:pointer"/></td>'
+        } else {
+            return '<td><label class="col-xs-12">发票:</label><span class="col-xs-12 text-truncate">暂无发票图片</span></td>'
+        }
     }
 
     body.on('click', 'a.d-cell', function () {
@@ -56,5 +81,12 @@ $(function () {
             })
             ntd.addClass("d-table-cell")
         }
+    }).on('click', 'img.img-f', function () {
+        const img = new Image()
+        img.src = $(this).prop('src')
+        const newWin = window.open('', '预览', 'top=10,left=200,width=1200,height=800')
+        newWin.document.write(img.outerHTML)
+        newWin.document.title = "预览图片"
+        newWin.document.close()
     })
 })

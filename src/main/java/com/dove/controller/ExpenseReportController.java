@@ -49,7 +49,6 @@ public class ExpenseReportController extends BaseController {
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
     public ModelAndView toAddExpenseReport() {
-        log.info("进入新增报销单页面");
         request.getSession().setAttribute("pageName", "新增报销单");
         return new ModelAndView("expense-report-add");
     }
@@ -58,7 +57,6 @@ public class ExpenseReportController extends BaseController {
     @PostMapping("/checkExist")
     @ResponseBody
     public boolean checkExist(@RequestBody ExpenseReportCheckRequestDTO requestDTO) {
-        log.info("报销单查重");
         return expenseReportDetailService.checkExist(requestDTO);
     }
 
@@ -115,7 +113,6 @@ public class ExpenseReportController extends BaseController {
         Department department = userInfo.getDepartment();
         Position position = userInfo.getPosition();
         Map<String, Object> map = new HashMap<>(2);
-        ObjectMapper mapper = new ObjectMapper();
         try {
             map = expenseReportService.queryMainPageList(requestDTO, emId, department, position);
         } catch (Exception e) {

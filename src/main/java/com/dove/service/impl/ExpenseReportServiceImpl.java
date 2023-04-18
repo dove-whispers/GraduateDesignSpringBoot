@@ -1,23 +1,32 @@
 package com.dove.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.constants.Constants;
-import com.dove.dao.EmployeeDao;
+import com.dove.dao.DealRecordDao;
 import com.dove.dao.ExpenseReportDao;
+import com.dove.dao.ExpenseReportDetailDao;
+import com.dove.dto.EmployeeDTO;
 import com.dove.dto.ExpenseReportDTO;
+import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
-import com.dove.entity.Department;
-import com.dove.entity.ExpenseReport;
-import com.dove.entity.Position;
+import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
+import com.dove.entity.*;
 import com.dove.service.ExpenseReportService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +42,11 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
     @Resource
     private ExpenseReportDao expenseReportDao;
     @Resource
-    private EmployeeDao employeeDao;
+    private ExpenseReportDetailDao expenseReportDetailDao;
+    @Resource
+    private DealRecordDao dealRecordDao;
+    @Resource
+    private EmployeeServiceImpl employeeService;
 
     /**
      * 通过ID查询单条数据
@@ -123,5 +136,37 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
             map.put("errMsg", e.getMessage());
         }
         return map;
+    }
+
+    /**
+     * 添加报销单
+     *
+     * @param userInfo   用户信息
+     * @param requestDTO 请求dto
+     */
+    @Override
+    @SneakyThrows
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void addExpenseReport(EmployeeDTO userInfo, ExpenseReportRequestDTO requestDTO) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Integer emId = userInfo.getEmId();
+            Integer nextDealEmId = employeeService.queryNextDealEmId(emId, userInfo.getDepId());
+            ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), Constants.Status.CREATE);
+            expenseReport = this.insert(expenseReport);
+            Integer expenseId = expenseReport.getExpenseId();
+            for (ExpenseReportDetailRequestDTO expenseReportDetailRequestDTO : requestDTO.getExpenseReportDetails()) {
+                String image = expenseReportDetailRequestDTO.getImage();
+                expenseReportDetailRequestDTO.setImage("");
+                ExpenseReportDetail expenseReportDetail = mapper.readValue(mapper.writeValueAsString(expenseReportDetailRequestDTO), ExpenseReportDetail.class);
+                expenseReportDetail.setExpensiveId(expenseId);
+                expenseReportDetail.setImage(image.getBytes(StandardCharsets.UTF_8));
+                expenseReportDetailDao.insert(expenseReportDetail);
+            }
+            dealRecordDao.insert(new DealRecord(null, expenseId, emId, new Date(), Constants.Way.CREATE, Constants.Result.CREATED, null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

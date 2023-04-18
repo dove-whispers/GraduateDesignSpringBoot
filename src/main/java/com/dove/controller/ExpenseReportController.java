@@ -1,20 +1,15 @@
 package com.dove.controller;
 
-import cn.hutool.core.date.DateUtil;
-import com.dove.constants.Constants;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
 import com.dove.entity.Department;
-import com.dove.entity.ExpenseReport;
-import com.dove.entity.ExpenseReportDetail;
 import com.dove.entity.Position;
 import com.dove.service.impl.EmployeeServiceImpl;
 import com.dove.service.impl.ExpenseReportDetailServiceImpl;
 import com.dove.service.impl.ExpenseReportServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,13 +57,9 @@ public class ExpenseReportController extends BaseController {
     @PostMapping("/addExpenseReport")
     @ResponseBody
     public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportRequestDTO requestDTO) {
-        log.info("新增报销单");
         Object userObj = request.getSession().getAttribute("userInfo");
         EmployeeDTO userInfo = (EmployeeDTO) userObj;
-        Integer emId = userInfo.getEmId();
-        Integer depId = userInfo.getDepId();
         Map<String, Object> map = new HashMap<>(2);
-        ObjectMapper mapper = new ObjectMapper();
         ExpenseReportCheckRequestDTO c = new ExpenseReportCheckRequestDTO();
         try {
             int count = 1;
@@ -84,18 +73,7 @@ public class ExpenseReportController extends BaseController {
                 }
                 count++;
             }
-            Integer nextDealEmId = employeeService.queryNextDealEmId(emId, depId);
-            ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), Constants.Status.CREATE);
-            expenseReport = expenseReportService.insert(expenseReport);
-            Integer expenseId = expenseReport.getExpenseId();
-            for (ExpenseReportDetailRequestDTO expenseReportDetailRequestDTO : requestDTO.getExpenseReportDetails()) {
-                String image = expenseReportDetailRequestDTO.getImage();
-                expenseReportDetailRequestDTO.setImage("");
-                ExpenseReportDetail expenseReportDetail = mapper.readValue(mapper.writeValueAsString(expenseReportDetailRequestDTO), ExpenseReportDetail.class);
-                expenseReportDetail.setExpensiveId(expenseId);
-                expenseReportDetail.setImage(image.getBytes(StandardCharsets.UTF_8));
-                expenseReportDetailService.insert(expenseReportDetail);
-            }
+            expenseReportService.addExpenseReport(userInfo, requestDTO);
             map.put("success", true);
         } catch (Exception e) {
             map.put("success", false);

@@ -31,5 +31,6 @@ public class ExpenseReportDetailRequestDTO implements Serializable {
     private String code;
     private String num;
     private BigDecimal amount;
+    private String comment;
     private String image;
 }

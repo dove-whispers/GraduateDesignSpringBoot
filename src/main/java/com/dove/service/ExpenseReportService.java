@@ -1,6 +1,8 @@
 package com.dove.service;
 
+import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
+import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
 import com.dove.entity.Department;
 import com.dove.entity.ExpenseReport;
 import com.dove.entity.Position;
@@ -68,4 +70,12 @@ public interface ExpenseReportService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> queryMainPageList(ExpenseReportMainListRequestDTO requestDTO, Integer emId, Department department, Position position);
+
+    /**
+     * 添加报销单
+     *
+     * @param userInfo   用户信息
+     * @param requestDTO 请求dto
+     */
+    void addExpenseReport(EmployeeDTO userInfo, ExpenseReportRequestDTO requestDTO);
 }

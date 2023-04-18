@@ -56,13 +56,13 @@
                                                 <th>发票代码</th>
                                                 <th>发票号码</th>
                                                 <th>报销金额</th>
-                                                <th>发票</th>
+                                                <!--                                                <th>发票</th>-->
                                                 <th>选择</th>
                                             </tr>
                                             </thead>
                                             <tbody id="detail-body">
                                             <tr>
-                                                <th scope="row">1</th>
+                                                <th rowspan="2" scope="row">1</th>
                                                 <td>
                                                     <input class="form-control detail_item ci" type="text"
                                                            placeholder="费用项目">
@@ -84,33 +84,46 @@
                                                            placeholder="发票号码">
                                                 </td>
                                                 <td>
-                                                    <input class="form-control detail_amount" type="text"
+                                                    <input class="form-control detail_amount ca" type="text"
                                                            placeholder="报销金额">
                                                 </td>
-                                                <td>
-                                                    <table>
-                                                        <tr>
-                                                            <td>
-                                                                <a href="javascript:void(0)" class="file text-truncate">选择文件
-                                                                    <input type="file" class="detail_image"
-                                                                           accept="image/jpg,image/jpeg,image/png">
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <a class="btn btn-link pre-view hide"
-                                                                   href="javascript:void(0)">预览</a>
-                                                                <small class="none-tip text-truncate">未选择任何文件</small>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td>
+                                                <td rowspan="2">
                                                     <div class="btn-group">
                                                         <a class="img-avatar img-avatar-48 bg-translucent del">
                                                             <i class="mdi mdi-delete-forever fa-1-5x"></i>
                                                         </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <label class="col-xs-12">备注:</label>
+                                                    <textarea class="col-xs-12" rows="4" style="resize:none"></textarea>
+                                                </td>
+                                                <td>
+                                                    <label class="col-xs-12">发票:</label>
+                                                    <div class="btn-group">
+                                                        <button type="button"
+                                                                class="btn btn-primary btn-round dropdown-toggle"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                            上传发票图片 <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="file" href="javascript:void(0)">本地上传
+                                                                <input type="file" class="detail_image"
+                                                                       accept="image/jpg,image/jpeg,image/png"></a>
+                                                            </li>
+                                                            <li role="separator" class="divider"></li>
+                                                            <li><a href="javascript:void(0)">拍照上传</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td colspan="2">
+                                                    <div>
+                                                        <span>暂无图片</span>
+                                                        <img class="hide pre-img" src="" alt="点击放大"
+                                                             style="max-height: 200px"/>
                                                     </div>
                                                 </td>
                                             </tr>

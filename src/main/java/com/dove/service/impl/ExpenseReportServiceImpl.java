@@ -4,7 +4,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dove.constants.Constants;
+import com.dove.constants.Constants.Name;
+import com.dove.constants.Constants.Result;
+import com.dove.constants.Constants.Status;
+import com.dove.constants.Constants.Way;
 import com.dove.dao.DealRecordDao;
 import com.dove.dao.ExpenseReportDao;
 import com.dove.dao.ExpenseReportDetailDao;
@@ -124,9 +127,9 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
             QueryWrapper<ExpenseReportMainListRequestDTO> queryWrapper = new QueryWrapper<>();
             queryWrapper.like(StrUtil.isNotEmpty(requestDTO.getCause()), "cause", requestDTO.getCause())
                     .inSql(StrUtil.isNotEmpty(requestDTO.getName()), "em_id", "SELECT em_id FROM employee WHERE name LIKE '%" + requestDTO.getName() + "%'")
-                    .eq(positionName.equals(Constants.Name.STAFF), "em_id", emId)
-                    .inSql(positionName.equals(Constants.Name.DEPARTMENT_MANAGER), "em_id", "SELECT em_id FROM employee WHERE dep_id = " + department.getDepId())
-                    .notIn(Objects.nonNull(requestDTO.getStatus()), "status", Constants.Status.PAID, Constants.Status.TERMINATED);
+                    .eq(positionName.equals(Name.STAFF), "em_id", emId)
+                    .inSql(positionName.equals(Name.DEPARTMENT_MANAGER), "em_id", "SELECT em_id FROM employee WHERE dep_id = " + department.getDepId())
+                    .notIn(Objects.nonNull(requestDTO.getStatus()), "status", Status.PAID, Status.TERMINATED);
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<ExpenseReportMainListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
             IPage<ExpenseReportDTO> reports = expenseReportDao.queryMainPageList(page, queryWrapper);
             map.put("success", true);
@@ -152,7 +155,7 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
         try {
             Integer emId = userInfo.getEmId();
             Integer nextDealEmId = employeeService.queryNextDealEmId(emId, userInfo.getDepId());
-            ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), Constants.Status.CREATE);
+            ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), Status.CREATE);
             expenseReport = this.insert(expenseReport);
             Integer expenseId = expenseReport.getExpenseId();
             for (ExpenseReportDetailRequestDTO expenseReportDetailRequestDTO : requestDTO.getExpenseReportDetails()) {
@@ -163,7 +166,7 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
                 expenseReportDetail.setImage(image.getBytes(StandardCharsets.UTF_8));
                 expenseReportDetailDao.insert(expenseReportDetail);
             }
-            dealRecordDao.insert(new DealRecord(null, expenseId, emId, new Date(), Constants.Way.CREATE, Constants.Result.CREATED, null));
+            dealRecordDao.insert(new DealRecord(null, expenseId, emId, new Date(), Way.CREATE, Result.CREATED, null));
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

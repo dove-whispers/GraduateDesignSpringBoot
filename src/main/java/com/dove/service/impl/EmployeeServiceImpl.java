@@ -3,7 +3,7 @@ package com.dove.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dove.constants.Constants;
+import com.dove.constants.Constants.Name;
 import com.dove.dao.EmployeeDao;
 import com.dove.dao.PositionDao;
 import com.dove.dto.EmployeeDTO;
@@ -138,17 +138,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         Position position = positionDao.queryById(positionId);
         String positionName = position.getPositionName();
         String nextPositionName;
-        if (Constants.Name.STAFF.equals(positionName)) {
-            nextPositionName = Constants.Name.DEPARTMENT_MANAGER;
-        } else if (Constants.Name.DEPARTMENT_MANAGER.equals(positionName)) {
-            nextPositionName = Constants.Name.GENERAL_MANAGER;
-        } else if (Constants.Name.GENERAL_MANAGER.equals(positionName)) {
-            nextPositionName = Constants.Name.FINANCIAL_SUPERVISOR;
+        if (Name.STAFF.equals(positionName)) {
+            nextPositionName = Name.DEPARTMENT_MANAGER;
+        } else if (Name.DEPARTMENT_MANAGER.equals(positionName)) {
+            nextPositionName = Name.GENERAL_MANAGER;
+        } else if (Name.GENERAL_MANAGER.equals(positionName)) {
+            nextPositionName = Name.FINANCIAL_SUPERVISOR;
         } else {
-            nextPositionName = Constants.Name.TENTATIVE;
+            nextPositionName = Name.TENTATIVE;
         }
         Integer nextDealPositionId = positionDao.findPositionIdByPositionName(nextPositionName);
-        if (Constants.Name.DEPARTMENT_MANAGER.equals(nextPositionName)) {
+        if (Name.DEPARTMENT_MANAGER.equals(nextPositionName)) {
             return employeeDao.findEmByDepIdAndPositionId(depId, nextDealPositionId);
         }
         return employeeDao.findEmByPositionId(nextDealPositionId);

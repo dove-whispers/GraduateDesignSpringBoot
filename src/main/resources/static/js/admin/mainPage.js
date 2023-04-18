@@ -1,8 +1,6 @@
 $(function () {
     let wrap = $('.main-wrap')
     let request_condition = {}
-    request_condition.name = '工'
-    request_condition.cause = ''
     let flag = true
 
     $('.search-bar .dropdown-menu a').click(function () {

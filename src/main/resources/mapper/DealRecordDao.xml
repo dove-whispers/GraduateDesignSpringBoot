@@ -14,8 +14,13 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="DealRecordMap">
-        select
-          record_id, expensive_id, em_id, deal_time, deal_way, deal_result, comment
+        select record_id,
+               expensive_id,
+               em_id,
+               deal_time,
+               deal_way,
+               deal_result,
+               comment
         from deal_record
         where record_id = #{recordId}
     </select>
@@ -23,7 +28,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="DealRecordMap">
         select
-          record_id, expensive_id, em_id, deal_time, deal_way, deal_result, comment
+        record_id, expensive_id, em_id, deal_time, deal_way, deal_result, comment
         from deal_record
         <where>
             <if test="recordId != null">
@@ -90,7 +95,8 @@
         insert into deal_record(expensive_id, em_id, deal_time, deal_way, deal_result, comment)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.expensiveId}, #{entity.emId}, #{entity.dealTime}, #{entity.dealWay}, #{entity.dealResult}, #{entity.comment})
+            (#{entity.expensiveId}, #{entity.emId}, #{entity.dealTime}, #{entity.dealWay}, #{entity.dealResult},
+            #{entity.comment})
         </foreach>
     </insert>
 
@@ -98,7 +104,8 @@
         insert into deal_record(expensive_id, em_id, deal_time, deal_way, deal_result, comment)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.expensiveId}, #{entity.emId}, #{entity.dealTime}, #{entity.dealWay}, #{entity.dealResult}, #{entity.comment})
+            (#{entity.expensiveId}, #{entity.emId}, #{entity.dealTime}, #{entity.dealWay}, #{entity.dealResult},
+            #{entity.comment})
         </foreach>
         on duplicate key update
         expensive_id = values(expensive_id),
@@ -135,10 +142,20 @@
         where record_id = #{recordId}
     </update>
 
-    <!--通过主键删除-->
+    <!-- 通过主键删除 -->
     <delete id="deleteById">
-        delete from deal_record where record_id = #{recordId}
+        DELETE
+        FROM deal_record
+        WHERE record_id = #{recordId}
     </delete>
 
+    <!-- 查询报销单最新操作记录 -->
+    <select id="queryExpensiveLatestDeal" resultType="com.dove.entity.DealRecord">
+        SELECT record_id, expensive_id, em_id, deal_time, deal_way, deal_result, comment
+        FROM deal_record
+        WHERE expensive_id = #{expensiveId}
+        ORDER BY deal_time DESC
+        LIMIT 1
+    </select>
 </mapper>
 

@@ -2,11 +2,16 @@ package com.dove.controller;
 
 import com.dove.service.impl.DealRecordServiceImpl;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 操作记录表(DealRecord)表控制层
@@ -16,7 +21,7 @@ import javax.annotation.Resource;
  */
 @Api(tags = "操作记录管理模块")
 @Controller
-@RequestMapping
+@RequestMapping("/dealRecord")
 @Slf4j
 public class DealRecordController extends BaseController {
     /**
@@ -24,5 +29,20 @@ public class DealRecordController extends BaseController {
      */
     @Resource
     private DealRecordServiceImpl dealRecordService;
+
+    @ApiOperation(value = "获取报销单进度")
+    @PostMapping("/queryExpenseReportStep")
+    @ResponseBody
+    public Map<String, Object> queryExpenseReportStep(Integer expenseId) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            map.put("success", true);
+            map.put("step", dealRecordService.queryExpenseReportStep(expenseId));
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
 }
 

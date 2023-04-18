@@ -59,7 +59,26 @@ public interface Constants {
         String PASS = "通过";
         String REPULSE = "打回";
         String REMITTANCE = "已打款";
-        String TERMINATED = "终止";
+        String TERMINATED = "已终止";
         String EDITED = "已修改";
+    }
+
+    /**
+     * 报销进度
+     * 1创建 2部门经理审核通过 3总经理审核通过 4财务打款
+     * 5部门经理打回 6总经理打回 7财务打回
+     * 8部门经理终止 9总经理终止 10财务终止
+     */
+    interface Step {
+        Integer CREATED = 1;
+        Integer PASSED_BY_DEPARTMENT_MANAGER = 2;
+        Integer PASSED_BY_GENERAL_MANAGER = 3;
+        Integer PASSED_BY_FINANCIAL_SUPERVISOR = 4;
+        Integer REPULSED_BY_DEPARTMENT_MANAGER = 5;
+        Integer REPULSED_BY_GENERAL_MANAGER = 6;
+        Integer REPULSED_BY_FINANCIAL_SUPERVISOR = 7;
+        Integer TERMINATED_BY_DEPARTMENT_MANAGER = 8;
+        Integer TERMINATED_BY_GENERAL_MANAGER = 9;
+        Integer TERMINATED_BY_FINANCIAL_SUPERVISOR = 10;
     }
 }

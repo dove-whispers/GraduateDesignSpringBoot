@@ -80,5 +80,12 @@ public interface DealRecordDao {
      */
     int deleteById(Integer recordId);
 
+    /**
+     * 查询报销单最新操作记录
+     *
+     * @param expensiveId 报销单id
+     * @return {@link DealRecord}
+     */
+    DealRecord queryExpensiveLatestDeal(Integer expensiveId);
 }
 

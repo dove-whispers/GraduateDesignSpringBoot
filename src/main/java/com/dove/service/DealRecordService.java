@@ -53,4 +53,11 @@ public interface DealRecordService {
      */
     boolean deleteById(Integer recordId);
 
+    /**
+     * 查询报销单报销进度
+     *
+     * @param expenseId 费用id
+     * @return {@link Integer}
+     */
+    Integer queryExpenseReportStep(Integer expenseId);
 }

@@ -327,8 +327,7 @@ $(function () {
                 }),
                 success: function (data) {
                     if (data.success) {
-                        // lightyear.notify('新增报销单成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center', '/main')
-                        lightyear.notify('新增报销单成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center')
+                        lightyear.notify('新增报销单成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center', '/main')
                     } else {
                         $.confirm({
                             title: '错误提示',

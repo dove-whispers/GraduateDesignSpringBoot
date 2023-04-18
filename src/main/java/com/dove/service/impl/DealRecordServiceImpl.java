@@ -1,12 +1,24 @@
 package com.dove.service.impl;
 
-import com.dove.entity.DealRecord;
+import com.dove.constants.Constants.Name;
+import com.dove.constants.Constants.Result;
+import com.dove.constants.Constants.Step;
+import com.dove.constants.Constants.Way;
 import com.dove.dao.DealRecordDao;
+import com.dove.dao.EmployeeDao;
+import com.dove.dao.ExpenseReportDao;
+import com.dove.dao.PositionDao;
+import com.dove.entity.DealRecord;
+import com.dove.entity.Employee;
+import com.dove.entity.ExpenseReport;
+import com.dove.entity.Position;
 import com.dove.service.DealRecordService;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -20,6 +32,12 @@ import javax.annotation.Resource;
 public class DealRecordServiceImpl implements DealRecordService {
     @Resource
     private DealRecordDao dealRecordDao;
+    @Resource
+    private ExpenseReportDao expenseReportDao;
+    @Resource
+    private EmployeeDao employeeDao;
+    @Resource
+    private PositionDao positionDao;
 
     /**
      * 通过ID查询单条数据
@@ -35,8 +53,8 @@ public class DealRecordServiceImpl implements DealRecordService {
     /**
      * 分页查询
      *
-     * @param dealRecord 筛选条件
-     * @param pageRequest      分页对象
+     * @param dealRecord  筛选条件
+     * @param pageRequest 分页对象
      * @return 查询结果
      */
     @Override
@@ -78,5 +96,68 @@ public class DealRecordServiceImpl implements DealRecordService {
     @Override
     public boolean deleteById(Integer recordId) {
         return this.dealRecordDao.deleteById(recordId) > 0;
+    }
+
+    /**
+     * 查询报销单报销进度
+     *
+     * @param expenseId 费用id
+     * @return {@link Integer}
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public Integer queryExpenseReportStep(Integer expenseId) {
+        try {
+            DealRecord dealRecord = dealRecordDao.queryExpensiveLatestDeal(expenseId);
+            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+            Employee nextDealEmployee = employeeDao.queryById(expenseReport.getNextDealEm());
+            Position nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
+            String nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
+            Employee employee = employeeDao.queryById(dealRecord.getEmId());
+            Position position = positionDao.queryById(employee.getPositionId());
+            String positionName = position.getPositionName();
+            String dealWay = dealRecord.getDealWay();
+            String dealResult = dealRecord.getDealResult();
+            if (Way.CREATE.equals(dealWay)) {
+                return Step.CREATED;
+            } else if (Way.AUDIT.equals(dealWay)) {
+                if (Name.DEPARTMENT_MANAGER.equals(positionName)) {
+                    if (Result.PASS.equals(dealResult)) {
+                        return Step.PASSED_BY_DEPARTMENT_MANAGER;
+                    } else if (Result.REPULSE.equals(dealResult)) {
+                        return Step.REPULSED_BY_DEPARTMENT_MANAGER;
+                    } else {
+                        return Step.TERMINATED_BY_DEPARTMENT_MANAGER;
+                    }
+                } else if (Name.GENERAL_MANAGER.equals(positionName)) {
+                    if (Result.PASS.equals(dealResult)) {
+                        return Step.PASSED_BY_GENERAL_MANAGER;
+                    } else if (Result.REPULSE.equals(dealResult)) {
+                        return Step.REPULSED_BY_GENERAL_MANAGER;
+                    } else {
+                        return Step.TERMINATED_BY_GENERAL_MANAGER;
+                    }
+                } else {
+                    if (Result.PASS.equals(dealResult)) {
+                        return Step.PASSED_BY_FINANCIAL_SUPERVISOR;
+                    } else if (Result.REPULSE.equals(dealResult)) {
+                        return Step.REPULSED_BY_FINANCIAL_SUPERVISOR;
+                    } else {
+                        return Step.TERMINATED_BY_FINANCIAL_SUPERVISOR;
+                    }
+                }
+            } else {
+                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)){
+                    return Step.CREATED;
+                }else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)){
+                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
+                }else {
+                    return Step.PASSED_BY_GENERAL_MANAGER;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

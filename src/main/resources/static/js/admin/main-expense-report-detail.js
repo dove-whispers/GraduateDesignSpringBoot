@@ -14,14 +14,80 @@ $(function () {
                 if (data.success) {
                     handleList(data.data)
                 } else {
-                    lightyear.notify('查询失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                    lightyear.notify('报销单细节查询失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                }
+            }
+        })
+        $.ajax({
+            url: '/dealRecord/queryExpenseReportStep',
+            type: 'POST',
+            async: false,
+            cache: false,
+            dataType: 'json',
+            data: {expensiveId: expenseId},
+            success: function (data) {
+                if (data.success) {
+                    handleProcedure(data.step)
+                } else {
+                    lightyear.notify('报销进度查询失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                 }
             }
         })
     }
 
+    function handleProcedure(step) {
+        // 1创建 2部门经理审核通过 3总经理审核通过 4财务打款
+        // 5部门经理打回 6总经理打回 7财务打回
+        // 8部门经理终止 9总经理终止 10财务终止
+        let html = '<div class="divider text-uppercase">报销进度</div>'
+        html += '<ul class="nav-step step-dots">'
+            + '      <li class="nav-step-item complete">'
+            + '          <span>步骤一</span>'
+            + '          <a href="javascript:void(0)"></a>'
+            + '       </li>'
+            + '       <li class="nav-step-item active">'
+            + '           <span>步骤二</span>'
+            + '           <a href="javascript:void(0)"></a>'
+            + '       </li>'
+            + '       <li class="nav-step-item">'
+            + '           <span>步骤三</span>'
+            + '           <a href="javascript:void(0)"></a>'
+            + '       </li>'
+            + '       <li class="nav-step-item">'
+            + '           <span>步骤四</span>'
+            + '           <a href="javascript:void(0)"></a>'
+            + '       </li>'
+            + '   </ul>'
+            + '   <ul class="nav-step step-anchor m-l-15">'
+            + '       <li class="nav-step-item active">'
+            + '           <a href="javascript:void(0)">'
+            + '           <h6>步骤一</h6>'
+            + '           <p class="m-0">填写报销单</p>'
+            + '           </a>'
+            + '       </li>'
+            + '       <li class="nav-step-item">'
+            + '           <a href="javascript:void(0)">'
+            + '           <h6>步骤二</h6>'
+            + '           <p class="m-0">部长审核</p>'
+            + '           </a>'
+            + '       </li>'
+            + '       <li class="nav-step-item">'
+            + '           <a href="javascript:void(0)">'
+            + '           <h6>步骤三</h6>'
+            + '           <p class="m-0">总经理审核</p>'
+            + '           </a>'
+            + '       </li>'
+            + '       <li class="nav-step-item">'
+            + '           <a href="javascript:void(0)">'
+            + '           <h6>步骤四</h6>'
+            + '           <p class="m-0">财务打款</p>'
+            + '           </a>'
+            + '       </li>'
+            + '   </ul>'
+        $('#procedure').html(html)
+    }
+
     function handleList(data) {
-        console.log(data)
         $('#expense-cause').val(data.cause)
         $('#total_amount').val(data.totalAmount)
         let html = ''

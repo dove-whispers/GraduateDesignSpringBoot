@@ -1,5 +1,4 @@
 $(function () {
-    const loginUrl = '/checkLogin'
     let loginCount = 0
     $('#submit').click(function () {
         let username = $('#username').val()
@@ -15,7 +14,7 @@ $(function () {
         }
 
         $.ajax({
-            url: loginUrl,
+            url: '/checkLogin',
             type: 'POST',
             async: false,
             cache: false,

@@ -36,7 +36,7 @@ public class DealRecord implements Serializable {
      */
     private Integer emId;
     /**
-     * 处理方式
+     * 处理时间
      */
     private Date dealTime;
     /**

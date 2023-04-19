@@ -12,6 +12,18 @@
         <result property="comment" column="comment" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap type="com.dove.dto.DealRecordDTO" id="DealRecordInfoMap">
+        <result property="recordId" column="record_id" jdbcType="INTEGER"/>
+        <result property="expensiveId" column="expensive_id" jdbcType="INTEGER"/>
+        <result property="emId" column="em_id" jdbcType="INTEGER"/>
+        <result property="dealTime" column="deal_time" jdbcType="TIMESTAMP"/>
+        <result property="dealWay" column="deal_way" jdbcType="VARCHAR"/>
+        <result property="dealResult" column="deal_result" jdbcType="VARCHAR"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <association property="employee" javaType="com.dove.entity.Employee" column="em_id"
+                     select="com.dove.dao.EmployeeDao.queryById" jdbcType="INTEGER"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="DealRecordMap">
         select record_id,
@@ -151,6 +163,14 @@
 
     <!-- 查询报销单最新操作记录 -->
     <select id="queryExpensiveLatestDeal" resultType="com.dove.entity.DealRecord">
+        SELECT record_id, expensive_id, em_id, deal_time, deal_way, deal_result, comment
+        FROM deal_record
+        WHERE expensive_id = #{expensiveId}
+        ORDER BY deal_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="queryLatestDealRecord" resultMap="DealRecordInfoMap">
         SELECT record_id, expensive_id, em_id, deal_time, deal_way, deal_result, comment
         FROM deal_record
         WHERE expensive_id = #{expensiveId}

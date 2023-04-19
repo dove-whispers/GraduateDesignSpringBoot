@@ -8,6 +8,7 @@ import com.dove.dao.DealRecordDao;
 import com.dove.dao.EmployeeDao;
 import com.dove.dao.ExpenseReportDao;
 import com.dove.dao.PositionDao;
+import com.dove.dto.DealRecordDTO;
 import com.dove.entity.DealRecord;
 import com.dove.entity.Employee;
 import com.dove.entity.ExpenseReport;
@@ -159,5 +160,16 @@ public class DealRecordServiceImpl implements DealRecordService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    /**
+     * 查询最新操作记录
+     *
+     * @param expensiveId 报销单id
+     * @return {@link DealRecordDTO}
+     */
+    @Override
+    public DealRecordDTO queryLatestDealRecord(Integer expensiveId) {
+        return this.dealRecordDao.queryLatestDealRecord(expensiveId);
     }
 }

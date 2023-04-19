@@ -27,7 +27,6 @@ import java.util.Map;
 @Api(tags = "登录登出")
 @RestController
 @RequestMapping
-@Slf4j
 public class IndexController extends BaseController {
     @Resource
     private EmployeeServiceImpl employeeService;
@@ -35,7 +34,6 @@ public class IndexController extends BaseController {
     @ApiOperation(value = "跳转至登陆页面")
     @RequestMapping("/login")
     public ModelAndView login() {
-        log.info("用户登录");
         return new ModelAndView("login");
     }
 
@@ -45,7 +43,6 @@ public class IndexController extends BaseController {
     public Map<String, Object> checkLogin(@RequestBody LoginRequestDTO loginRequestDTO) {
         Map<String, Object> resultMap = new HashMap<>(2);
         if (loginRequestDTO.getNeedVerify() && !CodeUtil.checkVerifyCode(request, loginRequestDTO.getVerifyCodeActual())) {
-            log.info("用户验证码错误");
             resultMap.put("success", false);
             resultMap.put("errorMsg", "验证码错误");
             return resultMap;
@@ -55,7 +52,6 @@ public class IndexController extends BaseController {
         if (!StrUtil.isEmpty(username) && !StrUtil.isEmpty(password)) {
             EmployeeDTO userInfo = employeeService.checkUserByUserNameAndPassword(username, password);
             if (null != userInfo) {
-                log.info("用户" + userInfo.getName() + "登录了");
                 resultMap.put("success", true);
                 resultMap.put("username", userInfo.getName());
                 request.getSession().setAttribute("userInfo", userInfo);

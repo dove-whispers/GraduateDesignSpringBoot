@@ -1,5 +1,6 @@
 package com.dove.service;
 
+import com.dove.dto.DealRecordDTO;
 import com.dove.entity.DealRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,4 +61,12 @@ public interface DealRecordService {
      * @return {@link Integer}
      */
     Integer queryExpenseReportStep(Integer expenseId);
+
+    /**
+     * 查询最新操作记录
+     *
+     * @param expensiveId 报销单id
+     * @return {@link DealRecordDTO}
+     */
+    DealRecordDTO queryLatestDealRecord(Integer expensiveId);
 }

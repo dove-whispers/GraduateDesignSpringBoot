@@ -1,5 +1,6 @@
 package com.dove.controller;
 
+import com.dove.dto.DealRecordDTO;
 import com.dove.service.impl.DealRecordServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,11 +34,26 @@ public class DealRecordController extends BaseController {
     @ApiOperation(value = "获取报销单进度")
     @PostMapping("/queryExpenseReportStep")
     @ResponseBody
-    public Map<String, Object> queryExpenseReportStep(Integer expenseId) {
+    public Map<String, Object> queryExpenseReportStep(Integer expensiveId) {
         Map<String, Object> map = new HashMap<>(2);
         try {
             map.put("success", true);
-            map.put("step", dealRecordService.queryExpenseReportStep(expenseId));
+            map.put("step", dealRecordService.queryExpenseReportStep(expensiveId));
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "获取报销单最新处理记录")
+    @PostMapping("/queryLatestDealRecord")
+    @ResponseBody
+    public Map<String, Object> queryLatestDealRecord(Integer expensiveId) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            map.put("success", true);
+            map.put("data", dealRecordService.queryLatestDealRecord(expensiveId));
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());

@@ -1,5 +1,6 @@
 package com.dove.dao;
 
+import com.dove.dto.DealRecordDTO;
 import com.dove.entity.DealRecord;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
@@ -87,5 +88,13 @@ public interface DealRecordDao {
      * @return {@link DealRecord}
      */
     DealRecord queryExpensiveLatestDeal(Integer expensiveId);
+
+    /**
+     * 查询最新操作记录
+     *
+     * @param expensiveId 报销单id
+     * @return {@link DealRecordDTO}
+     */
+    DealRecordDTO queryLatestDealRecord(Integer expensiveId);
 }
 

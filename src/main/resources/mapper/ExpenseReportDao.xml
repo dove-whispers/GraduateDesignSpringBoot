@@ -21,10 +21,10 @@
         <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
         <result property="nextDealEm" column="next_deal_em" jdbcType="INTEGER"/>
         <result property="totalAmount" column="total_amount" jdbcType="VARCHAR"/>
-        <association property="createEmployee" javaType="com.dove.entity.Employee" column="em_id"
-                     select="com.dove.dao.EmployeeDao.queryById" jdbcType="INTEGER"/>
-        <association property="nextDealEmployee" javaType="com.dove.entity.Employee" column="next_deal_em"
-                     select="com.dove.dao.EmployeeDao.queryById" jdbcType="INTEGER"/>
+        <association property="createEmployee" javaType="com.dove.dto.EmployeeDTO" column="em_id"
+                     select="com.dove.dao.EmployeeDao.completeQueryById" jdbcType="INTEGER"/>
+        <association property="nextDealEmployee" javaType="com.dove.dto.EmployeeDTO" column="next_deal_em"
+                     select="com.dove.dao.EmployeeDao.completeQueryById" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->

@@ -93,5 +93,11 @@
         WHERE dep_id = #{depId}
           AND position_id = #{positionId}
     </select>
+
+    <select id="completeQueryById" resultMap="UserInfoMap">
+        SELECT em_id, password, name, login_name, dep_id, position_id, status
+        FROM employee
+        WHERE em_id = #{emId}
+    </select>
 </mapper>
 

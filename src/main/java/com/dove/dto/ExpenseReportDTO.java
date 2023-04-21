@@ -74,10 +74,10 @@ public class ExpenseReportDTO implements Serializable {
      * 一对一关联创建人
      */
     @ApiModelProperty(value = "一对一关联创建人")
-    private Employee createEmployee;
+    private EmployeeDTO createEmployee;
     /**
      * 一对一关联处理人
      */
     @ApiModelProperty(value = "一对一关联处理人")
-    private Employee nextDealEmployee;
+    private EmployeeDTO nextDealEmployee;
 }

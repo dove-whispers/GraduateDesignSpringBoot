@@ -55,7 +55,6 @@ $(function () {
     }
 
     function handleList(data) {
-        console.log(data)
         let maxLength = 0
         data.map(function (item,index) {
             maxLength = Math.max(maxLength,item.totalAmount.toString().length)
@@ -65,6 +64,7 @@ $(function () {
             html += '<tr>'
                 + '<td>' + (index+1) + '</td>'
                 + '<td>' + item.createEmployee.name + '</td>'
+                + '<td>' + item.createEmployee.department.name + '</td>'
                 + '<td>' + item.cause + '</td>'
                 + '<td>' + item.createTime + '</td>'
                 + '<td style="padding-left: '+ (10 + (maxLength - item.totalAmount.toString().length) * 8) + 'px">' + item.totalAmount + '元' + '</td>'

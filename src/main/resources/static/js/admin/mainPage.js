@@ -66,22 +66,12 @@ $(function () {
     }
 
     function handleList(data) {
-        // $.ajax({
-        //     url: '/position/queryPosition',
-        //     type: 'POST',
-        //     async: false,
-        //     cache: false,
-        //     dataType: 'json',
-        //     data:{positionId:},
-        //     success: function (data) {
-        //
-        //     }
-        // })
         let html = ''
         data.map(function (item, index) {
             html += '<tr>'
                 + '<td>' + (index + 1) + '</td>'
                 + '<td>' + item.createEmployee.name + '</td>'
+                + '<td>' + item.createEmployee.department.name + '</td>'
                 + '<td>' + item.cause + '</td>'
                 + '<td>' + item.createTime + '</td>'
                 // + '<td>' + item.nextDealEmployee.name + '</td>'

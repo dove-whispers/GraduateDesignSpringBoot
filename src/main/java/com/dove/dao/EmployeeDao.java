@@ -94,5 +94,13 @@ public interface EmployeeDao extends BaseMapper<Employee> {
      * @return {@link Integer}
      */
     Integer findEmByDepIdAndPositionId(Integer depId, Integer positionId);
+
+    /**
+     * 完整id查询
+     *
+     * @param emId em id
+     * @return {@link EmployeeDTO}
+     */
+    EmployeeDTO completeQueryById(Integer emId);
 }
 

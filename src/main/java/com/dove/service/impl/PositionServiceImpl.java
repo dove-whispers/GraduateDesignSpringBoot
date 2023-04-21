@@ -1,14 +1,27 @@
 package com.dove.service.impl;
 
-import com.dove.entity.Position;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.dao.PositionDao;
+import com.dove.dto.requestDTO.PositionListRequestDTO;
+import com.dove.dto.requestDTO.TogglePositionRequestDTO;
+import com.dove.dto.responseDTO.ActivePositionListResponseDTO;
+import com.dove.dto.responseDTO.PositionListResponseDTO;
+import com.dove.entity.Position;
 import com.dove.service.PositionService;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 职位表(Position)表服务实现类
@@ -35,8 +48,8 @@ public class PositionServiceImpl implements PositionService {
     /**
      * 分页查询
      *
-     * @param position 筛选条件
-     * @param pageRequest      分页对象
+     * @param position    筛选条件
+     * @param pageRequest 分页对象
      * @return 查询结果
      */
     @Override
@@ -78,5 +91,80 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public boolean deleteById(Integer positionId) {
         return this.positionDao.deleteById(positionId) > 0;
+    }
+
+    /**
+     * 查询职位页面列表
+     *
+     * @param requestDTO 职位列表请求dto
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> queryPageList(PositionListRequestDTO requestDTO) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            QueryWrapper<PositionListRequestDTO> wrapper = new QueryWrapper<>();
+            wrapper.like(StrUtil.isNotEmpty(requestDTO.getPositionName()), "position_name", requestDTO.getPositionName())
+                    .eq(Objects.nonNull(requestDTO.getStatus()), "status", requestDTO.getStatus());
+            com.baomidou.mybatisplus.extension.plugins.pagination.Page<PositionListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
+            IPage<PositionListResponseDTO> positions = positionDao.queryPageList(page, wrapper);
+            map.put("success", true);
+            map.put("data", positions);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public Map<String, Object> toggleStatus(TogglePositionRequestDTO requestDTO) {
+        Map<String, Object> map = new HashMap<>(2);
+        Integer status = requestDTO.getStatus();
+        Integer positionId = requestDTO.getPositionId();
+        try {
+            if (1 == status) {
+                positionDao.updateFailureStatusById(positionId);
+
+            } else {
+                positionDao.updateSuccessStatusById(positionId);
+            }
+            map.put("success", true);
+        } catch (Exception e) {
+            //TODO:应该抛出自定义异常
+            e.printStackTrace();
+            throw e;
+        }
+        return map;
+    }
+
+    /**
+     * 查询活动职位列表
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> queryActivePositionList() {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            List<ActivePositionListResponseDTO> activePositions = positionDao.queryActivePositionList();
+            map.put("success", true);
+            map.put("data", activePositions);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    /**
+     * 查询部门经理id
+     *
+     * @return {@link Integer}
+     */
+    @Override
+    public Integer queryIdByName(String name) {
+        return positionDao.findPositionIdByPositionName(name);
     }
 }

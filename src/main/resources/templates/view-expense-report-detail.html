@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>查看报销单</title>
+    <link rel="icon" href="../static/favicon.ico" type="image/ico">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <link href="../static/js/jconfirm/jquery-confirm.min.css" rel="stylesheet">
+    <link href="../static/css/style.min.css" rel="stylesheet">
+    <link href="../static/css/input-file.css" rel="stylesheet">
+    <link href="../static/css/truncate.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <div th:replace="side.html :: side"></div>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <div th:replace="topbar.html :: topbar"></div>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="divider text-uppercase">报销原因</div>
+                                    <div class="form-group col-md-12">
+                                        <label for="expense-cause">报销原因</label>
+                                        <input type="text" class="form-control" id="expense-cause" disabled/>
+                                    </div>
+                                    <div class="divider text-uppercase">报销明细</div>
+                                    <div class="col-md-12">
+                                        <table class="table table-hover" id="detail-table">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>费用项目</th>
+                                                <th>开票日期</th>
+                                                <th>类别</th>
+                                                <th>发票代码</th>
+                                                <th>发票号码</th>
+                                                <th>报销金额</th>
+                                                <th class="text-truncate">更多</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="detail-body">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="col-xs-12" for="total_amount">总金额</label>
+                                        <div class="input-group m-b-10">
+                                            <a class="btn btn-default input-group-addon">+</a>
+                                            <input type="text" id="total_amount" class="form-control text-right"
+                                                   disabled/>
+                                            <span class="input-group-addon">元</span>
+                                        </div>
+                                    </div>
+                                    <div id="record-comment" class="col-md-12">
+                                    </div>
+                                    <div class="divider text-uppercase">报销审核</div>
+                                    <div class="row">
+                                        <div class="col-lg-5 m-l-15">
+                                            <label for="need_comment" class="col-lg-12">处理结果备注:</label>
+                                            <textarea id="need_comment" class="col-lg-12" rows="6" style="resize:none" placeholder="请输入处理结果备注"></textarea>
+                                        </div>
+                                        <div id="result" class="col-lg-6">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12 m-t-15">
+                                        <button type="button" class="btn btn-default"
+                                                onclick="history.back();return false;">返 回
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+        src="../static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript" src="../static/js/main.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="../static/js/lightyear.js"></script>
+<script type="text/javascript" src="../static/js/jconfirm/jquery-confirm.min.js"></script>
+<script type="text/javascript" src="../static/js/main.min.js"></script>
+<script type="text/javascript" src="../static/js/admin/common.js"></script>
+<script type="text/javascript" src="../static/js/admin/log-out.js"></script>
+<script type="text/javascript" src="../static/js/admin/view-expense-report-detail.js"></script>
+</body>
+</html>

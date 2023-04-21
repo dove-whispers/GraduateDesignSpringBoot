@@ -11,12 +11,12 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="DepartmentMap">
-        select dep_id,
+        SELECT dep_id,
                name,
                address,
                status
-        from department
-        where dep_id = #{depId}
+        FROM department
+        WHERE dep_id = #{depId}
     </select>
 
     <!--查询指定行数据-->
@@ -60,14 +60,10 @@
             </if>
         </where>
     </select>
-    <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO">
-        SELECT dep_id, name, address, status
-        FROM department
-    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="depId" useGeneratedKeys="true">
-        insert into department(name, address, status)
+        insert into department (name, address, status)
         values (#{name}, #{address}, #{status})
     </insert>
 
@@ -107,16 +103,6 @@
         </set>
         where dep_id = #{depId}
     </update>
-    <update id="updateFailureStatusById">
-        UPDATE department
-        SET status = 0
-        WHERE dep_id = #{depId}
-    </update>
-    <update id="updateSuccessStatusById">
-        UPDATE department
-        SET status = 1
-        WHERE dep_id = #{depId}
-    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
@@ -124,6 +110,30 @@
         from department
         where dep_id = #{depId}
     </delete>
+
+    <!-- 条件查询(包括MybatisPlus分页查询) -->
+    <select id="queryPageList" resultType="com.dove.dto.responseDTO.DepartmentListResponseDTO">
+        SELECT dep_id, name, address, status
+        FROM department ${ew.customSqlSegment}
+    </select>
+
+    <select id="queryActiveDepartmentList" resultType="com.dove.dto.responseDTO.ActiveDepartmentListResponseDTO">
+        SELECT dep_id, name
+        FROM department
+        WHERE status = 1
+    </select>
+
+    <update id="updateFailureStatusById">
+        UPDATE department
+        SET status = 0
+        WHERE dep_id = #{depId}
+    </update>
+
+    <update id="updateSuccessStatusById">
+        UPDATE department
+        SET status = 1
+        WHERE dep_id = #{depId}
+    </update>
 
 </mapper>
 

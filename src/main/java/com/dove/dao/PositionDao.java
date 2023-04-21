@@ -1,8 +1,16 @@
 package com.dove.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dove.dto.requestDTO.PositionListRequestDTO;
+import com.dove.dto.responseDTO.ActivePositionListResponseDTO;
+import com.dove.dto.responseDTO.PositionListResponseDTO;
 import com.dove.entity.Position;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 /**
@@ -25,7 +33,7 @@ public interface PositionDao {
      * 查询指定行数据
      *
      * @param position 查询条件
-     * @param pageable         分页对象
+     * @param pageable 分页对象
      * @return 对象列表
      */
     List<Position> queryAllByLimit(Position position, @Param("pageable") Pageable pageable);
@@ -78,6 +86,47 @@ public interface PositionDao {
      * @return 影响行数
      */
     int deleteById(Integer positionId);
+
+    /**
+     * 查询职位页面列表
+     * 分页+筛选部门列表
+     * 使用MybatisPlus分页
+     *
+     * @param page    页面
+     * @param wrapper 包装器
+     * @return {@link IPage}<{@link PositionListResponseDTO}>
+     */
+    IPage<PositionListResponseDTO> queryPageList(Page<PositionListRequestDTO> page, @Param(Constants.WRAPPER) QueryWrapper<PositionListRequestDTO> wrapper);
+
+    /**
+     * 将指定职位状态修改为0
+     *
+     * @param positionId 职位id
+     */
+    void updateFailureStatusById(Integer positionId);
+
+    /**
+     * 将指定职位状态修改为1
+     *
+     * @param positionId 职位id
+     */
+    void updateSuccessStatusById(Integer positionId);
+
+    /**
+     * 查询活动职位列表
+     *
+     * @return {@link List}<{@link ActivePositionListResponseDTO}>
+     */
+    List<ActivePositionListResponseDTO> queryActivePositionList();
+
+
+    /**
+     * 找到位置id职位名称
+     *
+     * @param positionName 职位名称
+     * @return {@link Integer}
+     */
+    Integer findPositionIdByPositionName(String positionName);
 
 }
 

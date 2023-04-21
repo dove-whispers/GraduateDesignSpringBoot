@@ -6,7 +6,7 @@ logging:
     com.dove.interceptor: info
     com.dove.dao: info
   pattern:
-    console: "%d --- %-5level [%thread] %logger{0}: %msg%n"
+    console: "%d{yyyy/MM/dd-HH:mm:ss} [%thread] --- %-5level %logger{0}: %msg%n"
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/graduate_design?useUnicode=true&characterEncoding=utf8&useSSL=false&useServerPrepStmts=true&cachePrepStmts=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
@@ -14,11 +14,26 @@ spring:
     username: root
     password: cao100200
     type: com.alibaba.druid.pool.DruidDataSource
-  redis:
-    host: 192.168.254.128
   mvc:
     static-path-pattern: /static/**
+server:
+  port: 8080
+  max-http-header-size: 16KB
+  tomcat:
+    max-http-form-post-size: 16MB
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+key:
+  ak: mwTV73Dv0iqysmNw0nWdHQ98
+  sk: tL98K2pEYFCqu9PAxgPI1dthwj8LjLkO

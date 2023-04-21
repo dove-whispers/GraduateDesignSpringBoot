@@ -20,12 +20,12 @@ import java.io.Serializable;
 @ApiModel(description = "获取部门列表ResponseDTO")
 public class DepartmentListResponseDTO implements Serializable {
     private static final long serialVersionUID = 6746189630143569672L;
-    @ApiModelProperty(value = "部门id", example = "")
+    @ApiModelProperty(value = "部门id")
     private Integer depId;
-    @ApiModelProperty(value = "部门名称", example = "")
+    @ApiModelProperty(value = "部门名称")
     private String name;
-    @ApiModelProperty(value = "办公地点", example = "")
+    @ApiModelProperty(value = "办公地点")
     private String address;
-    @ApiModelProperty(value = "状态:1有效,0无效", example = "")
+    @ApiModelProperty(value = "状态:1有效,0无效")
     private Integer status;
 }

@@ -1,8 +1,8 @@
 package com.dove.controller;
 
-import com.dove.dto.EmployeeDTO;
-import com.dove.dto.requestDTO.*;
-import com.dove.entity.Department;
+import com.dove.dto.requestDTO.EmployeeInfoRequestDTO;
+import com.dove.dto.requestDTO.EmployeeListRequestDTO;
+import com.dove.dto.requestDTO.ToggleEmployeeRequestDTO;
 import com.dove.entity.Employee;
 import com.dove.service.impl.EmployeeServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;

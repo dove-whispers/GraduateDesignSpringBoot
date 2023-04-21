@@ -1,6 +1,7 @@
 package com.dove.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -94,5 +95,15 @@ public interface ExpenseReportDao {
      * @return {@link IPage}<{@link ExpenseReportDTO}>
      */
     IPage<ExpenseReportDTO> queryMainPageList(Page<ExpenseReportMainListRequestDTO> page, @Param(Constants.WRAPPER) Wrapper<ExpenseReportMainListRequestDTO> queryWrapper);
+
+    /**
+     * 查询报销单列表
+     *
+     * @param page         页面
+     * @param queryWrapper 查询包装
+     * @return {@link IPage}<{@link ExpenseReportDTO}>
+     */
+    IPage<ExpenseReportDTO> queryViewPageList(Page<ExpenseReportMainListRequestDTO> page, @Param(Constants.WRAPPER) Wrapper<ExpenseReportMainListRequestDTO> queryWrapper);
+
 }
 

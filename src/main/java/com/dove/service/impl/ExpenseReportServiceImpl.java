@@ -16,6 +16,7 @@ import com.dove.dto.ExpenseReportDTO;
 import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
+import com.dove.dto.requestDTO.ExpenseReportViewListRequestDTO;
 import com.dove.entity.*;
 import com.dove.service.ExpenseReportService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -171,5 +172,31 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    /**
+     * 查询报销单列表
+     *
+     * @param requestDTO 请求dto
+     * @param emId       登录人id
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    @Override
+    public Map<String, Object> queryViewPageList(ExpenseReportViewListRequestDTO requestDTO, Integer emId) {
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            QueryWrapper<ExpenseReportMainListRequestDTO> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("next_deal_em",emId)
+                    .like(StrUtil.isNotEmpty(requestDTO.getCause()), "cause", requestDTO.getCause())
+                    .inSql(StrUtil.isNotEmpty(requestDTO.getName()), "em_id", "SELECT em_id FROM employee WHERE name LIKE '%" + requestDTO.getName() + "%'");
+            com.baomidou.mybatisplus.extension.plugins.pagination.Page<ExpenseReportMainListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());
+            IPage<ExpenseReportDTO> reports = expenseReportDao.queryViewPageList(page, queryWrapper);
+            map.put("success", true);
+            map.put("data", reports);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
     }
 }

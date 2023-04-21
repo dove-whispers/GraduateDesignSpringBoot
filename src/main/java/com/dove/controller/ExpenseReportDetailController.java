@@ -47,6 +47,13 @@ public class ExpenseReportDetailController extends BaseController {
         return new ModelAndView("main-expense-report-detail");
     }
 
+    @ApiOperation(value = "跳转至查看报销单细节信息的路由")
+    @GetMapping("/goViewExpenseReportDetail")
+    public ModelAndView goViewExpenseReportDetail() {
+        request.getSession().setAttribute("pageName", "审核报销单信息");
+        return new ModelAndView("view-expense-report-detail");
+    }
+
     @ApiOperation(value = "查看报销单细节信息")
     @SneakyThrows
     @PostMapping("/queryExpenseReportDetail")

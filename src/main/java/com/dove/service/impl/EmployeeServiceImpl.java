@@ -147,6 +147,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             nextPositionName = Name.TENTATIVE;
         }
+        if (Name.TENTATIVE.equals(nextPositionName)){
+            return 0;
+        }
         Integer nextDealPositionId = positionDao.findPositionIdByPositionName(nextPositionName);
         if (Name.DEPARTMENT_MANAGER.equals(nextPositionName)) {
             return employeeDao.findEmByDepIdAndPositionId(depId, nextDealPositionId);

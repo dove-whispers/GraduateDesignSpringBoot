@@ -24,8 +24,8 @@ public interface DealRecordService {
     /**
      * 分页查询
      *
-     * @param dealRecord 筛选条件
-     * @param pageRequest      分页对象
+     * @param dealRecord  筛选条件
+     * @param pageRequest 分页对象
      * @return 查询结果
      */
     Page<DealRecord> queryByPage(DealRecord dealRecord, PageRequest pageRequest);
@@ -69,4 +69,13 @@ public interface DealRecordService {
      * @return {@link DealRecordDTO}
      */
     DealRecordDTO queryLatestDealRecord(Integer expensiveId);
+
+    /**
+     * 添加新操作记录
+     *
+     * @param dealRecord   交易记录
+     * @param nextDealEmId 下一个交易em id
+     * @param status       状态
+     */
+    void addNewDeal(DealRecord dealRecord, Integer nextDealEmId, String status);
 }

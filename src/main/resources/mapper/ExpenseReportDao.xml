@@ -179,5 +179,10 @@
         SELECT expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
         FROM expense_report ${ew.customSqlSegment}
     </select>
+
+    <select id="queryViewPageList" resultMap="ExpenseReportInfoMap">
+        SELECT expense_id, cause, em_id, create_time, end_time, next_deal_em, total_amount, status
+        FROM expense_report ${ew.customSqlSegment}
+    </select>
 </mapper>
 

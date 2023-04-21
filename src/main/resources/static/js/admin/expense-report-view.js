@@ -1,5 +1,5 @@
 $(function () {
-    let wrap = $('.main-wrap')
+    let wrap = $('.view-wrap')
     let request_condition = {}
     let flag = true
 
@@ -26,22 +26,11 @@ $(function () {
         }
     })
 
-    $('#status-switch').change(function () {
-        flag = true
-        request_condition.current = 1
-        if ($('#status-switch').is(':checked')) {
-            request_condition.status = 1
-        } else {
-            request_condition.status = null
-        }
-        getList(request_condition)
-    })
-
     getList(request_condition)
 
     function getList(data) {
         $.ajax({
-            url: '/expenseReport/getMainList',
+            url: '/expenseReport/getViewList',
             type: 'POST',
             async: false,
             cache: false,
@@ -66,26 +55,19 @@ $(function () {
     }
 
     function handleList(data) {
-        // $.ajax({
-        //     url: '/position/queryPosition',
-        //     type: 'POST',
-        //     async: false,
-        //     cache: false,
-        //     dataType: 'json',
-        //     data:{positionId:},
-        //     success: function (data) {
-        //
-        //     }
-        // })
+        console.log(data)
+        let maxLength = 0
+        data.map(function (item,index) {
+            maxLength = Math.max(maxLength,item.totalAmount.toString().length)
+        })
         let html = ''
         data.map(function (item, index) {
             html += '<tr>'
-                + '<td>' + (index + 1) + '</td>'
+                + '<td>' + (index+1) + '</td>'
                 + '<td>' + item.createEmployee.name + '</td>'
                 + '<td>' + item.cause + '</td>'
                 + '<td>' + item.createTime + '</td>'
-                // + '<td>' + item.nextDealEmployee.name + '</td>'
-                + expenseReportNextDeal(item.nextDealEmployee)
+                + '<td style="padding-left: '+ (10 + (maxLength - item.totalAmount.toString().length) * 8) + 'px">' + item.totalAmount + '元' + '</td>'
                 + expenseReportStatus(item.status)
                 + '<td>'
                 + '<div class="progress progress-striped progress-sm">'
@@ -94,19 +76,12 @@ $(function () {
                 + '</td>'
                 + '<td>'
                 + '<div class="btn-group">'
-                + '<a class="btn btn-xs btn-default" href="/expenseReportDetail/goMainExpenseReportDetail?expenseId=' + (item.expenseId) + '" title="查看" data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>'
+                + '<a class="btn btn-xs btn-default" href="/expenseReportDetail/goViewExpenseReportDetail?expenseId=' + (item.expenseId) + '" title="查看" data-toggle="tooltip"><i class="mdi mdi-eye"></i></a>'
                 + '</div>'
                 + '</td>'
                 + '</tr>'
         })
         wrap.html(html)
-    }
-
-    function expenseReportNextDeal(employee) {
-        if (employee) {
-            return '<td>' + employee.name + '</td>'
-        }
-        return '<td>-</td>'
     }
 
     function expenseReportStatus(status) {

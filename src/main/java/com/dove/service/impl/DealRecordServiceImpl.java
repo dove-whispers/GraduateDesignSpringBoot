@@ -110,15 +110,16 @@ public class DealRecordServiceImpl implements DealRecordService {
     public Integer queryExpenseReportStep(Integer expenseId) {
         try {
             DealRecord dealRecord = dealRecordDao.queryExpensiveLatestDeal(expenseId);
-            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
-            Employee nextDealEmployee = employeeDao.queryById(expenseReport.getNextDealEm());
-            Position nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
-            String nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
+//            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+//            Integer nextDealEm = expenseReport.getNextDealEm();
             Employee employee = employeeDao.queryById(dealRecord.getEmId());
             Position position = positionDao.queryById(employee.getPositionId());
             String positionName = position.getPositionName();
             String dealWay = dealRecord.getDealWay();
             String dealResult = dealRecord.getDealResult();
+//            Employee nextDealEmployee = employeeDao.queryById(nextDealEm);
+//            Position nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
+//            String nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
             if (Way.CREATE.equals(dealWay)) {
                 return Step.CREATED;
             } else if (Way.AUDIT.equals(dealWay)) {
@@ -139,7 +140,7 @@ public class DealRecordServiceImpl implements DealRecordService {
                         return Step.TERMINATED_BY_GENERAL_MANAGER;
                     }
                 } else {
-                    if (Result.PASS.equals(dealResult)) {
+                    if (Result.REMITTANCE.equals(dealResult)) {
                         return Step.PASSED_BY_FINANCIAL_SUPERVISOR;
                     } else if (Result.REPULSE.equals(dealResult)) {
                         return Step.REPULSED_BY_FINANCIAL_SUPERVISOR;
@@ -148,14 +149,17 @@ public class DealRecordServiceImpl implements DealRecordService {
                     }
                 }
             } else {
-                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)){
-                    return Step.CREATED;
-                }else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)){
-                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
-                }else {
-                    return Step.PASSED_BY_GENERAL_MANAGER;
-                }
+                return 0;
             }
+//            else {
+//                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)) {
+//                    return Step.CREATED;
+//                } else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)) {
+//                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
+//                } else {
+//                    return Step.PASSED_BY_GENERAL_MANAGER;
+//                }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -171,5 +175,24 @@ public class DealRecordServiceImpl implements DealRecordService {
     @Override
     public DealRecordDTO queryLatestDealRecord(Integer expensiveId) {
         return this.dealRecordDao.queryLatestDealRecord(expensiveId);
+    }
+
+    /**
+     * 添加新操作记录
+     *
+     * @param dealRecord   交易记录
+     * @param nextDealEmId 下一个交易em id
+     * @param status       状态
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void addNewDeal(DealRecord dealRecord, Integer nextDealEmId, String status) {
+        Integer expenseId = dealRecord.getExpensiveId();
+        ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+        expenseReport.setNextDealEm(nextDealEmId);
+        expenseReport.setStatus(status);
+        expenseReportDao.update(expenseReport);
+        this.dealRecordDao.insert(dealRecord);
+
     }
 }

@@ -74,17 +74,19 @@ $(function () {
         if('已创建'===record.dealResult) return
         let record_comment = $('#record-comment')
         let table  = $('<table class="col-xs-12 m-l-15 m-t-10"></table>')
-        let trh = $('<tr><th>处理人</th><th>处理结果</th><th>处理时间</th><th>备注</th></tr>')
+        let trh = $('<tr><th>处理人</th><th>处理方式</th><th>处理结果</th><th style="padding-left: 25px;">处理时间</th><th>备注</th></tr>')
         let tr = $('<tr></tr>')
         let td_comment = $('<td><textarea id="deal_comment" class="col-xs-10" rows="4" style="resize:none" disabled placeholder="暂无备注">'+(record.comment?record.comment:'')+'</textarea></td>')
         let td_em = $('<td>'+record.employee.name+'</td>')
+        let td_way = $('<td>'+record.dealWay+'</td>')
         let td_result = $('<td>'+record.dealResult+'</td>')
         let td_time = $('<td>'+record.dealTime+'</td>')
-        table.append(trh).append(tr.append(td_em).append(td_result).append(td_time).append(td_comment))
+        table.append(trh).append(tr.append(td_em).append(td_way).append(td_result).append(td_time).append(td_comment))
         record_comment.append(table)
     }
 
     function handleProcedure(step) {
+        if (0===step) return
         let step_dots = $('<ul class="nav-step step-dots"></ul>')
         let step_anchor = $('<ul class="nav-step step-anchor m-l-15">')
         let dot1 = ''

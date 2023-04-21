@@ -1,11 +1,9 @@
 package com.dove.controller;
 
 import com.dove.dto.EmployeeDTO;
-import com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
+import com.dove.dto.requestDTO.*;
 import com.dove.entity.Department;
+import com.dove.entity.ExpenseReport;
 import com.dove.entity.Position;
 import com.dove.service.impl.EmployeeServiceImpl;
 import com.dove.service.impl.ExpenseReportDetailServiceImpl;
@@ -36,14 +34,19 @@ public class ExpenseReportController extends BaseController {
     private ExpenseReportServiceImpl expenseReportService;
     @Resource
     private ExpenseReportDetailServiceImpl expenseReportDetailService;
-    @Resource
-    private EmployeeServiceImpl employeeService;
 
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
     public ModelAndView toAddExpenseReport() {
         request.getSession().setAttribute("pageName", "新增报销单");
         return new ModelAndView("expense-report-add");
+    }
+
+    @ApiOperation(value = "跳转至查看报销单的路由")
+    @GetMapping("/toViewExpenseReport")
+    public ModelAndView toViewExpenseReport() {
+        request.getSession().setAttribute("pageName", "审核报销单");
+        return new ModelAndView("expense-report-view");
     }
 
     @ApiOperation(value = "报销单查重")
@@ -93,6 +96,39 @@ public class ExpenseReportController extends BaseController {
         Map<String, Object> map = new HashMap<>(2);
         try {
             map = expenseReportService.queryMainPageList(requestDTO, emId, department, position);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "获取报销单列表")
+    @PostMapping("/getViewList")
+    @ResponseBody
+    public Map<String, Object> getViewList(@RequestBody ExpenseReportViewListRequestDTO requestDTO) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Integer emId = userInfo.getEmId();
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            map = expenseReportService.queryViewPageList(requestDTO, emId);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "查询报销单是否处于修改状态")
+    @PostMapping("/queryNeedDisable")
+    @ResponseBody
+    public Map<String, Object> queryNeedDisable(Integer expenseId) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(2);
+        try {
+            ExpenseReport expenseReport = expenseReportService.queryById(expenseId);
+            map.put("success", true);
+            map.put("data", expenseReport.getNextDealEm().equals(userInfo.getEmId()));
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());

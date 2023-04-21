@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>职位列表</title>
+    <title>审核报销单</title>
     <link rel="icon" href="../static/favicon.ico" type="image/ico">
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
 <div class="lyear-layout-web">
     <div class="lyear-layout-container">
         <!--左侧导航-->
-        <div th:replace="side.html :: side"></div>
+        <div th:replace="side.html:: side "></div>
         <!--End 左侧导航-->
 
         <!--头部信息-->
@@ -28,54 +28,51 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
+                            <div class="card-header">
+                                <h4>报销单信息</h4>
+                            </div>
                             <div class="card-toolbar clearfix">
                                 <div class="pull-right search-bar">
                                     <div class="input-group">
                                         <div class="input-group-btn">
-                                            <button class="btn btn-default" id="search-btn" type="button">名称</button>
+                                            <input type="hidden" name="search_field" id="search-field" value="name">
+                                            <button class="btn btn-default dropdown-toggle" id="search-btn" data-toggle="dropdown" type="button" aria-haspopup="true" aria-expanded="false">
+                                                姓名 <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li> <a tabindex="-1" href="javascript:void(0)" data-field="name">姓名</a> </li>
+                                                <li> <a tabindex="-1" href="javascript:void(0)" data-field="cause">原因</a> </li>
+                                            </ul>
                                         </div>
-                                        <input id="search-input" type="text" class="form-control" value="" name="keyword" placeholder="请输入名称关键字">
+                                        <input id="search-input" type="text" class="form-control" value="" name="keyword" placeholder="请输入关键字">
                                     </div>
-                                </div>
-                                <div class="pull-right m-10">
-                                    <label class="lyear-switch switch-info">
-                                        <input id="status-switch" type="checkbox">筛选状态
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="toolbar-btn-action">
-                                    <a class="btn btn-primary m-r-5" href="/position/toAddPosition"><i class="mdi mdi-plus"></i> 新增</a>
                                 </div>
                             </div>
                             <div class="card-body">
-
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-hover table-striped">
                                         <thead>
                                         <tr>
-                                            <th>序号</th>
-                                            <th>职位</th>
-                                            <th>创建时间</th>
+                                            <th>#</th>
+                                            <th>报销人</th>
+                                            <th>报销原因</th>
+                                            <th>开始日期</th>
+                                            <th>报销金额</th>
                                             <th>状态</th>
+                                            <th>进度</th>
                                             <th>操作</th>
                                         </tr>
                                         </thead>
-                                        <tbody class="position-wrap">
-                                        <!-- 动态渲染部分 -->
+                                        <tbody class="view-wrap">
                                         </tbody>
                                     </table>
                                 </div>
-                                <ul id="jq-page" class="m-style">
-                                </ul>
-
+                                <ul id="jq-page" class="m-style"></ul>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </main>
         <!--End 页面主要内容-->
     </div>
@@ -89,9 +86,6 @@
 <script type="text/javascript" src="../static/js/lightyear.js"></script>
 <script type="text/javascript" src="../static/js/jquery.pagination.js"></script>
 <script type="text/javascript" src="../static/js/admin/log-out.js"></script>
-<script type="text/javascript" src="../static/js/admin/common.js"></script>
-<script type="text/javascript" src="../static/js/admin/position-list.js"></script>
-<script type="text/javascript">
-</script>
+<script type="text/javascript" src="../static/js/admin/expense-report-view.js"></script>
 </body>
 </html>

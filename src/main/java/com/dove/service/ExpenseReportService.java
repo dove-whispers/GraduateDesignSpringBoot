@@ -3,6 +3,7 @@ package com.dove.service;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
+import com.dove.dto.requestDTO.ExpenseReportViewListRequestDTO;
 import com.dove.entity.Department;
 import com.dove.entity.ExpenseReport;
 import com.dove.entity.Position;
@@ -78,4 +79,13 @@ public interface ExpenseReportService {
      * @param requestDTO 请求dto
      */
     void addExpenseReport(EmployeeDTO userInfo, ExpenseReportRequestDTO requestDTO);
+
+    /**
+     * 查询报销单列表
+     *
+     * @param requestDTO 请求dto
+     * @param emId       登录人id
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryViewPageList(ExpenseReportViewListRequestDTO requestDTO, Integer emId);
 }

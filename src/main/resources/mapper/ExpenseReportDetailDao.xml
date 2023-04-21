@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dove.dao.ExpenseReportDetailDao">
+
+    <resultMap type="com.dove.entity.ExpenseReportDetail" id="ExpenseReportDetailMap">
+        <result property="expensiveDetailId" column="expensive_detail_id" jdbcType="INTEGER"/>
+        <result property="expensiveId" column="expensive_id" jdbcType="INTEGER"/>
+        <result property="item" column="item" jdbcType="VARCHAR"/>
+        <result property="time" column="time" jdbcType="TIMESTAMP"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="num" column="num" jdbcType="VARCHAR"/>
+        <result property="amount" column="amount" jdbcType="VARCHAR"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ExpenseReportDetailMap">
+        select expensive_detail_id,
+               expensive_id,
+               item,
+               time,
+               type,
+               code,
+               num,
+               amount,
+               comment,
+               image
+        from expense_report_detail
+        where expensive_detail_id = #{expensiveDetailId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ExpenseReportDetailMap">
+        select
+        expensive_detail_id, expensive_id, item, time, type, code, num, amount, comment, image
+        from expense_report_detail
+        <where>
+            <if test="expensiveDetailId != null">
+                and expensive_detail_id = #{expensiveDetailId}
+            </if>
+            <if test="expensiveId != null">
+                and expensive_id = #{expensiveId}
+            </if>
+            <if test="item != null and item != ''">
+                and item = #{item}
+            </if>
+            <if test="time != null">
+                and time = #{time}
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
+            </if>
+            <if test="code != null and code != ''">
+                and code = #{code}
+            </if>
+            <if test="num != null and num != ''">
+                and num = #{num}
+            </if>
+            <if test="amount != null">
+                and amount = #{amount}
+            </if>
+            <if test="comment != null and comment != ''">
+                and comment = #{comment}
+            </if>
+            <if test="image != null">
+                and image = #{image}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from expense_report_detail
+        <where>
+            <if test="expensiveDetailId != null">
+                and expensive_detail_id = #{expensiveDetailId}
+            </if>
+            <if test="expensiveId != null">
+                and expensive_id = #{expensiveId}
+            </if>
+            <if test="item != null and item != ''">
+                and item = #{item}
+            </if>
+            <if test="time != null">
+                and time = #{time}
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
+            </if>
+            <if test="code != null and code != ''">
+                and code = #{code}
+            </if>
+            <if test="num != null and num != ''">
+                and num = #{num}
+            </if>
+            <if test="amount != null">
+                and amount = #{amount}
+            </if>
+            <if test="comment != null and comment != ''">
+                and comment = #{comment}
+            </if>
+            <if test="image != null">
+                and image = #{image}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="expensiveDetailId" useGeneratedKeys="true">
+        insert into expense_report_detail(expensive_id, item, time, type, code, num, amount, comment, image)
+        values (#{expensiveId}, #{item}, #{time}, #{type}, #{code}, #{num}, #{amount}, #{comment}, #{image})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="expensiveDetailId" useGeneratedKeys="true">
+        insert into expense_report_detail(expensive_id, item, time, type, code, num, amount, comment, image)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.expensiveId}, #{entity.item}, #{entity.time}, #{entity.type}, #{entity.code}, #{entity.num},
+            #{entity.amount}, #{entity.comment}, #{entity.image})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="expensiveDetailId" useGeneratedKeys="true">
+        insert into expense_report_detail(expensive_id, item, time, type, code, num, amount, comment, image)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.expensiveId}, #{entity.item}, #{entity.time}, #{entity.type}, #{entity.code}, #{entity.num},
+            #{entity.amount}, #{entity.comment}, #{entity.image})
+        </foreach>
+        on duplicate key update
+        expensive_id = values(expensive_id),
+        item = values(item),
+        time = values(time),
+        type = values(type),
+        code = values(code),
+        num = values(num),
+        amount = values(amount),
+        comment = values(comment),
+        image = values(image)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update expense_report_detail
+        <set>
+            <if test="expensiveId != null">
+                expensive_id = #{expensiveId},
+            </if>
+            <if test="item != null and item != ''">
+                item = #{item},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="type != null and type != ''">
+                type = #{type},
+            </if>
+            <if test="code != null and code != ''">
+                code = #{code},
+            </if>
+            <if test="num != null and num != ''">
+                num = #{num},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="comment != null and comment != ''">
+                comment = #{comment},
+            </if>
+            <if test="image != null">
+                image = #{image},
+            </if>
+        </set>
+        where expensive_detail_id = #{expensiveDetailId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from expense_report_detail
+        where expensive_detail_id = #{expensiveDetailId}
+    </delete>
+
+    <select id="queryExistByCodeAndNum" resultType="java.lang.Integer"
+            parameterType="com.dove.dto.requestDTO.ExpenseReportCheckRequestDTO">
+        SELECT 1
+        FROM expense_report_detail
+        WHERE code = #{code}
+          AND num = #{num}
+        LIMIT 1
+    </select>
+    <select id="queryByExpensiveId" resultType="com.dove.entity.ExpenseReportDetail">
+        SELECT expensive_detail_id,
+               expensive_id,
+               item,
+               time,
+               type,
+               code,
+               num,
+               amount,
+               comment,
+               image
+        FROM expense_report_detail
+        WHERE expensive_id = #{expensiveId}
+    </select>
+
+</mapper>
+

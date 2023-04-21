@@ -1,8 +1,13 @@
 package com.dove.service;
 
+import com.dove.dto.requestDTO.PositionListRequestDTO;
+import com.dove.dto.requestDTO.ToggleDepartmentRequestDTO;
+import com.dove.dto.requestDTO.TogglePositionRequestDTO;
 import com.dove.entity.Position;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.Map;
 
 /**
  * 职位表(Position)表服务接口
@@ -53,4 +58,34 @@ public interface PositionService {
      */
     boolean deleteById(Integer positionId);
 
+    /**
+     * 查询职位页面列表
+     *
+     * @param positionListRequestDTO 职位列表请求dto
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryPageList(PositionListRequestDTO positionListRequestDTO);
+
+    /**
+     * 单个职位状态切换
+     *
+     * @param togglePositionRequestDTO 切换位置请求dto
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> toggleStatus(TogglePositionRequestDTO togglePositionRequestDTO);
+
+    /**
+     * 查询活动职位列表
+     *
+     * @return {@link Map}<{@link String}, {@link Object}>
+     */
+    Map<String, Object> queryActivePositionList();
+
+    /**
+     * 通过名称查询id
+     *
+     * @param name 名字
+     * @return {@link Integer}
+     */
+    Integer queryIdByName(String name);
 }

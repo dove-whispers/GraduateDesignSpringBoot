@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
     <title>Side</title>
 </head>
 <body>
@@ -16,19 +16,19 @@
                 <ul class="nav nav-drawer">
                     <li class="nav-item active"><a href="/main"><i class="mdi mdi-home"></i> 后台首页</a></li>
                     <li class="nav-item">
-                        <a href="javascript:void(0)"><i class="mdi mdi-file-document-box"></i> 报销单</a>
+                        <a href="/expenseReport/toViewExpenseReport"><i class="mdi mdi-file-document-box"></i> 报销单</a>
                     </li>
                     <li class="nav-item">
-                        <a href="javascript:void(0)"><i class="mdi mdi-pen"></i> 填写报销单</a>
+                        <a href="/expenseReport/toAddExpenseReport"><i class="mdi mdi-pen"></i> 填写报销单</a>
                     </li>
                     <li class="nav-item">
                         <a href="/department/toList"><i class="mdi mdi-ethernet"></i> 部门管理</a>
                     </li>
                     <li class="nav-item">
-                        <a href="javascript:void(0)"><i class="mdi mdi-sitemap"></i> 职位管理</a>
+                        <a href="/position/toList"><i class="mdi mdi-sitemap"></i> 职位管理</a>
                     </li>
                     <li class="nav-item">
-                        <a href="javascript:void(0)"><i class="mdi mdi-account-settings"></i> 员工管理</a>
+                        <a href="/employee/toList"><i class="mdi mdi-account-settings"></i> 员工管理</a>
                     </li>
                 </ul>
             </nav>

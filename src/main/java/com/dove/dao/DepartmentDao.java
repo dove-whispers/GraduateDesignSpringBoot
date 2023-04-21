@@ -1,10 +1,16 @@
 package com.dove.dao;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dove.dto.requestDTO.DepartmentListRequestDTO;
+import com.dove.dto.responseDTO.ActiveDepartmentListResponseDTO;
 import com.dove.dto.responseDTO.DepartmentListResponseDTO;
 import com.dove.entity.Department;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 /**
@@ -27,7 +33,7 @@ public interface DepartmentDao {
      * 查询指定行数据
      *
      * @param department 查询条件
-     * @param pageable         分页对象
+     * @param pageable   分页对象
      * @return 对象列表
      */
     List<Department> queryAllByLimit(Department department, @Param("pageable") Pageable pageable);
@@ -82,12 +88,15 @@ public interface DepartmentDao {
     int deleteById(Integer depId);
 
     /**
+     * 查询部门页面列表
      * 分页+筛选部门列表
+     * 使用MybatisPlus分页
      *
-     * @param requestDTO 请求dto
-     * @return {@link List}<{@link DepartmentListResponseDTO}>
+     * @param page         请求dto
+     * @param queryWrapper 请求条件
+     * @return {@link IPage}<{@link DepartmentListResponseDTO}>
      */
-    List<DepartmentListResponseDTO> queryPageList(DepartmentListRequestDTO requestDTO);
+    IPage<DepartmentListResponseDTO> queryPageList(Page<DepartmentListRequestDTO> page, @Param(Constants.WRAPPER) Wrapper<DepartmentListRequestDTO> queryWrapper);
 
     /**
      * 将指定部门状态修改为0
@@ -102,5 +111,12 @@ public interface DepartmentDao {
      * @param depId 部门id
      */
     void updateSuccessStatusById(Integer depId);
+
+    /**
+     * 查询活动部门列表
+     *
+     * @return {@link List}<{@link ActiveDepartmentListResponseDTO}>
+     */
+    List<ActiveDepartmentListResponseDTO> queryActiveDepartmentList();
 }
 

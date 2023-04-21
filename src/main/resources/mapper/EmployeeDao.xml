@@ -11,6 +11,7 @@
         <result property="positionId" column="position_id" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
+
     <resultMap type="com.dove.dto.EmployeeDTO" id="UserInfoMap">
         <result property="emId" column="em_id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
@@ -18,9 +19,19 @@
         <result property="depId" column="dep_id" jdbcType="INTEGER"/>
         <result property="positionId" column="position_id" jdbcType="INTEGER"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
-        <association property="department" column="dep_id" select="com.dove.dao.DepartmentDao.queryById" jdbcType="INTEGER"/>
-        <association property="position" column="position_id" select="com.dove.dao.PositionDao.queryById" jdbcType="INTEGER"/>
+        <association property="department" javaType="com.dove.entity.Department" column="dep_id"
+                     select="com.dove.dao.DepartmentDao.queryById" jdbcType="INTEGER"/>
+        <association property="position" javaType="com.dove.entity.Position" column="position_id"
+                     select="com.dove.dao.PositionDao.queryById" jdbcType="INTEGER"/>
     </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EmployeeMap">
+        SELECT em_id, password, name, login_name, dep_id, position_id, status
+        FROM employee
+        WHERE em_id = #{emId}
+    </select>
+
     <select id="queryEmInfoByUserNameAndPassword" resultMap="UserInfoMap">
         SELECT em_id,
                password,
@@ -34,6 +45,59 @@
           AND password = #{password}
     </select>
 
+    <!-- 条件查询(包括MybatisPlus分页查询) -->
+    <select id="queryPageList" resultMap="UserInfoMap">
+        SELECT em_id,
+               password,
+               name,
+               login_name,
+               dep_id,
+               position_id,
+               status
+        FROM employee ${ew.customSqlSegment}
+    </select>
 
+    <update id="updateFailureStatusById">
+        UPDATE employee
+        SET status = 0
+        WHERE em_id = #{emId}
+    </update>
+
+    <update id="updateSuccessStatusById">
+        UPDATE employee
+        SET status = 1
+        WHERE em_id = #{emId}
+    </update>
+
+    <select id="queryIdByPartName" resultType="java.lang.Integer">
+        SELECT em_id
+        FROM employee
+        WHERE name LIKE CONCAT('%', #{partName}, '%')
+    </select>
+
+    <select id="queryIdByDep" resultType="java.lang.Integer">
+        SELECT em_id
+        FROM employee
+        WHERE dep_id = #{depId}
+    </select>
+
+    <select id="findEmByPositionId" resultType="java.lang.Integer">
+        SELECT em_id
+        FROM employee
+        WHERE position_id = #{nextDealPositionId}
+    </select>
+
+    <select id="findEmByDepIdAndPositionId" resultType="java.lang.Integer">
+        SELECT em_id
+        FROM employee
+        WHERE dep_id = #{depId}
+          AND position_id = #{positionId}
+    </select>
+
+    <select id="completeQueryById" resultMap="UserInfoMap">
+        SELECT em_id, password, name, login_name, dep_id, position_id, status
+        FROM employee
+        WHERE em_id = #{emId}
+    </select>
 </mapper>
 

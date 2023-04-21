@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>填写报销单</title>
+    <link rel="icon" href="../static/favicon.ico" type="image/ico">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="../static/js/bootstrap-datepicker/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <link href="../static/js/jconfirm/jquery-confirm.min.css" rel="stylesheet">
+    <link href="../static/css/style.min.css" rel="stylesheet">
+    <link href="../static/css/input-file.css" rel="stylesheet">
+    <link href="../static/css/truncate.css" rel="stylesheet">
+    <link href="../static/css/red.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <div th:replace="side.html :: side"></div>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <div th:replace="topbar.html :: topbar"></div>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="divider text-uppercase">报销原因</div>
+                                    <div class="form-group col-md-12">
+                                        <label for="expense-cause">报销原因</label>
+                                        <input type="text" class="form-control" id="expense-cause" name="expense-cause"
+                                               placeholder="请输入报销原因" value=""/>
+                                    </div>
+                                    <div class="divider text-uppercase">报销明细</div>
+                                    <div class="form-group col-md-12">
+                                        <button id="add" class="btn btn-info btn-round">添 加</button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table class="table table-hover" id="detail-table">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>费用项目</th>
+                                                <th>开票日期</th>
+                                                <th>类别</th>
+                                                <th>发票代码</th>
+                                                <th>发票号码</th>
+                                                <th>报销金额</th>
+                                                <!--                                                <th>发票</th>-->
+                                                <th>选择</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="detail-body">
+                                            <tr>
+                                                <th rowspan="2" scope="row">1</th>
+                                                <td>
+                                                    <input class="form-control detail_item ci" type="text"
+                                                           placeholder="费用项目">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control datepicker detail_time" type="text"
+                                                           placeholder="请选择日期">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_type" type="text"
+                                                           placeholder="类别">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_code cc" type="text"
+                                                           placeholder="发票代码">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_num cn" type="text"
+                                                           placeholder="发票号码">
+                                                </td>
+                                                <td>
+                                                    <input class="form-control detail_amount ca" type="text"
+                                                           placeholder="报销金额">
+                                                </td>
+                                                <td rowspan="2">
+                                                    <div class="btn-group">
+                                                        <a class="img-avatar img-avatar-48 bg-translucent del">
+                                                            <i class="mdi mdi-delete-forever fa-1-5x"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <label class="col-xs-12">备注:</label>
+                                                    <textarea class="col-xs-12" rows="4" style="resize:none"></textarea>
+                                                </td>
+                                                <td>
+                                                    <label class="col-xs-12">发票:</label>
+                                                    <div class="btn-group">
+                                                        <button type="button"
+                                                                class="btn btn-primary btn-round dropdown-toggle"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                            上传发票图片 <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="file" href="javascript:void(0)">本地上传
+                                                                <input type="file" class="detail_image"
+                                                                       accept="image/jpg,image/jpeg,image/png"></a>
+                                                            </li>
+                                                            <li role="separator" class="divider"></li>
+                                                            <li><a href="javascript:void(0)">拍照上传</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td colspan="2">
+                                                    <div>
+                                                        <span>暂无图片</span>
+                                                        <img class="hide pre-img" src="" alt="点击放大"
+                                                             style="max-height: 200px"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="total_amount">总金额</label>
+                                        <div class="input-group m-b-10">
+                                            <a class="btn btn-default input-group-addon">+</a>
+                                            <input type="text" id="total_amount" class="form-control text-right"
+                                                   disabled value="0"/>
+                                            <span class="input-group-addon">元</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button id="submit" class="btn btn-primary">确 定</button>
+                                        <button type="button" class="btn btn-default"
+                                                onclick="history.back();return false;">返 回
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/moment.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datetimepicker/locale/zh-cn.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript"
+        src="../static/js/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<script type="text/javascript" src="../static/js/main.min.js"></script>
+<script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="../static/js/lightyear.js"></script>
+<script type="text/javascript" src="../static/js/jconfirm/jquery-confirm.min.js"></script>
+<script type="text/javascript" src="../static/js/main.min.js"></script>
+<script type="text/javascript" src="../static/js/admin/common.js"></script>
+<script type="text/javascript" src="../static/js/admin/log-out.js"></script>
+<script type="text/javascript" src="../static/js/admin/expense-report-add.js"></script>
+</body>
+</html>

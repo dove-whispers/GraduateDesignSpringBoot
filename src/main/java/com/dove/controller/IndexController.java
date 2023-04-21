@@ -3,8 +3,11 @@ package com.dove.controller;
 import cn.hutool.core.util.StrUtil;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.LoginRequestDTO;
+import com.dove.dto.requestDTO.PasswordRequestDTO;
+import com.dove.entity.Employee;
 import com.dove.service.impl.EmployeeServiceImpl;
 import com.dove.util.CodeUtil;
+import com.dove.util.MD5Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +27,6 @@ import java.util.Map;
 @Api(tags = "登录登出")
 @RestController
 @RequestMapping
-@Slf4j
 public class IndexController extends BaseController {
     @Resource
     private EmployeeServiceImpl employeeService;
@@ -32,7 +34,6 @@ public class IndexController extends BaseController {
     @ApiOperation(value = "跳转至登陆页面")
     @RequestMapping("/login")
     public ModelAndView login() {
-        log.info("用户登录");
         return new ModelAndView("login");
     }
 
@@ -42,7 +43,6 @@ public class IndexController extends BaseController {
     public Map<String, Object> checkLogin(@RequestBody LoginRequestDTO loginRequestDTO) {
         Map<String, Object> resultMap = new HashMap<>(2);
         if (loginRequestDTO.getNeedVerify() && !CodeUtil.checkVerifyCode(request, loginRequestDTO.getVerifyCodeActual())) {
-            log.info("用户验证码错误");
             resultMap.put("success", false);
             resultMap.put("errorMsg", "验证码错误");
             return resultMap;
@@ -52,17 +52,14 @@ public class IndexController extends BaseController {
         if (!StrUtil.isEmpty(username) && !StrUtil.isEmpty(password)) {
             EmployeeDTO userInfo = employeeService.checkUserByUserNameAndPassword(username, password);
             if (null != userInfo) {
-                log.info("用户" + userInfo.getLoginName() + "登录了");
                 resultMap.put("success", true);
                 resultMap.put("username", userInfo.getName());
                 request.getSession().setAttribute("userInfo", userInfo);
             } else {
-                log.info("一次错误的登录");
                 resultMap.put("success", false);
                 resultMap.put("errorMsg", "用户名密码错误");
             }
         } else {
-            log.info("一次空的登录");
             resultMap.put("success", false);
             resultMap.put("errorMsg", "用户名密码均不能为空");
         }
@@ -72,16 +69,43 @@ public class IndexController extends BaseController {
     @ApiOperation(value = "跳转主页面")
     @RequestMapping("/main")
     public ModelAndView toMain() {
+        request.getSession().setAttribute("pageName", "后台首页");
         return new ModelAndView("main");
     }
 
     @ApiOperation(value = "退出登录")
     @PostMapping("/logout")
     public Map<String, Object> logOut() {
-        log.info("用户退出");
         Map<String, Object> modelMap = new HashMap<>(2);
         request.getSession().setAttribute("userInfo", null);
         modelMap.put("success", true);
+        return modelMap;
+    }
+
+    @ApiOperation(value = "跳转修改密码")
+    @RequestMapping("/editPwdPage")
+    public ModelAndView editPwdPage() {
+        request.getSession().setAttribute("pageName", "修改密码");
+        return new ModelAndView("editPwdPage");
+    }
+
+    @ApiOperation(value = "查询用户密码")
+    @PostMapping("/checkPassword")
+    public Map<String, Object> checkPassword(@RequestBody PasswordRequestDTO passwordRequestDTO) {
+        Map<String, Object> modelMap = new HashMap<>(2);
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Employee employee = employeeService.queryById(userInfo.getEmId());
+        String realPassword = employee.getPassword();
+        String oldPassword = passwordRequestDTO.getOldPassword();
+        String newPassword = passwordRequestDTO.getNewPassword();
+        if (realPassword.equals(MD5Util.getMD5(oldPassword))) {
+            modelMap.put("success", true);
+            employee.setPassword(MD5Util.getMD5(newPassword));
+            employeeService.update(employee);
+        } else {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", "旧密码错误!");
+        }
         return modelMap;
     }
 }

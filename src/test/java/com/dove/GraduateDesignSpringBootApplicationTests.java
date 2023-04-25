@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class GraduateDesignSpringBootApplicationTests {
@@ -45,7 +46,8 @@ class GraduateDesignSpringBootApplicationTests {
 
     @Test
     void common() {
-        System.out.println(keyProperty);
+        System.out.println(60 * 60 * 24 * 5);
+        System.out.println(TimeUnit.SECONDS.convert(5,TimeUnit.DAYS));
     }
 
 }

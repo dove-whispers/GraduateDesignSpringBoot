@@ -4,6 +4,7 @@ $(function () {
         let username = $('#username').val()
         let password = $('#password').val()
         let captchaCode = $('#j_captcha').val()
+        let isSave = $('#is_save').is(':checked')
         $.ajax({
             url: '/checkLogin',
             type: 'POST',
@@ -14,6 +15,7 @@ $(function () {
             data: JSON.stringify({
                 userName: username,
                 password,
+                isSave,
                 needVerify: true,
                 verifyCodeActual: captchaCode
             }),

@@ -60,7 +60,11 @@ $(function () {
             success: function (data) {
                 if (data.success) {
                     if (0 === data.data.records.length) {
-                        lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                        if (!request_condition || !request_condition.name && !request_condition.cause) {
+                            lightyear.notify('暂无待处理的报销单~', 'info', 2000, 'mdi mdi-emoticon-excited', 'top', 'center')
+                        } else {
+                            lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                        }
                     }
                     if (flag) {
                         getPageInfo(data.data)
@@ -76,18 +80,18 @@ $(function () {
 
     function handleList(data) {
         let maxLength = 0
-        data.map(function (item,index) {
-            maxLength = Math.max(maxLength,item.totalAmount.toString().length)
+        data.map(function (item, index) {
+            maxLength = Math.max(maxLength, item.totalAmount.toString().length)
         })
         let html = ''
         data.map(function (item, index) {
             html += '<tr>'
-                + '<td>' + (index+1) + '</td>'
+                + '<td>' + (index + 1) + '</td>'
                 + '<td>' + item.createEmployee.name + '</td>'
                 + '<td>' + item.createEmployee.department.name + '</td>'
                 + '<td>' + item.cause + '</td>'
                 + '<td>' + item.createTime + '</td>'
-                + '<td style="padding-left: '+ (10 + (maxLength - item.totalAmount.toString().length) * 8) + 'px">' + item.totalAmount + '元' + '</td>'
+                + '<td style="padding-left: ' + (10 + (maxLength - item.totalAmount.toString().length) * 8) + 'px">' + item.totalAmount + '元' + '</td>'
                 + expenseReportStatus(item.status)
                 + '<td>'
                 + '<div class="progress progress-striped progress-sm">'

@@ -17,11 +17,21 @@ import java.util.Map;
 public interface EmployeeService {
     /**
      * 通过账户名密码联合查询
-     * @param userName
-     * @param password
-     * @return
+     *
+     * @param username 账号
+     * @param password 密码
+     * @return {@link EmployeeDTO}
      */
-    EmployeeDTO checkUserByUserNameAndPassword(String userName, String password);
+    EmployeeDTO checkUserByUserNameAndPassword(String username, String password);
+
+    /**
+     * 检查用户用户名和加密密码
+     *
+     * @param username 用户名
+     * @param password 加密密码
+     * @return {@link EmployeeDTO}
+     */
+    EmployeeDTO checkUserByUserNameAndMdPassword(String username, String password);
 
     /**
      * 查询员工页面列表

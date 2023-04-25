@@ -20,9 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableConfigurationProperties({KeyProperty.class})
 @MapperScan("com.dove.dao")
 public class GraduateDesignSpringBootApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(GraduateDesignSpringBootApplication.class, args);
     }
-
 }

@@ -31,6 +31,8 @@ $(function () {
             ttd.find("span").removeClass("hide")
         }
         $(this).closest('ul').prev().click()
+        //TODO:API
+        // updateImgInfo($(this).closest('tr').prev(), fileStr)
     }).on('click', '.pre-img', function () {
         const img = new Image()
         img.src = $(this).prop('src')
@@ -135,8 +137,6 @@ $(function () {
         language: 'zh-CN',
         orientation: 'button',
     })
-
-    // $(".date-picker").datepicker("update", new Date(data.inputDate));
 
     $('#submit').click(function () {
         let cause = $('#expense-cause').val()
@@ -385,6 +385,33 @@ $(function () {
         detail.comment = comment;
         detail.image = image;
         return detail;
+    }
+
+    function updateImgInfo(tr, base64) {
+        $.ajax({
+            url: '/picture/getImgInfo',
+            type: 'POST',
+            async: false,
+            cache: false,
+            dataType: 'json',
+            data: {base64: base64.substring(base64.indexOf(",") + 1)},
+            success: function (data) {
+                if (data.success) {
+                    fillInInfo(tr, data.data)
+                } else {
+                    lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                }
+            }
+        })
+    }
+
+    function fillInInfo(tr, data) {
+        let result = data.words_result[0].result
+        tr.find('input.detail_time').datepicker('setDate', result.Date[0].word)
+        tr.find('input.detail_type').val(result.InvoiceType[0].word)
+        tr.find('input.detail_code').val(result.InvoiceCode[0].word)
+        tr.find('input.detail_num').val(result.InvoiceNum[0].word)
+        tr.find('input.detail_amount').val(result.Amount[0].word)
     }
 
     function changeFileIntoBase64(file) {

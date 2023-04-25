@@ -9,14 +9,17 @@
     <aside class="lyear-layout-sidebar">
         <!-- logo -->
         <div id="logo" class="sidebar-header img-logo">
-            <a href="/main"><img src="../static/images/main_logo.png"/></a>
+            <a href="/main"><div><i class="mdi mdi-24px mdi-laptop-mac" style="position: relative;left: 10px;top: 3px"></i><h4 class="m-15 d-inline-block">报销单后台管理系统</h4></div></a>
         </div>
         <div class="lyear-layout-sidebar-scroll">
             <nav class="sidebar-main">
                 <ul class="nav nav-drawer">
                     <li class="nav-item active"><a href="/main"><i class="mdi mdi-home"></i> 后台首页</a></li>
                     <li class="nav-item">
-                        <a href="/expenseReport/toViewExpenseReport"><i class="mdi mdi-file-document-box"></i> 报销单</a>
+                        <a href="/expenseReport/toViewExpenseReport">
+                            <i class="mdi mdi-file-document-box"></i> 报销单
+                            <span class="badge" style="position: relative;left: 10px;bottom: 1px"></span>
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a href="/expenseReport/toAddExpenseReport"><i class="mdi mdi-pen"></i> 填写报销单</a>
@@ -30,11 +33,14 @@
                     <li class="nav-item">
                         <a href="/employee/toList"><i class="mdi mdi-account-settings"></i> 员工管理</a>
                     </li>
+                    <li class="nav-item">
+                        <a href="/authority/goPage"><i class="mdi mdi-table-edit"></i> 设置权限</a>
+                    </li>
                 </ul>
             </nav>
 
             <div class="sidebar-footer">
-                <p class="copyright">Copyright &copy; 2023. <a target="_blank" href="http://lyear.itshubao.com">XXXXX</a></p>
+                <p class="copyright">Copyright &copy; 2023. <a target="_blank" href="http://lyear.itshubao.com">曹基民</a></p>
             </div>
         </div>
     </aside>

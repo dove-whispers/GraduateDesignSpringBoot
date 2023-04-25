@@ -38,13 +38,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * 通过账户名密码联合查询
      *
-     * @param userName
-     * @param password
-     * @return
+     * @param username 账号
+     * @param password 密码
+     * @return {@link EmployeeDTO}
      */
     @Override
-    public EmployeeDTO checkUserByUserNameAndPassword(String userName, String password) {
-        return employeeDao.queryEmInfoByUserNameAndPassword(userName, MD5Util.getMD5(password));
+    public EmployeeDTO checkUserByUserNameAndPassword(String username, String password) {
+        return employeeDao.queryEmInfoByUserNameAndPassword(username, MD5Util.getMD5(password));
+    }
+
+    /**
+     * 检查用户用户名和加密密码
+     *
+     * @param username 用户名
+     * @param password 加密密码
+     * @return {@link EmployeeDTO}
+     */
+    @Override
+    public EmployeeDTO checkUserByUserNameAndMdPassword(String username, String password) {
+        return employeeDao.queryEmInfoByUserNameAndMdPassword(username, password);
     }
 
     /**
@@ -147,7 +159,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             nextPositionName = Name.TENTATIVE;
         }
-        if (Name.TENTATIVE.equals(nextPositionName)){
+        if (Name.TENTATIVE.equals(nextPositionName)) {
             return 0;
         }
         Integer nextDealPositionId = positionDao.findPositionIdByPositionName(nextPositionName);

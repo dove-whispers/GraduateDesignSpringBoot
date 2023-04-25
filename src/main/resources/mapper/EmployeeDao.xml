@@ -41,9 +41,23 @@
                position_id,
                status
         FROM employee
-        WHERE login_name = #{userName}
+        WHERE login_name = #{username}
           AND password = #{password}
     </select>
+
+    <select id="queryEmInfoByUserNameAndMdPassword" resultMap="UserInfoMap">
+        SELECT em_id,
+               password,
+               name,
+               login_name,
+               dep_id,
+               position_id,
+               status
+        FROM employee
+        WHERE login_name = #{username}
+          AND password = #{password}
+    </select>
+
 
     <!-- 条件查询(包括MybatisPlus分页查询) -->
     <select id="queryPageList" resultMap="UserInfoMap">

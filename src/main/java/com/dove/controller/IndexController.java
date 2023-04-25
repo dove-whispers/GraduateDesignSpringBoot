@@ -10,13 +10,16 @@ import com.dove.util.CodeUtil;
 import com.dove.util.MD5Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
+import lombok.SneakyThrows;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 首页控制器
@@ -25,7 +28,7 @@ import java.util.Map;
  * @date 2022/01/12
  */
 @Api(tags = "登录登出")
-@RestController
+@Controller
 @RequestMapping
 public class IndexController extends BaseController {
     @Resource
@@ -33,7 +36,22 @@ public class IndexController extends BaseController {
 
     @ApiOperation(value = "跳转至登陆页面")
     @RequestMapping("/login")
-    public ModelAndView login() {
+    @SneakyThrows
+    public ModelAndView login(@CookieValue(value = "username", required = false) String username, @CookieValue(value = "password", required = false) String password) {
+        if (!StrUtil.isEmpty(username) && !StrUtil.isEmpty(password)) {
+            EmployeeDTO userInfo = employeeService.checkUserByUserNameAndMdPassword(username, password);
+            if (null != userInfo) {
+                request.getSession().setAttribute("userInfo", userInfo);
+                response.sendRedirect(request.getContextPath() + "/main");
+                return null;
+            }
+            Cookie cookie1 = new Cookie("username", null);
+            Cookie cookie2 = new Cookie("password", null);
+            cookie1.setMaxAge(0);
+            cookie2.setMaxAge(0);
+            response.addCookie(cookie1);
+            response.addCookie(cookie2);
+        }
         return new ModelAndView("login");
     }
 
@@ -54,6 +72,14 @@ public class IndexController extends BaseController {
             if (null != userInfo) {
                 resultMap.put("success", true);
                 resultMap.put("username", userInfo.getName());
+                if (loginRequestDTO.getIsSave()) {
+                    Cookie cookie1 = new Cookie("username", username);
+                    Cookie cookie2 = new Cookie("password", MD5Util.getMD5(password));
+                    cookie1.setMaxAge((int) TimeUnit.SECONDS.convert(5, TimeUnit.DAYS));
+                    cookie2.setMaxAge((int) TimeUnit.SECONDS.convert(5, TimeUnit.DAYS));
+                    response.addCookie(cookie1);
+                    response.addCookie(cookie2);
+                }
                 request.getSession().setAttribute("userInfo", userInfo);
             } else {
                 resultMap.put("success", false);
@@ -75,8 +101,15 @@ public class IndexController extends BaseController {
 
     @ApiOperation(value = "退出登录")
     @PostMapping("/logout")
+    @ResponseBody
     public Map<String, Object> logOut() {
-        Map<String, Object> modelMap = new HashMap<>(2);
+        Map<String, Object> modelMap = new HashMap<>(1);
+        Cookie cookie1 = new Cookie("username", null);
+        Cookie cookie2 = new Cookie("password", null);
+        cookie1.setMaxAge(0);
+        cookie2.setMaxAge(0);
+        response.addCookie(cookie1);
+        response.addCookie(cookie2);
         request.getSession().setAttribute("userInfo", null);
         modelMap.put("success", true);
         return modelMap;
@@ -91,6 +124,7 @@ public class IndexController extends BaseController {
 
     @ApiOperation(value = "查询用户密码")
     @PostMapping("/checkPassword")
+    @ResponseBody
     public Map<String, Object> checkPassword(@RequestBody PasswordRequestDTO passwordRequestDTO) {
         Map<String, Object> modelMap = new HashMap<>(2);
         EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");

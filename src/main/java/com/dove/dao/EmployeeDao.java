@@ -31,11 +31,20 @@ public interface EmployeeDao extends BaseMapper<Employee> {
     /**
      * 通过账户名密码联合查询
      *
-     * @param userName 用户名(手机号)
+     * @param username 账号(手机号)
      * @param password 密码
      * @return {@link EmployeeDTO}
      */
-    EmployeeDTO queryEmInfoByUserNameAndPassword(@Param("userName") String userName, @Param("password") String password);
+    EmployeeDTO queryEmInfoByUserNameAndPassword(String username, String password);
+
+    /**
+     * 检查用户用户名和加密密码
+     *
+     * @param username 用户名
+     * @param password 加密密码
+     * @return {@link EmployeeDTO}
+     */
+    EmployeeDTO queryEmInfoByUserNameAndMdPassword(String username, String password);
 
     /**
      * 查询员工页面列表

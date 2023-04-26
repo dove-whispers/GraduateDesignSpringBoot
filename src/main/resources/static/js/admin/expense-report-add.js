@@ -22,7 +22,7 @@ $(function () {
     $('#detail-body').on('change', '.detail_image', async function () {
         try {
             //TODO:loading
-            // lightyear.loading('show');
+            lightyear.loading('show');
             let fileStr = await changeFileIntoBase64($(this)[0].files[0])
             let ttd = $(this).closest('td').next()
             let tr = $(this).closest('tr').prev()
@@ -36,9 +36,9 @@ $(function () {
             }
             $(this).closest('ul').prev().click()
             //TODO:API
-            // const info = await queryImgInfo(fileStr)
-            // fillInInfo(tr, info)
-            // lightyear.loading('hide');
+            const info = await queryImgInfo(fileStr)
+            fillInInfo(tr, info)
+            lightyear.loading('hide');
         } catch (e) {
             lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
         }

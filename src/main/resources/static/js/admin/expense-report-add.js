@@ -7,7 +7,7 @@ $(function () {
         dataType: 'json',
         contentType: 'application/json;charset=utf-8',
         data: JSON.stringify({}),
-        success: function (data) {
+        success: data => {
             if (data.success) {
                 let len = data.data.records.length
                 if (0 !== len) {
@@ -19,20 +19,29 @@ $(function () {
         }
     })
 
-    $('#detail-body').on('change', '.detail_image', async function (e) {
-        let fileStr = await changeFileIntoBase64($(this)[0].files[0])
-        let ttd = $(this).closest('td').next()
-        ttd.find("img").prop('src', fileStr)
-        if (fileStr) {
-            ttd.find("img").removeClass("hide")
-            ttd.find("span").addClass("hide")
-        } else {
-            ttd.find("img").addClass("hide")
-            ttd.find("span").removeClass("hide")
+    $('#detail-body').on('change', '.detail_image', async function () {
+        try {
+            //TODO:loading
+            lightyear.loading('show');
+            let fileStr = await changeFileIntoBase64($(this)[0].files[0])
+            let ttd = $(this).closest('td').next()
+            let tr = $(this).closest('tr').prev()
+            ttd.find("img").prop('src', fileStr)
+            if (fileStr) {
+                ttd.find("img").removeClass("hide")
+                ttd.find("span").addClass("hide")
+            } else {
+                ttd.find("img").addClass("hide")
+                ttd.find("span").removeClass("hide")
+            }
+            $(this).closest('ul').prev().click()
+            //TODO:API
+            const info = await queryImgInfo(fileStr)
+            fillInInfo(tr, info)
+            lightyear.loading('hide');
+        } catch (e) {
+            lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
         }
-        $(this).closest('ul').prev().click()
-        //TODO:API
-        // updateImgInfo($(this).closest('tr').prev(), fileStr)
     }).on('click', '.pre-img', function () {
         const img = new Image()
         img.src = $(this).prop('src')
@@ -387,27 +396,32 @@ $(function () {
         return detail;
     }
 
-    function updateImgInfo(tr, base64) {
-        $.ajax({
-            url: '/picture/getImgInfo',
-            type: 'POST',
-            async: false,
-            cache: false,
-            dataType: 'json',
-            data: {base64: base64.substring(base64.indexOf(",") + 1)},
-            success: function (data) {
-                if (data.success) {
-                    fillInInfo(tr, data.data)
-                } else {
-                    lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+    function queryImgInfo(base64) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/picture/getImgInfo',
+                type: 'POST',
+                async: false,
+                cache: false,
+                dataType: 'json',
+                data: {base64: base64.substring(base64.indexOf(",") + 1)},
+                success: data => {
+                    if (data.success) {
+                        resolve(data.data)
+                    } else {
+                        reject(new Error(this.statusText))
+                    }
                 }
-            }
+            })
         })
     }
 
     function fillInInfo(tr, data) {
         let result = data.words_result[0].result
-        tr.find('input.detail_time').datepicker('setDate', result.Date[0].word)
+        let date = result.Date[0].word
+        if (date.length === 10) {
+            tr.find('input.detail_time').datepicker('setDate', new Date(date).format("yyyy-MM-dd"))
+        }
         tr.find('input.detail_type').val(result.InvoiceType[0].word)
         tr.find('input.detail_code').val(result.InvoiceCode[0].word)
         tr.find('input.detail_num').val(result.InvoiceNum[0].word)

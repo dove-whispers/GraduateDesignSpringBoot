@@ -78,13 +78,16 @@ $(function () {
                 if (data.success) {
                     //动态渲染列表数据
                     if (0 === data.data.records.length) {
+                        let fillRow = $('<tr><td colspan="5" style="text-align:center;">暂无部门信息</td></tr>')
+                        wrap.empty().append(fillRow)
                         lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                    } else {
+                        handleList(data.data.records)
                     }
                     if (flag) {
                         getPageInfo(data.data)
                         flag = false
                     }
-                    handleList(data.data.records)
                 } else {
                     lightyear.notify(data.errMsg, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                 }
@@ -96,7 +99,7 @@ $(function () {
         let html = ''
         data.map(function (item, index) {
             html += '<tr>'
-                + '<td>' + (index+1) + '</td>'
+                + '<td>' + (index + 1) + '</td>'
                 + '<td data-toggle="tooltip" title="' + item.name + '">' + item.name + '</td>'
                 + '<td data-toggle="tooltip" title="' + item.address + '">' + item.address + '</td>'
                 + departmentStatus(item.status)

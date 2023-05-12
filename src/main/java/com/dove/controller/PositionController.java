@@ -8,7 +8,6 @@ import com.dove.service.impl.PositionServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +25,6 @@ import java.util.Map;
 @Api(tags = "职位管理模块")
 @Controller
 @RequestMapping("/position")
-@Slf4j
 public class PositionController extends BaseController {
     @Resource
     private PositionServiceImpl positionService;
@@ -34,7 +32,6 @@ public class PositionController extends BaseController {
     @ApiOperation(value = "跳转至职位列表的路由")
     @GetMapping("/toList")
     public ModelAndView toList() {
-        log.info("进入职位列表");
         request.getSession().setAttribute("pageName", "职位管理");
         return new ModelAndView("position-list");
     }
@@ -42,7 +39,6 @@ public class PositionController extends BaseController {
     @ApiOperation(value = "跳转至新增职位的路由")
     @GetMapping("/toAddPosition")
     public ModelAndView toAddPosition() {
-        log.info("新增职位");
         request.getSession().setAttribute("pageName", "新增职位");
         return new ModelAndView("position-add");
     }
@@ -50,7 +46,6 @@ public class PositionController extends BaseController {
     @ApiOperation(value = "跳转至查看职位信息的路由")
     @GetMapping("/goPosition")
     public ModelAndView goPosition() {
-        log.info("查看职位信息");
         request.getSession().setAttribute("pageName", "职位详情");
         return new ModelAndView("position-info");
     }
@@ -58,7 +53,6 @@ public class PositionController extends BaseController {
     @ApiOperation(value = "跳转至查看职位信息的路由")
     @GetMapping("/goPositionEdit")
     public ModelAndView goPositionEdit() {
-        log.info("修改职位信息");
         request.getSession().setAttribute("pageName", "修改职位信息");
         return new ModelAndView("position-edit");
     }
@@ -67,7 +61,6 @@ public class PositionController extends BaseController {
     @PostMapping("/getList")
     @ResponseBody
     public Map<String, Object> getList(@RequestBody PositionListRequestDTO requestDTO) {
-        log.info("查询职位数据");
         Map<String, Object> map;
         try {
             map = positionService.queryPageList(requestDTO);
@@ -83,7 +76,6 @@ public class PositionController extends BaseController {
     @PostMapping("/togglePositionStatus")
     @ResponseBody
     public Map<String, Object> togglePositionStatus(@RequestBody TogglePositionRequestDTO requestDTO) {
-        log.info("修改职位状态");
         Map<String, Object> map = new HashMap<>(2);
         try {
             if (null == requestDTO) {
@@ -129,7 +121,6 @@ public class PositionController extends BaseController {
     @PostMapping("/queryPosition")
     @ResponseBody
     public Map<String, Object> queryPosition(Integer positionId) {
-        log.info("查看职位");
         Map<String, Object> map = new HashMap<>(2);
         Position position;
         try {

@@ -26,8 +26,6 @@ public class LoginRequestDTO implements Serializable {
     private String password;
     @ApiModelProperty(value = "是否要记住账号密码", example = "false")
     private Boolean isSave;
-    @ApiModelProperty(value = "是否要对用户输入的验证码进行校验", example = "false")
-    private Boolean needVerify;
     @ApiModelProperty(value = "用户输入的验证码")
     private String verifyCodeActual;
 }

@@ -1,4 +1,46 @@
 $(function () {
+    let $dashChartBarsCnt = $('.js-chartjs-bars')[0].getContext('2d')
+    let $dashChartLinesCnt = $('.js-chartjs-lines')[0].getContext('2d')
+
+    let $dashChartBarsData = {
+        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        datasets: [
+            {
+                label: '登录用户',
+                borderWidth: 1,
+                borderColor: 'rgba(0,0,0,0)',
+                backgroundColor: 'rgba(51,202,185,0.5)',
+                hoverBackgroundColor: "rgba(51,202,185,0.7)",
+                hoverBorderColor: "rgba(0,0,0,0)",
+                data: [2500, 1500, 1200, 3200, 4800, 3500, 1500]
+            }
+        ]
+    }
+    let $dashChartLinesData = {
+        labels: ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+        datasets: [
+            {
+                label: '报销金额',
+                data: [20, 25, 40, 30, 45, 40, 55, 40, 48, 40, 42, 50],
+                borderColor: '#358ed7',
+                backgroundColor: 'rgba(53, 142, 215, 0.175)',
+                borderWidth: 1,
+                fill: false,
+                lineTension: 0.5
+            }
+        ]
+    }
+
+    new Chart($dashChartBarsCnt, {
+        type: 'bar',
+        data: $dashChartBarsData
+    });
+
+    let myLineChart = new Chart($dashChartLinesCnt, {
+        type: 'line',
+        data: $dashChartLinesData,
+    })
+
     let wrap = $('.main-wrap')
     let request_condition = {}
     let flag = true
@@ -71,13 +113,16 @@ $(function () {
             success: function (data) {
                 if (data.success) {
                     if (0 === data.data.records.length) {
+                        let fillRow = $('<tr><td colspan="9" style="text-align:center;">暂无相关报销单</td></tr>')
+                        wrap.empty().append(fillRow)
                         lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                    } else {
+                        handleList(data.data.records)
                     }
                     if (flag) {
                         getPageInfo(data.data)
                         flag = false
                     }
-                    handleList(data.data.records)
                 } else {
                     lightyear.notify(data.errMsg, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                 }

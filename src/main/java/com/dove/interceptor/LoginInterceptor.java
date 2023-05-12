@@ -17,10 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        Object userObj = request.getSession().getAttribute("userInfo");
-        if (null != userObj) {
-            EmployeeDTO userInfo = (EmployeeDTO) userObj;
-            if (userInfo.getEmId() != null && userInfo.getStatus() == 1) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        if (null != userInfo) {
+            if (userInfo.getEmId() != null && 1 == userInfo.getStatus()) {
                 if (request.getRequestURI().toLowerCase().contains("login")) {
                     response.sendRedirect("/main");
                     return false;

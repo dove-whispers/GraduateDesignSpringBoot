@@ -40,10 +40,9 @@ public class IndexController extends BaseController {
     public ModelAndView login(@CookieValue(value = "username", required = false) String username, @CookieValue(value = "password", required = false) String password) {
         if (!StrUtil.isEmpty(username) && !StrUtil.isEmpty(password)) {
             EmployeeDTO userInfo = employeeService.checkUserByUserNameAndMdPassword(username, password);
-            if (null != userInfo) {
+            if (null != userInfo && 1 == userInfo.getStatus()) {
                 request.getSession().setAttribute("userInfo", userInfo);
-                response.sendRedirect(request.getContextPath() + "/main");
-                return null;
+                return new ModelAndView("main");
             }
             Cookie cookie1 = new Cookie("username", null);
             Cookie cookie2 = new Cookie("password", null);
@@ -60,7 +59,7 @@ public class IndexController extends BaseController {
     @ResponseBody
     public Map<String, Object> checkLogin(@RequestBody LoginRequestDTO loginRequestDTO) {
         Map<String, Object> resultMap = new HashMap<>(2);
-        if (loginRequestDTO.getNeedVerify() && !CodeUtil.checkVerifyCode(request, loginRequestDTO.getVerifyCodeActual())) {
+        if (!CodeUtil.checkVerifyCode(request, loginRequestDTO.getVerifyCodeActual())) {
             resultMap.put("success", false);
             resultMap.put("errorMsg", "验证码错误");
             return resultMap;
@@ -70,20 +69,25 @@ public class IndexController extends BaseController {
         if (!StrUtil.isEmpty(username) && !StrUtil.isEmpty(password)) {
             EmployeeDTO userInfo = employeeService.checkUserByUserNameAndPassword(username, password);
             if (null != userInfo) {
-                resultMap.put("success", true);
-                resultMap.put("username", userInfo.getName());
-                if (loginRequestDTO.getIsSave()) {
-                    Cookie cookie1 = new Cookie("username", username);
-                    Cookie cookie2 = new Cookie("password", MD5Util.getMD5(password));
-                    cookie1.setMaxAge((int) TimeUnit.SECONDS.convert(5, TimeUnit.DAYS));
-                    cookie2.setMaxAge((int) TimeUnit.SECONDS.convert(5, TimeUnit.DAYS));
-                    response.addCookie(cookie1);
-                    response.addCookie(cookie2);
+                if (1 != userInfo.getStatus()) {
+                    resultMap.put("success", false);
+                    resultMap.put("errorMsg", "该用户已离职!");
+                } else {
+                    resultMap.put("success", true);
+                    resultMap.put("username", userInfo.getName());
+                    if (loginRequestDTO.getIsSave()) {
+                        Cookie cookie1 = new Cookie("username", username);
+                        Cookie cookie2 = new Cookie("password", MD5Util.getMD5(password));
+                        cookie1.setMaxAge((int) TimeUnit.SECONDS.convert(5, TimeUnit.DAYS));
+                        cookie2.setMaxAge((int) TimeUnit.SECONDS.convert(5, TimeUnit.DAYS));
+                        response.addCookie(cookie1);
+                        response.addCookie(cookie2);
+                    }
+                    request.getSession().setAttribute("userInfo", userInfo);
                 }
-                request.getSession().setAttribute("userInfo", userInfo);
             } else {
                 resultMap.put("success", false);
-                resultMap.put("errorMsg", "用户名密码错误");
+                resultMap.put("errorMsg", "用户名密码错误!");
             }
         } else {
             resultMap.put("success", false);
@@ -133,9 +137,14 @@ public class IndexController extends BaseController {
         String oldPassword = passwordRequestDTO.getOldPassword();
         String newPassword = passwordRequestDTO.getNewPassword();
         if (realPassword.equals(MD5Util.getMD5(oldPassword))) {
-            modelMap.put("success", true);
-            employee.setPassword(MD5Util.getMD5(newPassword));
-            employeeService.update(employee);
+            if (oldPassword.equalsIgnoreCase(newPassword)) {
+                modelMap.put("success", false);
+                modelMap.put("errMsg", "旧密码不能与新密码相同!");
+            } else {
+                modelMap.put("success", true);
+                employee.setPassword(MD5Util.getMD5(newPassword));
+                employeeService.update(employee);
+            }
         } else {
             modelMap.put("success", false);
             modelMap.put("errMsg", "旧密码错误!");

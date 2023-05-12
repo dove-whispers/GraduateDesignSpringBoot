@@ -60,17 +60,22 @@ $(function () {
             success: function (data) {
                 if (data.success) {
                     if (0 === data.data.records.length) {
+                        let fillRow = $('<tr><td colspan="9" style="text-align:center;"></td></tr>')
                         if (!request_condition || !request_condition.name && !request_condition.cause) {
+                            fillRow.children().text('不存在任何待处理的报销单')
                             lightyear.notify('暂无待处理的报销单~', 'info', 2000, 'mdi mdi-emoticon-excited', 'top', 'center')
                         } else {
+                            fillRow.children().text('未找到相关报销单')
                             lightyear.notify('啥也没搜到~', 'info', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                         }
+                        wrap.empty().append(fillRow)
+                    } else {
+                        handleList(data.data.records)
                     }
                     if (flag) {
                         getPageInfo(data.data)
                         flag = false
                     }
-                    handleList(data.data.records)
                 } else {
                     lightyear.notify(data.errMsg, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
                 }

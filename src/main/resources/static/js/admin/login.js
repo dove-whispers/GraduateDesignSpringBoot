@@ -1,9 +1,22 @@
 $(function () {
-    $('#captcha').click()
-    $('#submit').click(function () {
-        let username = $('#username').val()
-        let password = $('#password').val()
-        let captchaCode = $('#j_captcha').val()
+    let $username = $('#username')
+    let $password = $('#password')
+    let $captcha = $('#captcha')
+    let $j_captcha = $('#j_captcha')
+    let $submit = $('#submit')
+    $captcha.click(function () {
+        $(this).prop('src', '/getKaptchaImg?p=' + Math.ceil(Math.random() * 100))
+    })
+    $captcha.click()
+    $('#username,#password,#j_captcha').keydown(function (e) {
+        if (13 === e.keyCode) {
+            $submit.click()
+        }
+    })
+    $submit.click(function () {
+        let username = $username.val()
+        let password = $password.val()
+        let captchaCode = $j_captcha.val()
         let isSave = $('#is_save').is(':checked')
         $.ajax({
             url: '/checkLogin',
@@ -16,7 +29,6 @@ $(function () {
                 userName: username,
                 password,
                 isSave,
-                needVerify: true,
                 verifyCodeActual: captchaCode
             }),
             success: function (data) {
@@ -28,8 +40,4 @@ $(function () {
             }
         })
     })
-})()
-
-function changeVerifyCode(img) {
-    img.src = "/getKaptchaImg?p=" + Math.ceil(Math.random() * 100)
-}
+})

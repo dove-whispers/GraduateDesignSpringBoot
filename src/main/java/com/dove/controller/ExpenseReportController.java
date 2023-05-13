@@ -34,6 +34,8 @@ public class ExpenseReportController extends BaseController {
     private ExpenseReportServiceImpl expenseReportService;
     @Resource
     private ExpenseReportDetailServiceImpl expenseReportDetailService;
+    @Resource
+    private EmployeeServiceImpl employeeService;
 
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
@@ -76,7 +78,9 @@ public class ExpenseReportController extends BaseController {
                 }
                 count++;
             }
-            expenseReportService.addExpenseReport(userInfo, requestDTO);
+            Integer emId = userInfo.getEmId();
+            Integer nextDealEmId = employeeService.queryNextDealEmId(emId, userInfo.getDepId());
+            expenseReportService.addExpenseReport(requestDTO, emId, nextDealEmId);
             map.put("success", true);
         } catch (Exception e) {
             map.put("success", false);

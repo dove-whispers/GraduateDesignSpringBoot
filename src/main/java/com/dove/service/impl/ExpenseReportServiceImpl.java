@@ -11,7 +11,6 @@ import com.dove.constants.Constants.Way;
 import com.dove.dao.DealRecordDao;
 import com.dove.dao.ExpenseReportDao;
 import com.dove.dao.ExpenseReportDetailDao;
-import com.dove.dto.EmployeeDTO;
 import com.dove.dto.ExpenseReportDTO;
 import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
@@ -145,17 +144,16 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
     /**
      * 添加报销单
      *
-     * @param userInfo   用户信息
-     * @param requestDTO 请求dto
+     * @param requestDTO   请求dto
+     * @param emId         申请人id
+     * @param nextDealEmId 下一处理人id
      */
     @Override
     @SneakyThrows
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void addExpenseReport(EmployeeDTO userInfo, ExpenseReportRequestDTO requestDTO) {
+    public void addExpenseReport(ExpenseReportRequestDTO requestDTO, Integer emId, Integer nextDealEmId) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Integer emId = userInfo.getEmId();
-            Integer nextDealEmId = employeeService.queryNextDealEmId(emId, userInfo.getDepId());
             ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), Status.CREATE);
             expenseReport = this.insert(expenseReport);
             Integer expenseId = expenseReport.getExpenseId();
@@ -186,7 +184,7 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
         Map<String, Object> map = new HashMap<>(2);
         try {
             QueryWrapper<ExpenseReportMainListRequestDTO> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("next_deal_em",emId)
+            queryWrapper.eq("next_deal_em", emId)
                     .like(StrUtil.isNotEmpty(requestDTO.getCause()), "cause", requestDTO.getCause())
                     .inSql(StrUtil.isNotEmpty(requestDTO.getName()), "em_id", "SELECT em_id FROM employee WHERE name LIKE '%" + requestDTO.getName() + "%'");
             com.baomidou.mybatisplus.extension.plugins.pagination.Page<ExpenseReportMainListRequestDTO> page = new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(requestDTO.getCurrent(), requestDTO.getSize());

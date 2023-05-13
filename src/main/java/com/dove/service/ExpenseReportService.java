@@ -1,6 +1,5 @@
 package com.dove.service;
 
-import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportViewListRequestDTO;
@@ -75,10 +74,11 @@ public interface ExpenseReportService {
     /**
      * 添加报销单
      *
-     * @param userInfo   用户信息
-     * @param requestDTO 请求dto
+     * @param requestDTO   请求dto
+     * @param emId         em id
+     * @param nextDealEmId 下一个交易em id
      */
-    void addExpenseReport(EmployeeDTO userInfo, ExpenseReportRequestDTO requestDTO);
+    void addExpenseReport(ExpenseReportRequestDTO requestDTO, Integer emId, Integer nextDealEmId);
 
     /**
      * 查询报销单列表

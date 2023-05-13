@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * 操作记录请求dto
+ * 审核报销单操作记录请求dto
  *
  * @author dove_whispers
  * @date 2023-04-21
@@ -17,8 +17,8 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(description = "获取部门信息的RequestDTO")
-public class DealRecordRequestDTO implements Serializable {
+@ApiModel(description = "获取审核报销单信息的RequestDTO")
+public class AuditDealRecordRequestDTO implements Serializable {
     private static final long serialVersionUID = -6702285301182015430L;
     @ApiModelProperty(value = "处理方式")
     private String way;

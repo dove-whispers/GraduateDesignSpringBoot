@@ -4,24 +4,45 @@ $(function () {
     const pre = 'data:image/jpeg;base64,'
     let result_div = $('#result')
     if (expenseId) {
-        $.ajax({
-            url: '/expenseReportDetail/queryExpenseReportDetail',
-            type: 'POST',
-            async: false,
-            cache: false,
-            dataType: 'json',
-            data: {expensiveId: expenseId},
-            success: function (data) {
-                if (data.success) {
-                    handleList(data.data)
-                    queryLatestDealRecord()
-                } else {
-                    lightyear.notify('报销单细节查询失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
-                }
-            }
-        })
+        getData().then(() => console.log('渲染完成'))
+    }
 
-        function queryLatestDealRecord() {
+    async function getData() {
+        try {
+            const step = await queryStep()
+            handleProcedure(step)
+            const deal_record = await queryLatestDealRecord()
+            handleDeal(deal_record)
+            handleDealResult()
+            const list_data = await queryExpenseReportDetail()
+            handleList(list_data)
+        } catch (e) {
+            lightyear.notify(e, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+        }
+    }
+
+    function queryExpenseReportDetail() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/expenseReportDetail/queryExpenseReportDetail',
+                type: 'POST',
+                async: false,
+                cache: false,
+                dataType: 'json',
+                data: {expensiveId: expenseId},
+                success: data => {
+                    if (data.success) {
+                        resolve(data.data)
+                    } else {
+                        reject('报销单细节查询失败!')
+                    }
+                }
+            })
+        })
+    }
+
+    function queryLatestDealRecord() {
+        return new Promise((resolve, reject) => {
             $.ajax({
                 url: '/dealRecord/queryLatestDealRecord',
                 type: 'POST',
@@ -29,35 +50,44 @@ $(function () {
                 cache: false,
                 dataType: 'json',
                 data: {expensiveId: expenseId},
-                success: function (data) {
+                success: data => {
                     if (data.success) {
-                        handleDeal(data.data)
-                        if ('打回' === data.data.dealResult) {
-                            $(':disabled').removeAttr("disabled");
-                            $('#total_amount').attr('disabled', 'disabled')
-                            $('#deal_comment').attr('disabled', 'disabled')
-                            dealResult(true)
-                        }
-                        dealResult(false)
+                        resolve(data.data)
                     } else {
-                        lightyear.notify('报销报销单最新操作失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                        reject('报销报销单最新操作失败!')
                     }
                 }
             })
-        }
+        })
     }
 
-    function dealResult(result) {
+    function queryStep() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/dealRecord/queryExpenseReportStep',
+                type: 'POST',
+                async: false,
+                cache: false,
+                dataType: 'json',
+                data: {expensiveId: expenseId},
+                success: data => {
+                    if (data.success) {
+                        resolve(data.step)
+                    } else {
+                        reject('报销进度查询失败!')
+                    }
+                }
+            })
+        })
+    }
+
+    function handleDealResult() {
+        // '<button id="edit" class="btn btn-label btn-primary m-r-15"><label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label>提交修改</button>'
         let html = ''
-        if (result) {
-            html += '<label class="col-lg-12 m-b-15">处理结果:</label>'
-                + '<button id="edit" class="btn btn-label btn-primary m-r-15"><label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label>提交修改</button>'
-        } else {
-            html += '<label class="col-lg-12 m-b-15">处理结果:</label>'
-                + '<button id="primary" class="btn btn-label btn-primary m-r-15" data-name="通过"><label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label>确认通过</button>'
-                + '<button id="warning" class="btn btn-label btn-warning m-r-15" data-name="打回"><label><i class="mdi mdi-arrow-left-bold-circle-outline"></i></label>打回修改</button>'
-                + '<button id="danger" class="btn btn-label btn-danger" data-name="终止"><label><i class="mdi mdi-close-circle-outline"></i></label>终&nbsp;&nbsp;止</button>'
-        }
+        html += '<label class="col-lg-12 m-b-15">处理结果:</label>'
+            + '<button id="primary" class="btn btn-label btn-primary m-r-15" data-name="通过"><label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label>确认通过</button>'
+            + '<button id="warning" class="btn btn-label btn-warning m-r-15" data-name="打回"><label><i class="mdi mdi-arrow-left-bold-circle-outline"></i></label>打回修改</button>'
+            + '<button id="danger" class="btn btn-label btn-danger" data-name="终止"><label><i class="mdi mdi-close-circle-outline"></i></label>终&nbsp;&nbsp;止</button>'
         result_div.html(html)
     }
 
@@ -84,16 +114,30 @@ $(function () {
     result_div.on('click', '#primary,#warning,#danger', function () {
         let name = $(this).data('name')
         let comment = $('#need_comment').val()
+        let color = ''
+        let type = ''
+        if ('通过' === name) {
+            color = 'btn-green'
+            type = 'green'
+        } else if ('打回' === name) {
+            color = 'btn-orange'
+            type = 'orange'
+        } else {
+            color = 'btn-red'
+            type = 'red'
+        }
         $.confirm({
             title: '确认框',
             content: '确认' + name + '吗?',
+            type: type,
+            typeAnimated: true,
             buttons: {
-                confirm: {
+                omg: {
                     text: '确认',
-                    btnClass: 'btn-blue',
+                    btnClass: color,
                     action: function () {
                         $.ajax({
-                            url: '/dealRecord/addNewDeal',
+                            url: '/dealRecord/addAuditDeal',
                             type: 'POST',
                             async: false,
                             cache: false,
@@ -110,7 +154,7 @@ $(function () {
                         })
                     }
                 },
-                cancel: {
+                close: {
                     text: '取消',
                 }
             }
@@ -180,6 +224,102 @@ $(function () {
         } else {
             return '<td><label class="col-xs-12">发票:</label><span class="col-xs-12 text-truncate">暂无发票图片</span></td>'
         }
+    }
+
+    function handleProcedure(step) {
+        if (0 === step) return
+        let step_dots = $('<ul class="nav-step step-dots"></ul>')
+        let step_anchor = $('<ul class="nav-step step-anchor m-l-15">')
+        let dot1 = ''
+        let dot2 = ''
+        let dot3 = ''
+        let dot4 = ''
+        let anchor1 = ''
+        let anchor2 = ''
+        let anchor3 = ''
+        let anchor4 = ''
+        let tip = ''
+        switch (step) {
+            case 1:
+            case 5:
+            case 8:
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('active', '步骤二')
+                dot3 = createStepDot(null, '步骤三')
+                dot4 = createStepDot(null, '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor(null, '步骤二', '部长审核')
+                anchor3 = createStepAnchor(null, '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
+                switch (step) {
+                    case 5:
+                        tip = createTip('warning', null)
+                        break
+                    case 8:
+                        tip = createTip('danger', '部门经理')
+                        break
+                    default:
+                }
+                break
+            case 2:
+            case 6:
+            case 9:
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('complete', '步骤二')
+                dot3 = createStepDot('active', '步骤三')
+                dot4 = createStepDot(null, '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor('active', '步骤二', '部长审核')
+                anchor3 = createStepAnchor(null, '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
+                switch (step) {
+                    case 6:
+                        tip = createTip('warning', null)
+                        break
+                    case 9:
+                        tip = createTip('danger', '总经理')
+                        break
+                    default:
+                }
+                break
+            case 3:
+            case 7:
+            case 10:
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('complete', '步骤二')
+                dot3 = createStepDot('complete', '步骤三')
+                dot4 = createStepDot('active', '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor('active', '步骤二', '部长审核')
+                anchor3 = createStepAnchor('active', '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
+                switch (step) {
+                    case 7:
+                        tip = createTip('warning', null)
+                        break
+                    case 10:
+                        tip = createTip('danger', '财务')
+                        break
+                    default:
+                }
+                break
+            case 4:
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('complete', '步骤二')
+                dot3 = createStepDot('complete', '步骤三')
+                dot4 = createStepDot('complete', '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor('active', '步骤二', '部长审核')
+                anchor3 = createStepAnchor('active', '步骤三', '总经理审核')
+                anchor4 = createStepAnchor('active', '步骤四', '财务打款')
+                tip = createTip(null, null)
+                break
+            default:
+                console.log('进度非法!')
+        }
+        step_dots.append(dot1).append(dot2).append(dot3).append(dot4)
+        step_anchor.append(anchor1).append(anchor2).append(anchor3).append(anchor4)
+        $('#procedure').append(step_dots).append(step_anchor).append(tip)
     }
 
     function createStepDot(status, text) {

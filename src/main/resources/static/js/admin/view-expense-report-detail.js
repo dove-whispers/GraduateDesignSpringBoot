@@ -321,12 +321,20 @@ $(function () {
         lightyear.loading('show');
         try {
             let fileStr = await changeFileIntoBase64($(this)[0].files[0])
-            console.log(fileStr)
             let ttd = $(this).closest('td').next()
             let tr = $(this).closest('tr').prev()
-            ttd.find("img").prop('src', fileStr)
+            if (fileStr) {
+                if (1 === ttd.has('img').length) {
+                    ttd.find("img").prop('src', fileStr)
+                } else {
+                    ttd.empty().append('<img class="col-xs-12 img-f" src="' + (fileStr) + '" alt="点击放大" style="cursor:pointer"/>')
+                }
+            } else {
+                if (1 === ttd.has('img').length) {
+                    ttd.empty().append('<span class="col-xs-12 text-truncate">暂无发票图片</span>')
+                }
+            }
             $(this).closest('ul').prev().click()
-
             // image = $(colElement).find("img").prop('src')
             // image = image.length > 100 ? image.substring(image.indexOf(",") + 1) : ''
             //TODO:API

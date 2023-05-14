@@ -34,6 +34,8 @@ public class ExpenseReportController extends BaseController {
     private ExpenseReportServiceImpl expenseReportService;
     @Resource
     private ExpenseReportDetailServiceImpl expenseReportDetailService;
+    @Resource
+    private EmployeeServiceImpl employeeService;
 
     @ApiOperation(value = "跳转至新增报销单的路由")
     @GetMapping("/toAddExpenseReport")
@@ -59,9 +61,8 @@ public class ExpenseReportController extends BaseController {
     @ApiOperation(value = "新增报销单")
     @PostMapping("/addExpenseReport")
     @ResponseBody
-    public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportRequestDTO requestDTO) {
-        Object userObj = request.getSession().getAttribute("userInfo");
-        EmployeeDTO userInfo = (EmployeeDTO) userObj;
+    public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportAddRequestDTO requestDTO) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
         Map<String, Object> map = new HashMap<>(2);
         ExpenseReportCheckRequestDTO c = new ExpenseReportCheckRequestDTO();
         try {
@@ -76,7 +77,25 @@ public class ExpenseReportController extends BaseController {
                 }
                 count++;
             }
-            expenseReportService.addExpenseReport(userInfo, requestDTO);
+            Integer emId = userInfo.getEmId();
+            Integer nextDealEmId = employeeService.queryNextDealEmId(emId, userInfo.getDepId());
+            expenseReportService.addExpenseReport(requestDTO, emId, nextDealEmId);
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "修改报销单")
+    @PostMapping("/updateExpenseReport")
+    @ResponseBody
+    public Map<String, Object> updateExpenseReport(@RequestBody ExpenseReportUpdateRequestDTO requestDTO) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(1);
+        try {
+            Integer nextDealEmId = employeeService.queryNextDealEmId(userInfo.getEmId(), userInfo.getDepId());
+            expenseReportService.updateReport(userInfo, requestDTO, nextDealEmId);
             map.put("success", true);
         } catch (Exception e) {
             map.put("success", false);
@@ -132,6 +151,38 @@ public class ExpenseReportController extends BaseController {
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "放弃报销单")
+    @PostMapping("/abandonReport")
+    @ResponseBody
+    public Map<String, Object> abandonReport(Integer expensiveId, String comment) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(1);
+        try {
+            expenseReportService.abortReport(userInfo, expensiveId,comment);
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "是否在处理申请人本人的报销单")
+    @PostMapping("/isSelfReport")
+    @ResponseBody
+    public Map<String, Object> isSelfReport(Integer expensiveId) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(2);
+        ExpenseReport expenseReport;
+        try {
+            expenseReport = expenseReportService.queryById(expensiveId);
+            map.put("success", true);
+            map.put("outcome", expenseReport.getEmId().equals(userInfo.getEmId()));
+        } catch (Exception e) {
+            map.put("success", false);
         }
         return map;
     }

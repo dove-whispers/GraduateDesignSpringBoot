@@ -33,11 +33,14 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
+                                <div id="procedure">
+                                    <div class="divider text-uppercase">报销进度</div>
+                                </div>
                                 <div class="row">
                                     <div class="divider text-uppercase">报销原因</div>
                                     <div class="form-group col-md-12">
-                                        <label for="expense-cause">报销原因</label>
-                                        <input type="text" class="form-control" id="expense-cause" disabled/>
+                                        <label for="expense_cause">报销原因</label>
+                                        <input type="text" class="form-control" id="expense_cause"/>
                                     </div>
                                     <div class="divider text-uppercase">报销明细</div>
                                     <div class="col-md-12">
@@ -54,7 +57,7 @@
                                                 <th class="text-truncate">更多</th>
                                             </tr>
                                             </thead>
-                                            <tbody id="detail-body">
+                                            <tbody id="detail_body">
                                             </tbody>
                                         </table>
                                     </div>
@@ -62,12 +65,11 @@
                                         <label class="col-xs-12" for="total_amount">总金额</label>
                                         <div class="input-group m-b-10">
                                             <a class="btn btn-default input-group-addon">+</a>
-                                            <input type="text" id="total_amount" class="form-control text-right"
-                                                   disabled/>
+                                            <input type="text" id="total_amount" class="form-control text-right" disabled/>
                                             <span class="input-group-addon">元</span>
                                         </div>
                                     </div>
-                                    <div id="record-comment" class="col-md-12">
+                                    <div id="record_comment" class="col-md-12">
                                     </div>
                                     <div class="divider text-uppercase">报销审核</div>
                                     <div class="row">
@@ -107,7 +109,6 @@
 <script type="text/javascript" src="../static/js/bootstrap-notify.min.js"></script>
 <script type="text/javascript" src="../static/js/lightyear.js"></script>
 <script type="text/javascript" src="../static/js/jconfirm/jquery-confirm.min.js"></script>
-<script type="text/javascript" src="../static/js/main.min.js"></script>
 <script type="text/javascript" src="../static/js/admin/common.js"></script>
 <script type="text/javascript" src="../static/js/admin/log-out.js"></script>
 <script type="text/javascript" src="../static/js/admin/view-expense-report-detail.js"></script>

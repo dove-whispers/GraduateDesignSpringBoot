@@ -1,14 +1,13 @@
 package com.dove.service.impl;
 
-import com.dove.constants.Constants.Name;
-import com.dove.constants.Constants.Result;
-import com.dove.constants.Constants.Step;
-import com.dove.constants.Constants.Way;
+import com.dove.constants.Constants.*;
 import com.dove.dao.DealRecordDao;
 import com.dove.dao.EmployeeDao;
 import com.dove.dao.ExpenseReportDao;
 import com.dove.dao.PositionDao;
 import com.dove.dto.DealRecordDTO;
+import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.AuditDealRecordRequestDTO;
 import com.dove.entity.DealRecord;
 import com.dove.entity.Employee;
 import com.dove.entity.ExpenseReport;
@@ -22,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * 操作记录表(DealRecord)表服务实现类
@@ -110,17 +110,24 @@ public class DealRecordServiceImpl implements DealRecordService {
     public Integer queryExpenseReportStep(Integer expenseId) {
         try {
             DealRecord dealRecord = dealRecordDao.queryExpensiveLatestDeal(expenseId);
-//            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
-//            Integer nextDealEm = expenseReport.getNextDealEm();
+            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+            Integer nextDealEm = expenseReport.getNextDealEm();
             Employee employee = employeeDao.queryById(dealRecord.getEmId());
             Position position = positionDao.queryById(employee.getPositionId());
             String positionName = position.getPositionName();
             String dealWay = dealRecord.getDealWay();
             String dealResult = dealRecord.getDealResult();
-//            Employee nextDealEmployee = employeeDao.queryById(nextDealEm);
-//            Position nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
-//            String nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
-            if (Way.CREATE.equals(dealWay)) {
+            Employee nextDealEmployee;
+            Position nextDealEmployeePosition;
+            String nextDealEmployeePositionName = null;
+            if (0 != nextDealEm) {
+                nextDealEmployee = employeeDao.queryById(nextDealEm);
+                nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
+                nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
+            }
+            if (Way.ABORT.equals(dealWay)) {
+                return Step.ABANDONED;
+            } else if (Way.CREATE.equals(dealWay)) {
                 return Step.CREATED;
             } else if (Way.AUDIT.equals(dealWay)) {
                 if (Name.DEPARTMENT_MANAGER.equals(positionName)) {
@@ -149,17 +156,14 @@ public class DealRecordServiceImpl implements DealRecordService {
                     }
                 }
             } else {
-                return 0;
+                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)) {
+                    return Step.CREATED;
+                } else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)) {
+                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
+                } else {
+                    return Step.PASSED_BY_GENERAL_MANAGER;
+                }
             }
-//            else {
-//                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)) {
-//                    return Step.CREATED;
-//                } else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)) {
-//                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
-//                } else {
-//                    return Step.PASSED_BY_GENERAL_MANAGER;
-//                }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -167,7 +171,7 @@ public class DealRecordServiceImpl implements DealRecordService {
     }
 
     /**
-     * 查询最新操作记录
+     * 查询指定报销单最新操作记录
      *
      * @param expensiveId 报销单id
      * @return {@link DealRecordDTO}
@@ -178,21 +182,62 @@ public class DealRecordServiceImpl implements DealRecordService {
     }
 
     /**
-     * 添加新操作记录
+     * 查询指定报销单最新操作记录
      *
-     * @param dealRecord   交易记录
-     * @param nextDealEmId 下一个交易em id
-     * @param status       状态
+     * @param expensiveId 报销单id
+     * @return {@link DealRecord}
+     */
+    @Override
+    public DealRecord queryExpensiveLatestDeal(Integer expensiveId) {
+        return this.dealRecordDao.queryExpensiveLatestDeal(expensiveId);
+    }
+
+    /**
+     * 添加审核记录
+     *
+     * @param requestDTO   请求dto
+     * @param userInfo     用户信息
+     * @param nextDealEmId 下一处理人id
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void addNewDeal(DealRecord dealRecord, Integer nextDealEmId, String status) {
-        Integer expenseId = dealRecord.getExpensiveId();
-        ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
-        expenseReport.setNextDealEm(nextDealEmId);
-        expenseReport.setStatus(status);
-        expenseReportDao.update(expenseReport);
-        this.dealRecordDao.insert(dealRecord);
-
+    public void addAuditRecord(AuditDealRecordRequestDTO requestDTO, EmployeeDTO userInfo, Integer nextDealEmId) {
+        String positionName = userInfo.getPosition().getPositionName();
+        String way = requestDTO.getWay();
+        Integer expenseId = requestDTO.getExpenseId();
+        String dealResult = null;
+        String status = null;
+        String pass = "通过";
+        String repulse = "打回";
+        String terminate = "终止";
+        if (pass.equals(way)) {
+            if (Name.FINANCIAL_SUPERVISOR.equals(positionName)) {
+                dealResult = Result.REMITTANCE;
+                status = Status.PAID;
+            } else if (Name.GENERAL_MANAGER.equals(positionName)) {
+                dealResult = Result.PASS;
+                status = Status.TO_BE_FINANCE_REVIEWED;
+            } else if (Name.DEPARTMENT_MANAGER.equals(positionName)) {
+                dealResult = Result.PASS;
+                status = Status.TO_BE_GM_REVIEWED;
+            }
+        } else if (repulse.equals(way)) {
+            dealResult = Result.REPULSE;
+            status = Status.TO_BE_MODIFIED;
+        } else if (terminate.equals(way)) {
+            dealResult = Result.TERMINATED;
+            status = Status.TERMINATED;
+        }
+        try {
+            DealRecord dealRecord = new DealRecord(null, expenseId, userInfo.getEmId(), new Date(), Way.AUDIT, dealResult, requestDTO.getComment());
+            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+            expenseReport.setNextDealEm(nextDealEmId);
+            expenseReport.setStatus(status);
+            this.expenseReportDao.update(expenseReport);
+            this.dealRecordDao.insert(dealRecord);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

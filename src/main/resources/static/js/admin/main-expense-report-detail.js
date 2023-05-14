@@ -71,22 +71,22 @@ $(function () {
     })
 
     function handleDeal(record) {
-        if('已创建'===record.dealResult) return
+        if ('已创建' === record.dealResult) return
         let record_comment = $('#record-comment')
-        let table  = $('<table class="col-xs-12 m-l-15 m-t-10"></table>')
+        let table = $('<table class="col-xs-12 m-l-15 m-t-10"></table>')
         let trh = $('<tr><th>处理人</th><th>处理方式</th><th>处理结果</th><th style="padding-left: 25px;">处理时间</th><th>备注</th></tr>')
         let tr = $('<tr></tr>')
-        let td_comment = $('<td><textarea id="deal_comment" class="col-xs-10" rows="4" style="resize:none" disabled placeholder="暂无备注">'+(record.comment?record.comment:'')+'</textarea></td>')
-        let td_em = $('<td>'+record.employee.name+'</td>')
-        let td_way = $('<td>'+record.dealWay+'</td>')
-        let td_result = $('<td>'+record.dealResult+'</td>')
-        let td_time = $('<td>'+record.dealTime+'</td>')
+        let td_comment = $('<td><textarea id="deal_comment" class="col-xs-10" rows="4" style="resize:none" disabled placeholder="暂无备注">' + (record.comment ? record.comment : '') + '</textarea></td>')
+        let td_em = $('<td>' + record.employee.name + '</td>')
+        let td_way = $('<td>' + record.dealWay + '</td>')
+        let td_result = $('<td>' + record.dealResult + '</td>')
+        let td_time = $('<td>' + record.dealTime + '</td>')
         table.append(trh).append(tr.append(td_em).append(td_way).append(td_result).append(td_time).append(td_comment))
         record_comment.append(table)
     }
 
     function handleProcedure(step) {
-        if (0===step) return
+        if (0 === step) return
         let step_dots = $('<ul class="nav-step step-dots"></ul>')
         let step_anchor = $('<ul class="nav-step step-anchor m-l-15">')
         let dot1 = ''
@@ -102,20 +102,20 @@ $(function () {
             case 1:
             case 5:
             case 8:
-                dot1 = createStepDot('complete','步骤一')
-                dot2 = createStepDot('active','步骤二')
-                dot3 = createStepDot(null,'步骤三')
-                dot4 = createStepDot(null,'步骤四')
-                anchor1 = createStepAnchor('active','步骤一','填写报销单')
-                anchor2 = createStepAnchor(null,'步骤二','部长审核')
-                anchor3 = createStepAnchor(null,'步骤三','总经理审核')
-                anchor4 = createStepAnchor(null,'步骤四','财务打款')
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('active', '步骤二')
+                dot3 = createStepDot(null, '步骤三')
+                dot4 = createStepDot(null, '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor(null, '步骤二', '部长审核')
+                anchor3 = createStepAnchor(null, '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
                 switch (step) {
                     case 5:
-                        tip = createTip('warning',null)
+                        tip = createTip('warning', null)
                         break
                     case 8:
-                        tip = createTip('danger','部门经理')
+                        tip = createTip('danger', '部门经理')
                         break
                     default:
                 }
@@ -123,20 +123,20 @@ $(function () {
             case 2:
             case 6:
             case 9:
-                dot1 = createStepDot('complete','步骤一')
-                dot2 = createStepDot('complete','步骤二')
-                dot3 = createStepDot('active','步骤三')
-                dot4 = createStepDot(null,'步骤四')
-                anchor1 = createStepAnchor('active','步骤一','填写报销单')
-                anchor2 = createStepAnchor('active','步骤二','部长审核')
-                anchor3 = createStepAnchor(null,'步骤三','总经理审核')
-                anchor4 = createStepAnchor(null,'步骤四','财务打款')
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('complete', '步骤二')
+                dot3 = createStepDot('active', '步骤三')
+                dot4 = createStepDot(null, '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor('active', '步骤二', '部长审核')
+                anchor3 = createStepAnchor(null, '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
                 switch (step) {
                     case 6:
-                        tip = createTip('warning',null)
+                        tip = createTip('warning', null)
                         break
                     case 9:
-                        tip = createTip('danger','总经理')
+                        tip = createTip('danger', '总经理')
                         break
                     default:
                 }
@@ -144,34 +144,45 @@ $(function () {
             case 3:
             case 7:
             case 10:
-                dot1 = createStepDot('complete','步骤一')
-                dot2 = createStepDot('complete','步骤二')
-                dot3 = createStepDot('complete','步骤三')
-                dot4 = createStepDot('active','步骤四')
-                anchor1 = createStepAnchor('active','步骤一','填写报销单')
-                anchor2 = createStepAnchor('active','步骤二','部长审核')
-                anchor3 = createStepAnchor('active','步骤三','总经理审核')
-                anchor4 = createStepAnchor(null,'步骤四','财务打款')
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('complete', '步骤二')
+                dot3 = createStepDot('complete', '步骤三')
+                dot4 = createStepDot('active', '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor('active', '步骤二', '部长审核')
+                anchor3 = createStepAnchor('active', '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
                 switch (step) {
                     case 7:
-                        tip = createTip('warning',null)
+                        tip = createTip('warning', null)
                         break
                     case 10:
-                        tip = createTip('danger','财务')
+                        tip = createTip('danger', '财务')
                         break
                     default:
                 }
                 break
             case 4:
-                dot1 = createStepDot('complete','步骤一')
-                dot2 = createStepDot('complete','步骤二')
-                dot3 = createStepDot('complete','步骤三')
-                dot4 = createStepDot('complete','步骤四')
-                anchor1 = createStepAnchor('active','步骤一','填写报销单')
-                anchor2 = createStepAnchor('active','步骤二','部长审核')
-                anchor3 = createStepAnchor('active','步骤三','总经理审核')
-                anchor4 = createStepAnchor('active','步骤四','财务打款')
-                tip = createTip(null,null)
+                dot1 = createStepDot('complete', '步骤一')
+                dot2 = createStepDot('complete', '步骤二')
+                dot3 = createStepDot('complete', '步骤三')
+                dot4 = createStepDot('complete', '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor('active', '步骤二', '部长审核')
+                anchor3 = createStepAnchor('active', '步骤三', '总经理审核')
+                anchor4 = createStepAnchor('active', '步骤四', '财务打款')
+                tip = createTip(null, null)
+                break
+            case 11:
+                dot1 = createStepDot('active', '步骤一')
+                dot2 = createStepDot('null', '步骤二')
+                dot3 = createStepDot(null, '步骤三')
+                dot4 = createStepDot(null, '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor(null, '步骤二', '部长审核')
+                anchor3 = createStepAnchor(null, '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
+                tip = createTip('abandon', null)
                 break
             default:
                 console.log('进度非法!')
@@ -230,20 +241,22 @@ $(function () {
         }
     }
 
-    function createStepDot(status,text) {
-        return $('<li class="nav-step-item '+status+'"><span>'+text+'</span><a href="javascript:void(0)"></a></li>')
+    function createStepDot(status, text) {
+        return $('<li class="nav-step-item ' + status + '"><span>' + text + '</span><a href="javascript:void(0)"></a></li>')
     }
 
-    function createStepAnchor(status,text1,text2) {
-        return $('<li class="nav-step-item '+status+'"><a href="javascript:void(0)"><h6>'+text1+'</h6><p class="m-0">'+text2+'</p></a></li>')
+    function createStepAnchor(status, text1, text2) {
+        return $('<li class="nav-step-item ' + status + '"><a href="javascript:void(0)"><h6>' + text1 + '</h6><p class="m-0">' + text2 + '</p></a></li>')
     }
 
-    function createTip(type,role) {
-        if('warning'===type) {
+    function createTip(type, role) {
+        if ('warning' === type) {
             return $('<div class="alert alert-warning" role="alert">等待用户修改。</div>')
-        }else if ('danger'===type){
-            return $('<div class="alert alert-danger" role="alert">已被'+role+'终止,该报销单已结束。</div>')
-        }else {
+        } else if ('danger' === type) {
+            return $('<div class="alert alert-danger" role="alert">已被' + role + '终止,该报销单已结束。</div>')
+        } else if ('abandon' === type) {
+            return $('<div class="alert alert-danger" role="alert">申请人已放弃。</div>')
+        } else {
             return $('<div class="alert alert-success" role="alert">已成功报销,该报销单已结束。</div>')
         }
     }

@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dove.constants.Constants.Name;
+import com.dove.dao.DealRecordDao;
 import com.dove.dao.EmployeeDao;
 import com.dove.dao.PositionDao;
 import com.dove.dto.EmployeeDTO;
@@ -34,6 +35,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDao employeeDao;
     @Resource
     private PositionDao positionDao;
+    @Resource
+    private DealRecordDao dealRecordDao;
 
     /**
      * 通过账户名密码联合查询
@@ -167,6 +170,27 @@ public class EmployeeServiceImpl implements EmployeeService {
             return employeeDao.findEmByDepIdAndPositionId(depId, nextDealPositionId);
         }
         return employeeDao.findEmByPositionId(nextDealPositionId);
+    }
+
+    /**
+     * 查询前一个处理人id
+     *
+     * @param userInfo  用户信息
+     * @param expenseId 报销单id
+     * @return {@link Integer}
+     */
+    @Override
+    public Integer queryFormerDealEmId(EmployeeDTO userInfo, Integer expenseId) {
+        String formerPositionName;
+        String positionName = userInfo.getPosition().getPositionName();
+        if (Name.DEPARTMENT_MANAGER.equals(positionName)) {
+            formerPositionName = Name.STAFF;
+        } else if (Name.GENERAL_MANAGER.equals(positionName)) {
+            formerPositionName = Name.DEPARTMENT_MANAGER;
+        } else {
+            formerPositionName = Name.GENERAL_MANAGER;
+        }
+        return dealRecordDao.findEmByExpenseIdAndPositionName(expenseId, formerPositionName);
     }
 }
 

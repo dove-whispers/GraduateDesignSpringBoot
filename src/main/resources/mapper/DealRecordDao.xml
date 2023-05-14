@@ -177,5 +177,18 @@
         ORDER BY deal_time DESC
         LIMIT 1
     </select>
+
+    <select id="findEmByExpenseIdAndPositionName" resultType="java.lang.Integer">
+        SELECT em_id
+        FROM deal_record
+        WHERE expensive_id = #{expensiveId}
+          AND em_id
+            IN (SELECT em_id
+                FROM employee
+                WHERE position_id
+                          IN (SELECT position_id FROM position WHERE position_name = #{positionName}))
+        ORDER BY deal_time DESC
+        LIMIT 1
+    </select>
 </mapper>
 

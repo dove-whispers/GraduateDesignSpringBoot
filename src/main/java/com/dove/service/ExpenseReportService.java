@@ -1,8 +1,9 @@
 package com.dove.service;
 
 import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.ExpenseReportAddRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
+import com.dove.dto.requestDTO.ExpenseReportUpdateRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportViewListRequestDTO;
 import com.dove.entity.Department;
 import com.dove.entity.ExpenseReport;
@@ -75,10 +76,11 @@ public interface ExpenseReportService {
     /**
      * 添加报销单
      *
-     * @param userInfo   用户信息
-     * @param requestDTO 请求dto
+     * @param requestDTO   请求dto
+     * @param emId         em id
+     * @param nextDealEmId 下一个交易em id
      */
-    void addExpenseReport(EmployeeDTO userInfo, ExpenseReportRequestDTO requestDTO);
+    void addExpenseReport(ExpenseReportAddRequestDTO requestDTO, Integer emId, Integer nextDealEmId);
 
     /**
      * 查询报销单列表
@@ -88,4 +90,22 @@ public interface ExpenseReportService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> queryViewPageList(ExpenseReportViewListRequestDTO requestDTO, Integer emId);
+
+    /**
+     * 终止报销单
+     *
+     * @param userInfo    用户信息
+     * @param expensiveId 报销单id
+     * @param comment     处理结果备注
+     */
+    void abortReport(EmployeeDTO userInfo, Integer expensiveId,String comment);
+
+    /**
+     * 更新报销单
+     *
+     * @param userInfo     用户信息
+     * @param requestDTO   请求dto
+     * @param nextDealEmId 下一处理人id
+     */
+    void updateReport(EmployeeDTO userInfo, ExpenseReportUpdateRequestDTO requestDTO, Integer nextDealEmId);
 }

@@ -1,6 +1,8 @@
 package com.dove.service;
 
 import com.dove.dto.DealRecordDTO;
+import com.dove.dto.EmployeeDTO;
+import com.dove.dto.requestDTO.AuditDealRecordRequestDTO;
 import com.dove.entity.DealRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,7 +65,7 @@ public interface DealRecordService {
     Integer queryExpenseReportStep(Integer expenseId);
 
     /**
-     * 查询最新操作记录
+     * 查询指定报销单最新操作记录
      *
      * @param expensiveId 报销单id
      * @return {@link DealRecordDTO}
@@ -71,11 +73,19 @@ public interface DealRecordService {
     DealRecordDTO queryLatestDealRecord(Integer expensiveId);
 
     /**
-     * 添加新操作记录
+     * 查询指定报销单最新操作记录
      *
-     * @param dealRecord   交易记录
-     * @param nextDealEmId 下一个交易em id
-     * @param status       状态
+     * @param expensiveId 报销单id
+     * @return {@link DealRecord}
      */
-    void addNewDeal(DealRecord dealRecord, Integer nextDealEmId, String status);
+    DealRecord queryExpensiveLatestDeal(Integer expensiveId);
+
+    /**
+     * 添加审核记录
+     *
+     * @param requestDTO   请求dto
+     * @param userInfo     用户信息
+     * @param nextDealEmId 下一处理人id
+     */
+    void addAuditRecord(AuditDealRecordRequestDTO requestDTO, EmployeeDTO userInfo, Integer nextDealEmId);
 }

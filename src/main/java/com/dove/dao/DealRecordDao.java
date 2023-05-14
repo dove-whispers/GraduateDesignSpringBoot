@@ -96,5 +96,14 @@ public interface DealRecordDao {
      * @return {@link DealRecordDTO}
      */
     DealRecordDTO queryLatestDealRecord(Integer expensiveId);
+
+    /**
+     * 通过报销单id和处理人职位找到处理人id
+     *
+     * @param expensiveId  报销单id
+     * @param positionName 职位名称
+     * @return {@link Integer}
+     */
+    Integer findEmByExpenseIdAndPositionName(Integer expensiveId, String positionName);
 }
 

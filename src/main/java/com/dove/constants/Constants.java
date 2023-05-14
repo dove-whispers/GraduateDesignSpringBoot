@@ -20,6 +20,8 @@ public interface Constants {
         String TO_BE_FINANCE_REVIEWED = "财务审核";
         String TERMINATED = "已终止";
         String TO_BE_MODIFIED = "待修改";
+        String MODIFIED = "已修改";
+        String ABANDONED = "已放弃";
     }
 
     /**
@@ -46,6 +48,7 @@ public interface Constants {
         String CREATE = "创建";
         String AUDIT = "审核";
         String EDIT = "修改";
+        String ABORT = "放弃";
     }
 
     /**
@@ -61,6 +64,7 @@ public interface Constants {
         String REMITTANCE = "已打款";
         String TERMINATED = "已终止";
         String EDITED = "已修改";
+        String ABANDONED = "已放弃";
     }
 
     /**
@@ -68,6 +72,7 @@ public interface Constants {
      * 1创建 2部门经理审核通过 3总经理审核通过 4财务打款
      * 5部门经理打回 6总经理打回 7财务打回
      * 8部门经理终止 9总经理终止 10财务终止
+     * 11申请人放弃
      */
     interface Step {
         Integer CREATED = 1;
@@ -80,5 +85,6 @@ public interface Constants {
         Integer TERMINATED_BY_DEPARTMENT_MANAGER = 8;
         Integer TERMINATED_BY_GENERAL_MANAGER = 9;
         Integer TERMINATED_BY_FINANCIAL_SUPERVISOR = 10;
+        Integer ABANDONED = 11;
     }
 }

@@ -482,8 +482,6 @@ $(function () {
                 }
             }
             $(this).closest('ul').prev().click()
-            // image = $(colElement).find("img").prop('src')
-            // image = image.length > 100 ? image.substring(image.indexOf(",") + 1) : ''
             //TODO:API
             // const info = await queryImgInfo(fileStr)
             // fillInInfo(tr, info)

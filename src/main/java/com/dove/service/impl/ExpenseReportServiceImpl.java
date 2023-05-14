@@ -13,10 +13,7 @@ import com.dove.dao.ExpenseReportDao;
 import com.dove.dao.ExpenseReportDetailDao;
 import com.dove.dto.EmployeeDTO;
 import com.dove.dto.ExpenseReportDTO;
-import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
-import com.dove.dto.requestDTO.ExpenseReportViewListRequestDTO;
+import com.dove.dto.requestDTO.*;
 import com.dove.entity.*;
 import com.dove.service.ExpenseReportService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 报销单表(ExpenseReport)表服务实现类
@@ -152,7 +146,7 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
     @Override
     @SneakyThrows
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void addExpenseReport(ExpenseReportRequestDTO requestDTO, Integer emId, Integer nextDealEmId) {
+    public void addExpenseReport(ExpenseReportAddRequestDTO requestDTO, Integer emId, Integer nextDealEmId) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             ExpenseReport expenseReport = new ExpenseReport(null, requestDTO.getCause(), emId, new Date(), DateUtil.nextWeek(), nextDealEmId, requestDTO.getTotalAmount(), Status.CREATE);
@@ -204,14 +198,49 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
      *
      * @param userInfo    用户信息
      * @param expensiveId 报销单id
+     * @param comment     处理结果备注
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void abortReport(EmployeeDTO userInfo, Integer expensiveId) {
+    public void abortReport(EmployeeDTO userInfo, Integer expensiveId, String comment) {
         ExpenseReport expenseReport = expenseReportDao.queryById(expensiveId);
         expenseReport.setNextDealEm(0);
         expenseReport.setStatus(Status.ABANDONED);
         expenseReportDao.update(expenseReport);
-        dealRecordDao.insert(new DealRecord(null, expensiveId, userInfo.getEmId(), new Date(), Way.ABORT, Result.ABANDONED, null));
+        dealRecordDao.insert(new DealRecord(null, expensiveId, userInfo.getEmId(), new Date(), Way.ABORT, Result.ABANDONED, comment));
+    }
+
+    /**
+     * 更新报销单
+     *
+     * @param userInfo     用户信息
+     * @param requestDTO   请求dto
+     * @param nextDealEmId 下一处理人id
+     */
+    @Override
+    @SneakyThrows
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void updateReport(EmployeeDTO userInfo, ExpenseReportUpdateRequestDTO requestDTO, Integer nextDealEmId) {
+        ObjectMapper mapper = new ObjectMapper();
+        Integer expenseId = requestDTO.getExpenseId();
+        ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+        expenseReport.setCause(requestDTO.getCause());
+        expenseReport.setNextDealEm(nextDealEmId);
+        expenseReport.setTotalAmount(requestDTO.getTotalAmount());
+        expenseReport.setStatus(Status.MODIFIED);
+        expenseReportDao.update(expenseReport);
+        List<ExpenseReportDetail> expenseReportDetails = expenseReportDetailDao.queryByExpensiveId(expenseId);
+        List<ExpenseReportDetailRequestDTO> expenseReportRequestDetails = requestDTO.getExpenseReportDetails();
+        for (int i = 0; i < expenseReportRequestDetails.size(); i++) {
+            ExpenseReportDetailRequestDTO expenseReportRequestDetail = expenseReportRequestDetails.get(i);
+            String image = expenseReportRequestDetail.getImage();
+            expenseReportRequestDetail.setImage("");
+            ExpenseReportDetail expenseReportDetail = mapper.readValue(mapper.writeValueAsString(expenseReportRequestDetail), ExpenseReportDetail.class);
+            expenseReportDetail.setExpensiveId(expenseId);
+            expenseReportDetail.setImage(image.getBytes(StandardCharsets.UTF_8));
+            expenseReportDetail.setExpensiveDetailId(expenseReportDetails.get(i).getExpensiveDetailId());
+            expenseReportDetailDao.update(expenseReportDetail);
+        }
+        dealRecordDao.insert(new DealRecord(null, expenseId, userInfo.getEmId(), new Date(), Way.EDIT, Result.EDITED, requestDTO.getComment()));
     }
 }

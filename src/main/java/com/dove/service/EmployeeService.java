@@ -81,5 +81,14 @@ public interface EmployeeService {
      * @return {@link Integer}
      */
     Integer queryNextDealEmId(Integer emId, Integer depId);
+
+    /**
+     * 查询前一个处理人id
+     *
+     * @param userInfo  用户信息
+     * @param expenseId 报销单id
+     * @return {@link Integer}
+     */
+    Integer queryFormerDealEmId(EmployeeDTO userInfo, Integer expenseId);
 }
 

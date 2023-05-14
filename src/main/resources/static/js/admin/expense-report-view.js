@@ -124,6 +124,10 @@ $(function () {
             return '<td><span class="label label-info">财务审核</span></td>'
         } else if (status === '已终止') {
             return '<td><span class="label label-danger">已终止</span></td>'
+        } else if (status === '已放弃') {
+            return '<td><span class="label label-danger">已放弃</span></td>'
+        } else if (status === '已修改') {
+            return '<td><span class="label label-info">已修改</span></td>'
         } else {
             return '<td><span class="label label-warning">待修改</span></td>'
         }
@@ -140,8 +144,12 @@ $(function () {
             return '<div class="progress-bar progress-bar-info active" style="width: 75%;"></div>'
         } else if (status === '已终止') {
             return '<div class="progress-bar progress-bar-danger active" style="width: 100%;"></div>'
+        } else if (status === '已放弃') {
+            return '<div class="progress-bar progress-bar-danger active" style="width: 100%;"></div>'
+        } else if (status === '已修改') {
+            return '<div class="progress-bar progress-bar-info active" style="width: 60%;"></div>'
         } else {
-            return '<div class="progress-bar progress-bar-warning active" style="width: 50%;"></div>'
+            return '<div class="progress-bar progress-bar-warning active" style="width: 40%;"></div>'
         }
     }
 

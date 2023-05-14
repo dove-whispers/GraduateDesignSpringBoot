@@ -61,9 +61,8 @@ public class ExpenseReportController extends BaseController {
     @ApiOperation(value = "新增报销单")
     @PostMapping("/addExpenseReport")
     @ResponseBody
-    public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportRequestDTO requestDTO) {
-        Object userObj = request.getSession().getAttribute("userInfo");
-        EmployeeDTO userInfo = (EmployeeDTO) userObj;
+    public Map<String, Object> addExpenseReport(@RequestBody ExpenseReportAddRequestDTO requestDTO) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
         Map<String, Object> map = new HashMap<>(2);
         ExpenseReportCheckRequestDTO c = new ExpenseReportCheckRequestDTO();
         try {
@@ -81,6 +80,22 @@ public class ExpenseReportController extends BaseController {
             Integer emId = userInfo.getEmId();
             Integer nextDealEmId = employeeService.queryNextDealEmId(emId, userInfo.getDepId());
             expenseReportService.addExpenseReport(requestDTO, emId, nextDealEmId);
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "修改报销单")
+    @PostMapping("/updateExpenseReport")
+    @ResponseBody
+    public Map<String, Object> updateExpenseReport(@RequestBody ExpenseReportUpdateRequestDTO requestDTO) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(1);
+        try {
+            Integer nextDealEmId = employeeService.queryNextDealEmId(userInfo.getEmId(), userInfo.getDepId());
+            expenseReportService.updateReport(userInfo, requestDTO, nextDealEmId);
             map.put("success", true);
         } catch (Exception e) {
             map.put("success", false);
@@ -143,11 +158,11 @@ public class ExpenseReportController extends BaseController {
     @ApiOperation(value = "放弃报销单")
     @PostMapping("/abandonReport")
     @ResponseBody
-    public Map<String, Object> abandonReport(Integer expensiveId) {
+    public Map<String, Object> abandonReport(Integer expensiveId, String comment) {
         EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
         Map<String, Object> map = new HashMap<>(1);
         try {
-            expenseReportService.abortReport(userInfo, expensiveId);
+            expenseReportService.abortReport(userInfo, expensiveId,comment);
             map.put("success", true);
         } catch (Exception e) {
             map.put("success", false);

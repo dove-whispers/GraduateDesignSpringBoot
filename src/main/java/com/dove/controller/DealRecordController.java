@@ -40,8 +40,8 @@ public class DealRecordController extends BaseController {
     public Map<String, Object> queryExpenseReportStep(Integer expensiveId) {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            map.put("success", true);
             map.put("step", dealRecordService.queryExpenseReportStep(expensiveId));
+            map.put("success", true);
         } catch (Exception e) {
             map.put("success", false);
             map.put("errMsg", e.getMessage());
@@ -78,7 +78,7 @@ public class DealRecordController extends BaseController {
         if (pass.equals(way)) {
             nextDealEmId = employeeService.queryNextDealEmId(userInfo.getEmId(), userInfo.getDepId());
         } else if (repulse.equals(way)) {
-            nextDealEmId = dealRecordService.queryExpensiveLatestDeal(requestDTO.getExpenseId()).getEmId();
+            nextDealEmId = employeeService.queryFormerDealEmId(userInfo, requestDTO.getExpenseId());
         } else if (terminate.equals(way)) {
             nextDealEmId = 0;
         }

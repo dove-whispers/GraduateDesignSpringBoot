@@ -110,16 +110,21 @@ public class DealRecordServiceImpl implements DealRecordService {
     public Integer queryExpenseReportStep(Integer expenseId) {
         try {
             DealRecord dealRecord = dealRecordDao.queryExpensiveLatestDeal(expenseId);
-//            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
-//            Integer nextDealEm = expenseReport.getNextDealEm();
+            ExpenseReport expenseReport = expenseReportDao.queryById(expenseId);
+            Integer nextDealEm = expenseReport.getNextDealEm();
             Employee employee = employeeDao.queryById(dealRecord.getEmId());
             Position position = positionDao.queryById(employee.getPositionId());
             String positionName = position.getPositionName();
             String dealWay = dealRecord.getDealWay();
             String dealResult = dealRecord.getDealResult();
-//            Employee nextDealEmployee = employeeDao.queryById(nextDealEm);
-//            Position nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
-//            String nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
+            Employee nextDealEmployee;
+            Position nextDealEmployeePosition;
+            String nextDealEmployeePositionName = null;
+            if (0 != nextDealEm) {
+                nextDealEmployee = employeeDao.queryById(nextDealEm);
+                nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
+                nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
+            }
             if (Way.ABORT.equals(dealWay)) {
                 return Step.ABANDONED;
             } else if (Way.CREATE.equals(dealWay)) {
@@ -151,17 +156,14 @@ public class DealRecordServiceImpl implements DealRecordService {
                     }
                 }
             } else {
-                return 0;
+                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)) {
+                    return Step.CREATED;
+                } else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)) {
+                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
+                } else {
+                    return Step.PASSED_BY_GENERAL_MANAGER;
+                }
             }
-//            else {
-//                if (Name.DEPARTMENT_MANAGER.equals(nextDealEmployeePositionName)) {
-//                    return Step.CREATED;
-//                } else if (Name.GENERAL_MANAGER.equals(nextDealEmployeePositionName)) {
-//                    return Step.PASSED_BY_DEPARTMENT_MANAGER;
-//                } else {
-//                    return Step.PASSED_BY_GENERAL_MANAGER;
-//                }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

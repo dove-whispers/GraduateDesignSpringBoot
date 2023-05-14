@@ -1,5 +1,6 @@
 package com.dove.service;
 
+import com.dove.dto.EmployeeDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportViewListRequestDTO;
@@ -88,4 +89,12 @@ public interface ExpenseReportService {
      * @return {@link Map}<{@link String}, {@link Object}>
      */
     Map<String, Object> queryViewPageList(ExpenseReportViewListRequestDTO requestDTO, Integer emId);
+
+    /**
+     * 终止报销单
+     *
+     * @param userInfo    用户信息
+     * @param expensiveId 报销单id
+     */
+    void abortReport(EmployeeDTO userInfo, Integer expensiveId);
 }

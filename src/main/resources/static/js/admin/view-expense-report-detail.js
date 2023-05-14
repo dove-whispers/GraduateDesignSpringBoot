@@ -4,7 +4,7 @@ $(function () {
     const pre = 'data:image/jpeg;base64,'
     let result_div = $('#result')
     if (expenseId) {
-        getData().then(() => console.log('渲染完成'))
+        getData().then(r => r ? console.log('渲染成功') : console.log('渲染失败'))
     }
 
     async function getData() {
@@ -13,12 +13,41 @@ $(function () {
             handleProcedure(step)
             const deal_record = await queryLatestDealRecord()
             handleDeal(deal_record)
-            handleDealResult()
+            const isSelf = await isReportBack()
             const list_data = await queryExpenseReportDetail()
-            handleList(list_data)
+            if ('打回' === deal_record.dealResult) {
+                handleDealResult(true, isSelf)
+                handleList(list_data, true)
+            } else {
+                handleDealResult(false, isSelf)
+                handleList(list_data, false)
+            }
+            return true
         } catch (e) {
-            lightyear.notify(e, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+            console.error(e)
+            lightyear.notify(e.message, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+            return false
         }
+    }
+
+    function isReportBack() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/expenseReport/isSelfReport',
+                type: 'POST',
+                async: false,
+                cache: false,
+                dataType: 'json',
+                data: {expensiveId: expenseId},
+                success: data => {
+                    if (data.success) {
+                        resolve(data.outcome)
+                    } else {
+                        reject(new Error('报销单查询失败!'))
+                    }
+                }
+            })
+        })
     }
 
     function queryExpenseReportDetail() {
@@ -34,7 +63,7 @@ $(function () {
                     if (data.success) {
                         resolve(data.data)
                     } else {
-                        reject('报销单细节查询失败!')
+                        reject(new Error('报销单细节查询失败!'))
                     }
                 }
             })
@@ -54,7 +83,7 @@ $(function () {
                     if (data.success) {
                         resolve(data.data)
                     } else {
-                        reject('报销报销单最新操作失败!')
+                        reject(new Error('报销报销单最新操作失败!'))
                     }
                 }
             })
@@ -74,20 +103,28 @@ $(function () {
                     if (data.success) {
                         resolve(data.step)
                     } else {
-                        reject('报销进度查询失败!')
+                        reject(new Error('报销进度查询失败!'))
                     }
                 }
             })
         })
     }
 
-    function handleDealResult() {
-        // '<button id="edit" class="btn btn-label btn-primary m-r-15"><label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label>提交修改</button>'
-        let html = ''
-        html += '<label class="col-lg-12 m-b-15">处理结果:</label>'
-            + '<button id="primary" class="btn btn-label btn-primary m-r-15" data-name="通过"><label><i class="mdi mdi-checkbox-marked-circle-outline"></i></label>确认通过</button>'
-            + '<button id="warning" class="btn btn-label btn-warning m-r-15" data-name="打回"><label><i class="mdi mdi-arrow-left-bold-circle-outline"></i></label>打回修改</button>'
-            + '<button id="danger" class="btn btn-label btn-danger" data-name="终止"><label><i class="mdi mdi-close-circle-outline"></i></label>终&nbsp;&nbsp;止</button>'
+    function handleDealResult(result, isSelf) {
+        let html = '<label class="col-lg-12 m-b-15">处理结果:</label>'
+        if (result) {
+            html += '<button id="edit" class="btn btn-label btn-primary m-r-15"><label><i class="mdi mdi-check-circle-outline"></i></label>提交修改</button>'
+            if (isSelf) {
+                html += '<button id="abandon" class="btn btn-label btn-danger"><label><i class="mdi mdi-stop-circle-outline"></i></label>放&nbsp;&nbsp;弃</button>'
+            } else {
+                html += '<button id="warning" class="btn btn-label btn-warning m-r-15" data-name="打回"><label><i class="mdi mdi-arrow-left-bold-circle-outline"></i></label>打回修改</button>'
+                    + '<button id="danger" class="btn btn-label btn-danger" data-name="终止"><label><i class="mdi mdi-close-circle-outline"></i></label>终&nbsp;&nbsp;止</button>'
+            }
+        } else {
+            html += '<button id="primary" class="btn btn-label btn-primary m-r-15" data-name="通过"><label><i class="mdi mdi-check-circle-outline"></i></label>确认通过</button>'
+                + '<button id="warning" class="btn btn-label btn-warning m-r-15" data-name="打回"><label><i class="mdi mdi-arrow-left-bold-circle-outline"></i></label>打回修改</button>'
+                + '<button id="danger" class="btn btn-label btn-danger" data-name="终止"><label><i class="mdi mdi-close-circle-outline"></i></label>终&nbsp;&nbsp;止</button>'
+        }
         result_div.html(html)
     }
 
@@ -161,6 +198,24 @@ $(function () {
         })
     }).on('click', '#edit', function () {
         console.log('用户修改')
+    }).on('click', '#abandon', function () {
+        $.ajax({
+            url: '/expenseReport/abandonReport',
+            type: 'POST',
+            async: false,
+            cache: false,
+            dataType: 'json',
+            contentType: 'application/json;charset=utf-8',
+            data: {expensiveId: expenseId},
+            success: data => {
+                if (data.success) {
+                    lightyear.notify('报销单处理成功~', 'success', 2000, 'mdi mdi-emoticon-happy', 'top', 'center', '/main')
+                } else {
+                    lightyear.notify('报销单处理失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+                }
+            }
+        })
+
     })
 
     function handleDeal(record) {
@@ -177,52 +232,143 @@ $(function () {
         record_comment.append(table)
     }
 
-    function handleList(data) {
-        $('#expense-cause').val(data.cause)
-        $('#total_amount').val(data.totalAmount)
+    function handleList(data, result) {
+        let $expense_cause = $('#expense-cause')
+        $expense_cause.val(data.cause)
+        $('#total-amount').val(data.totalAmount)
         let html = ''
-        data.expenseReportDetails.map(function (item, index) {
-            html += '<tr>'
-                + '<th scope="row">' + (index + 1) + '</th>'
-                + '<td><input class="form-control detail_item" type="text" disabled value="' + item.item + '"></td>'
-                + '<td><input class="form-control detail_item" type="text" disabled value="' + item.time + '"></td>'
-                + '<td><input class="form-control detail_item" type="text" disabled value="' + item.type + '"></td>'
-                + '<td><input class="form-control detail_item" type="text" disabled value="' + item.code + '"></td>'
-                + '<td><input class="form-control detail_item" type="text" disabled value="' + item.num + '"></td>'
-                + '<td><input class="form-control detail_item" type="text" disabled value="' + item.amount + '"></td>'
-                + '<td>'
-                + '<a class="btn btn-xs btn-default d-cell" href="#collapse' + (index + 1) + '" data-toggle="collapse" title="更多" data-toggle="tooltip"><i class="mdi mdi-dots-horizontal"></i></a>'
-                + '</td>'
-                + '</tr>'
-                + '<tr>'
-                + '<td colspan="8" class="collapse" id="collapse' + (index + 1) + '">'
-                + '<div class="well m-b-0">'
-                + '<table style="table-layout:fixed;width:100%;">'
-                + '<tr>'
-                + setComment(item.comment)
-                + setImage(item.image)
-                + '</tr>'
-                + '</table>'
-                + '</div>'
-                + '</td>'
-                + '</tr>'
-        })
-        body.html(html)
-    }
-
-    function setComment(comment) {
-        if (comment) {
-            return '<td><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" disabled style="resize:none">' + comment + '</textarea></td>'
+        if (result) {
+            data.expenseReportDetails.map(function (item, index) {
+                html += '<tr>'
+                    + '<th scope="row">' + (index + 1) + '</th>'
+                    + '<td><input class="form-control detail_item" type="text" value="' + item.item + '"></td>'
+                    + '<td><input class="form-control datepicker detail_time detail_item" type="text" placeholder="请选择日期" value="' + item.time + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" value="' + item.type + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" value="' + item.code + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" value="' + item.num + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" value="' + item.amount + '"></td>'
+                    + '<td>'
+                    + '<a class="btn btn-xs btn-default d-cell" href="#collapse' + (index + 1) + '" data-toggle="collapse" title="更多" data-toggle="tooltip"><i class="mdi mdi-dots-horizontal"></i></a>'
+                    + '</td>'
+                    + '</tr>'
+                    + '<tr>'
+                    + '<td colspan="8" class="collapse" id="collapse' + (index + 1) + '">'
+                    + '<div class="well m-b-0">'
+                    + '<table>'
+                    + '<tr>'
+                    + setComment(item.comment, result)
+                    + '<td class="col-xs-2">'
+                    + '<label class="col-xs-12">发票:</label>'
+                    + '<div class="btn-group">'
+                    + '<button type="button" class="btn btn-primary btn-round dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">上传发票图片<span class="caret"></span></button>'
+                    + '<ul class="dropdown-menu">'
+                    + '<li><a class="file" href="javascript:void(0)">本地上传<input type="file" class="detail_image" accept="image/jpg,image/jpeg,image/png"></a></li>'
+                    + '<li role="separator" class="divider"></li>'
+                    + '<li><a href="javascript:void(0)">拍照上传</a></li>'
+                    + '</ul>'
+                    + '</div>'
+                    + '</td>'
+                    + setImage(item.image, result)
+                    + '</tr>'
+                    + '</table>'
+                    + '</div>'
+                    + '</td>'
+                    + '</tr>'
+            })
         } else {
-            return '<td><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" placeholder="暂无备注" disabled style="resize:none"></textarea></td>'
+            $expense_cause.prop('disabled', true)
+            data.expenseReportDetails.map(function (item, index) {
+                html += '<tr>'
+                    + '<th scope="row">' + (index + 1) + '</th>'
+                    + '<td><input class="form-control detail_item" type="text" disabled value="' + item.item + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" disabled value="' + item.time + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" disabled value="' + item.type + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" disabled value="' + item.code + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" disabled value="' + item.num + '"></td>'
+                    + '<td><input class="form-control detail_item" type="text" disabled value="' + item.amount + '"></td>'
+                    + '<td>'
+                    + '<a class="btn btn-xs btn-default d-cell" href="#collapse' + (index + 1) + '" data-toggle="collapse" title="更多" data-toggle="tooltip"><i class="mdi mdi-dots-horizontal"></i></a>'
+                    + '</td>'
+                    + '</tr>'
+                    + '<tr>'
+                    + '<td colspan="8" class="collapse" id="collapse' + (index + 1) + '">'
+                    + '<div class="well m-b-0">'
+                    + '<table style="table-layout:fixed;width:100%;">'
+                    + '<tr>'
+                    + setComment(item.comment, result)
+                    + setImage(item.image, result)
+                    + '</tr>'
+                    + '</table>'
+                    + '</div>'
+                    + '</td>'
+                    + '</tr>'
+            })
+        }
+        body.html(html)
+        if (result) {
+            $('.datepicker').datepicker({
+                endDate: new Date(),
+                format: "yyyy-mm-dd",
+                autoclose: true,
+                todayHighlight: true,
+                language: 'zh-CN',
+                orientation: 'button',
+            })
         }
     }
 
-    function setImage(image) {
+    body.on('change', '.detail_image', async function () {
+        lightyear.loading('show');
+        try {
+            let fileStr = await changeFileIntoBase64($(this)[0].files[0])
+            console.log(fileStr)
+            let ttd = $(this).closest('td').next()
+            let tr = $(this).closest('tr').prev()
+            ttd.find("img").prop('src', fileStr)
+            $(this).closest('ul').prev().click()
+
+            // image = $(colElement).find("img").prop('src')
+            // image = image.length > 100 ? image.substring(image.indexOf(",") + 1) : ''
+            //TODO:API
+            // const info = await queryImgInfo(fileStr)
+            // fillInInfo(tr, info)
+        } catch (e) {
+            console.error(e)
+            lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+        } finally {
+            lightyear.loading('hide');
+        }
+    })
+
+    function setImage(image, result) {
         if (image) {
-            return '<td><label class="col-xs-12">发票:</label><img class="col-xs-12 img-f" src="' + (pre + image) + '" alt="点击放大" style="cursor:pointer"/></td>'
+            if (result) {
+                return '<td class="col-xs-5"><img class="col-xs-12 img-f" src="' + (pre + image) + '" alt="点击放大" style="cursor:pointer"/></td>'
+            } else {
+                return '<td><img class="col-xs-12 img-f" src="' + (pre + image) + '" alt="点击放大" style="cursor:pointer"/></td>'
+            }
         } else {
-            return '<td><label class="col-xs-12">发票:</label><span class="col-xs-12 text-truncate">暂无发票图片</span></td>'
+            if (result) {
+                return '<td class="col-xs-5"><span class="col-xs-12 text-truncate">暂无发票图片</span></td>'
+            } else {
+                return '<td><span class="col-xs-12 text-truncate">暂无发票图片</span></td>'
+            }
+        }
+    }
+
+    function setComment(comment, result) {
+        if (comment) {
+            if (result) {
+                return '<td class="col-xs-5"><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" style="resize:none">' + comment + '</textarea></td>'
+            } else {
+                return '<td><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" disabled style="resize:none">' + comment + '</textarea></td>'
+            }
+        } else {
+            if (result) {
+                return '<td class="col-xs-5"><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" placeholder="暂无备注" style="resize:none"></textarea></td>'
+            } else {
+                return '<td><label class="col-xs-12">备注:</label><textarea class="col-xs-12" rows="6" placeholder="暂无备注" disabled style="resize:none"></textarea></td>'
+            }
         }
     }
 
@@ -314,6 +460,17 @@ $(function () {
                 anchor4 = createStepAnchor('active', '步骤四', '财务打款')
                 tip = createTip(null, null)
                 break
+            case 11:
+                dot1 = createStepDot('active', '步骤一')
+                dot2 = createStepDot('null', '步骤二')
+                dot3 = createStepDot(null, '步骤三')
+                dot4 = createStepDot(null, '步骤四')
+                anchor1 = createStepAnchor('active', '步骤一', '填写报销单')
+                anchor2 = createStepAnchor(null, '步骤二', '部长审核')
+                anchor3 = createStepAnchor(null, '步骤三', '总经理审核')
+                anchor4 = createStepAnchor(null, '步骤四', '财务打款')
+                tip = createTip('abandon', null)
+                break
             default:
                 console.log('进度非法!')
         }
@@ -335,8 +492,21 @@ $(function () {
             return $('<div class="alert alert-warning" role="alert">等待用户修改。</div>')
         } else if ('danger' === type) {
             return $('<div class="alert alert-danger" role="alert">已被' + role + '终止,该报销单已结束。</div>')
+        } else if ('abandon' === type) {
+            return $('<div class="alert alert-danger" role="alert">申请人已放弃。</div>')
         } else {
             return $('<div class="alert alert-success" role="alert">已成功报销,该报销单已结束。</div>')
         }
+    }
+
+    function changeFileIntoBase64(file) {
+        return new Promise((resolve, reject) => {
+            const fr = new FileReader()
+            fr.readAsDataURL(file)
+            fr.onload = () => {
+                const base64Str = fr.result
+                resolve(base64Str)
+            }
+        })
     }
 })

@@ -11,6 +11,7 @@ import com.dove.constants.Constants.Way;
 import com.dove.dao.DealRecordDao;
 import com.dove.dao.ExpenseReportDao;
 import com.dove.dao.ExpenseReportDetailDao;
+import com.dove.dto.EmployeeDTO;
 import com.dove.dto.ExpenseReportDTO;
 import com.dove.dto.requestDTO.ExpenseReportDetailRequestDTO;
 import com.dove.dto.requestDTO.ExpenseReportMainListRequestDTO;
@@ -196,5 +197,21 @@ public class ExpenseReportServiceImpl implements ExpenseReportService {
             map.put("errMsg", e.getMessage());
         }
         return map;
+    }
+
+    /**
+     * 终止报销单
+     *
+     * @param userInfo    用户信息
+     * @param expensiveId 报销单id
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void abortReport(EmployeeDTO userInfo, Integer expensiveId) {
+        ExpenseReport expenseReport = expenseReportDao.queryById(expensiveId);
+        expenseReport.setNextDealEm(0);
+        expenseReport.setStatus(Status.ABANDONED);
+        expenseReportDao.update(expenseReport);
+        dealRecordDao.insert(new DealRecord(null, expensiveId, userInfo.getEmId(), new Date(), Way.ABORT, Result.ABANDONED, null));
     }
 }

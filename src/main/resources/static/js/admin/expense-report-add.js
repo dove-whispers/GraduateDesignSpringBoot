@@ -1,4 +1,5 @@
 $(function () {
+    let $detail_body = $('#detail-body')
     $.ajax({
         url: '/expenseReport/getViewList',
         type: 'POST',
@@ -19,10 +20,9 @@ $(function () {
         }
     })
 
-    $('#detail-body').on('change', '.detail_image', async function () {
+    $detail_body.on('change', '.detail_image', async function () {
+        lightyear.loading('show');
         try {
-            //TODO:loading
-            lightyear.loading('show');
             let fileStr = await changeFileIntoBase64($(this)[0].files[0])
             let ttd = $(this).closest('td').next()
             let tr = $(this).closest('tr').prev()
@@ -38,9 +38,11 @@ $(function () {
             //TODO:API
             const info = await queryImgInfo(fileStr)
             fillInInfo(tr, info)
-            lightyear.loading('hide');
         } catch (e) {
+            console.error(e)
             lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
+        } finally {
+            lightyear.loading('hide');
         }
     }).on('click', '.pre-img', function () {
         const img = new Image()
@@ -75,6 +77,11 @@ $(function () {
                         })
                         line.next().remove()
                         line.remove()
+                        let total_amount = 0
+                        $detail_body.find(".detail_amount").each(function (index, element) {
+                            total_amount += $(this).val() * 1
+                        })
+                        $('#total-amount').val(total_amount)
                     }
                 }
             }
@@ -83,10 +90,10 @@ $(function () {
         $(this).data('time', $(this).val())
     }).on('input', '.detail_amount', function () {
         let total_amount = 0
-        $('#detail-body').find(".detail_amount").each(function (index, element) {
+        $detail_body.find(".detail_amount").each(function (index, element) {
             total_amount += $(this).val() * 1
         })
-        $('#total_amount').val(total_amount)
+        $('#total-amount').val(total_amount)
     }).on('focus', '.ci,.cc,.cn,.ca', function () {
         $(this).removeClass("my-error")
     })
@@ -96,7 +103,7 @@ $(function () {
     })
 
     $('#add').click(function () {
-        let target = $('#detail-body')
+        let target = $detail_body
         let count = target.children(":last-child").prev().find("th").text() * 1 + 1
         let tr1 = $('<tr></tr>')
         let th = $('<th rowspan="2" scope="row">' + (count) + '</th>')
@@ -149,7 +156,7 @@ $(function () {
 
     $('#submit').click(function () {
         let cause = $('#expense-cause').val()
-        let total_amount = $('#total_amount').val()
+        let total_amount = $('#total-amount').val()
         if (!cause) {
             $.confirm({
                 title: '错误提示',
@@ -178,7 +185,7 @@ $(function () {
         let amount = ''
         let comment = ''
         let image = ''
-        $('#detail-body').children("tr").each(function (rowIndex, rowElement) {
+        $detail_body.children("tr").each(function (rowIndex, rowElement) {
             if (flag === 0) return
             if (rowIndex % 2 === 0) {
                 item = ''
@@ -205,7 +212,7 @@ $(function () {
                                             text: '重试',
                                             btnClass: 'btn-red',
                                             action: function () {
-                                                let detail_body = $('#detail-body')
+                                                let detail_body = $detail_body
                                                 let ctr1 = $(detail_body).children("tr")[rowIndex]
                                                 $(ctr1).find(".ci").addClass("my-error")
                                             }
@@ -235,7 +242,7 @@ $(function () {
                                             text: '重试',
                                             btnClass: 'btn-red',
                                             action: function () {
-                                                let detail_body = $('#detail-body')
+                                                let detail_body = $('#detail_body')
                                                 let ctr1 = $(detail_body).children("tr")[rowIndex]
                                                 $(ctr1).find(".cc").addClass("my-error")
                                             }
@@ -259,7 +266,7 @@ $(function () {
                                             text: '重试',
                                             btnClass: 'btn-red',
                                             action: function () {
-                                                let detail_body = $('#detail-body')
+                                                let detail_body = $('#detail_body')
                                                 let ctr1 = $(detail_body).children("tr")[rowIndex]
                                                 $(ctr1).find(".cn").addClass("my-error")
                                             }
@@ -283,7 +290,7 @@ $(function () {
                                             text: '重试',
                                             btnClass: 'btn-red',
                                             action: function () {
-                                                let detail_body = $('#detail-body')
+                                                let detail_body = $('#detail_body')
                                                 let ctr1 = $(detail_body).children("tr")[rowIndex]
                                                 $(ctr1).find(".ca").addClass("my-error")
                                             }
@@ -324,7 +331,7 @@ $(function () {
                                     text: '重试',
                                     btnClass: 'btn-red',
                                     action: function () {
-                                        let detail_body = $('#detail-body')
+                                        let detail_body = $detail_body
                                         let ctr1 = $(detail_body).children("tr")[i * 2]
                                         $(ctr1).find(".cc").addClass("my-error")
                                         $(ctr1).find(".cn").addClass("my-error")
@@ -368,7 +375,7 @@ $(function () {
                                     text: '重试',
                                     btnClass: 'btn-red',
                                     action: function () {
-                                        let ctr = $('#detail-body').children("tr")[(data.errCount - 1) * 2]
+                                        let ctr = $detail_body.children("tr")[(data.errCount - 1) * 2]
                                         $(ctr).find(".cc").addClass("my-error")
                                         $(ctr).find(".cn").addClass("my-error")
                                     }
@@ -379,7 +386,7 @@ $(function () {
                 }
             })
         } else {
-            console.log('新增报销单失败')
+            console.error(new Error('新增报销单失败'))
         }
     })
 
@@ -418,14 +425,54 @@ $(function () {
 
     function fillInInfo(tr, data) {
         let result = data.words_result[0].result
-        let date = result.Date[0].word
-        if (date.length === 10) {
-            tr.find('input.detail_time').datepicker('setDate', new Date(date).format("yyyy-MM-dd"))
+        if ('Date' in result) {
+            let date = result.Date[0].word
+            if (date.length === 10) {
+                tr.find('input.detail_time').datepicker('setDate', new Date(date).format("yyyy-MM-dd"))
+            }
+        }else if('date' in result){
+            let word = result.date[0].word
+            let date = word.replace('年','/')
+            date = date.replace('月','/')
+            date = date.replace('日','/')
+            if (date.length === 10) {
+                tr.find('input.detail_time').datepicker('setDate', new Date(date).format("yyyy-MM-dd"))
+            }
         }
-        tr.find('input.detail_type').val(result.InvoiceType[0].word)
-        tr.find('input.detail_code').val(result.InvoiceCode[0].word)
-        tr.find('input.detail_num').val(result.InvoiceNum[0].word)
-        tr.find('input.detail_amount').val(result.Amount[0].word)
+        if ('InvoiceType' in result){
+            tr.find('input.detail_type').val(result.InvoiceType[0].word)
+        }else if ('invoice_type' in result){
+            tr.find('input.detail_type').val(result.invoice_type[0].word)
+        }else if('ServiceType' in result){
+            tr.find('input.detail_type').val(result.ServiceType[0].word)
+        }
+        if ('InvoiceCode' in result){
+            tr.find('input.detail_code').val(result.InvoiceCode[0].word)
+        }else if('invoice_code' in result){
+            tr.find('input.detail_code').val(result.invoice_code[0].word)
+        }
+        if ('InvoiceNum' in result){
+            tr.find('input.detail_num').val(result.InvoiceNum[0].word)
+        }else if('invoice_number' in result){
+            tr.find('input.detail_num').val(result.invoice_number[0].word)
+        }else if('serial_number' in result){
+            tr.find('input.detail_num').val(result.serial_number[0].word)
+        }
+        if ('Amount' in result){
+            tr.find('input.detail_amount').val(result.Amount[0].word)
+        }else if('invoice_rate_in_figure' in result){
+            tr.find('input.detail_amount').val(result.invoice_rate_in_figure[0].word)
+        }else if ('ticket_rates' in result){
+            let word = result.ticket_rates[0].word;
+            let money = word.replace('￥','')
+            money = money.replace('元','')
+            tr.find('input.detail_amount').val(money)
+        }
+        let total_amount = 0
+        $detail_body.find(".detail_amount").each(function (index, element) {
+            total_amount += $(this).val() * 1
+        })
+        $('#total-amount').val(total_amount)
     }
 
     function changeFileIntoBase64(file) {

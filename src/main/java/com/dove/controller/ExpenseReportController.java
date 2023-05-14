@@ -139,5 +139,37 @@ public class ExpenseReportController extends BaseController {
         }
         return map;
     }
+
+    @ApiOperation(value = "放弃报销单")
+    @PostMapping("/abandonReport")
+    @ResponseBody
+    public Map<String, Object> abandonReport(Integer expensiveId) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(1);
+        try {
+            expenseReportService.abortReport(userInfo, expensiveId);
+            map.put("success", true);
+        } catch (Exception e) {
+            map.put("success", false);
+        }
+        return map;
+    }
+
+    @ApiOperation(value = "是否在处理申请人本人的报销单")
+    @PostMapping("/isSelfReport")
+    @ResponseBody
+    public Map<String, Object> isSelfReport(Integer expensiveId) {
+        EmployeeDTO userInfo = (EmployeeDTO) request.getSession().getAttribute("userInfo");
+        Map<String, Object> map = new HashMap<>(2);
+        ExpenseReport expenseReport;
+        try {
+            expenseReport = expenseReportService.queryById(expensiveId);
+            map.put("success", true);
+            map.put("outcome", expenseReport.getEmId().equals(userInfo.getEmId()));
+        } catch (Exception e) {
+            map.put("success", false);
+        }
+        return map;
+    }
 }
 

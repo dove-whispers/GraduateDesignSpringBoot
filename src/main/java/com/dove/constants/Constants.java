@@ -20,6 +20,7 @@ public interface Constants {
         String TO_BE_FINANCE_REVIEWED = "财务审核";
         String TERMINATED = "已终止";
         String TO_BE_MODIFIED = "待修改";
+        String ABANDONED = "已放弃";
     }
 
     /**
@@ -46,6 +47,7 @@ public interface Constants {
         String CREATE = "创建";
         String AUDIT = "审核";
         String EDIT = "修改";
+        String ABORT = "放弃";
     }
 
     /**
@@ -61,6 +63,7 @@ public interface Constants {
         String REMITTANCE = "已打款";
         String TERMINATED = "已终止";
         String EDITED = "已修改";
+        String ABANDONED = "已放弃";
     }
 
     /**
@@ -80,5 +83,6 @@ public interface Constants {
         Integer TERMINATED_BY_DEPARTMENT_MANAGER = 8;
         Integer TERMINATED_BY_GENERAL_MANAGER = 9;
         Integer TERMINATED_BY_FINANCIAL_SUPERVISOR = 10;
+        Integer ABANDONED = 11;
     }
 }

@@ -120,7 +120,9 @@ public class DealRecordServiceImpl implements DealRecordService {
 //            Employee nextDealEmployee = employeeDao.queryById(nextDealEm);
 //            Position nextDealEmployeePosition = positionDao.queryById(nextDealEmployee.getPositionId());
 //            String nextDealEmployeePositionName = nextDealEmployeePosition.getPositionName();
-            if (Way.CREATE.equals(dealWay)) {
+            if (Way.ABORT.equals(dealWay)) {
+                return Step.ABANDONED;
+            } else if (Way.CREATE.equals(dealWay)) {
                 return Step.CREATED;
             } else if (Way.AUDIT.equals(dealWay)) {
                 if (Name.DEPARTMENT_MANAGER.equals(positionName)) {

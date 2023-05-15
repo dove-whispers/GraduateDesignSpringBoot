@@ -79,26 +79,6 @@ $(function () {
         getList(request_condition)
     })
 
-    $.ajax({
-        url: '/expenseReport/getViewList',
-        type: 'POST',
-        async: false,
-        cache: false,
-        dataType: 'json',
-        contentType: 'application/json;charset=utf-8',
-        data: JSON.stringify({}),
-        success: function (data) {
-            if (data.success) {
-                let len = data.data.records.length
-                if (0 !== len) {
-                    $('.badge').text(len)
-                }
-            } else {
-                lightyear.notify(data.errMsg, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
-            }
-        }
-    })
-
     getList(request_condition)
 
     function getList(data) {
@@ -135,7 +115,7 @@ $(function () {
         data.map(function (item, index) {
             html += '<tr>'
                 + '<td>' + (index + 1) + '</td>'
-                + '<td>' + item.createEmployee.name + '</td>'
+                + '<td><a class="my-link" href="/employee/goEmployee?emId=' + (item.emId) + '" title="查看" data-toggle="tooltip">' + item.createEmployee.name + '</a></td>'
                 + '<td>' + item.createEmployee.department.name + '</td>'
                 + '<td>' + item.cause + '</td>'
                 + '<td>' + item.createTime + '</td>'
@@ -158,7 +138,7 @@ $(function () {
 
     function expenseReportNextDeal(employee) {
         if (employee) {
-            return '<td>' + employee.name + '</td>'
+            return '<td><a class="my-link" href="/employee/goEmployee?emId=' + (employee.emId) + '" title="查看" data-toggle="tooltip">' + employee.name + '</a></td>'
         }
         return '<td>-</td>'
     }

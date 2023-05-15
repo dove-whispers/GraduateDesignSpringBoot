@@ -9,10 +9,6 @@ $(function () {
 
     async function getData() {
         try {
-            const len = await getBadge()
-            if (0 !== len) {
-                $('.badge').text(len)
-            }
             const step = await queryStep()
             handleProcedure(step)
             const deal_record = await queryLatestDealRecord()
@@ -32,27 +28,6 @@ $(function () {
             lightyear.notify(e.message, 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')
             return false
         }
-    }
-
-    function getBadge() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: '/expenseReport/getViewList',
-                type: 'POST',
-                async: false,
-                cache: false,
-                dataType: 'json',
-                contentType: 'application/json;charset=utf-8',
-                data: JSON.stringify({}),
-                success: function (data) {
-                    if (data.success) {
-                        resolve(data.data.records.length)
-                    } else {
-                        reject(data.errMsg)
-                    }
-                }
-            })
-        })
     }
 
     function isReportBack() {
@@ -371,7 +346,7 @@ $(function () {
         let trh = $('<tr><th>处理人</th><th>处理方式</th><th>处理结果</th><th style="padding-left: 25px;">处理时间</th><th>备注</th></tr>')
         let tr = $('<tr></tr>')
         let td_comment = $('<td><textarea id="deal_comment" class="col-xs-10" rows="4" style="resize:none" disabled placeholder="暂无备注">' + (record.comment ? record.comment : '') + '</textarea></td>')
-        let td_em = $('<td>' + record.employee.name + '</td>')
+        let td_em = $('<td><a class="my-link" href="/employee/goEmployee?emId=' + (record.employee.emId) + '" title="查看" data-toggle="tooltip">' + record.employee.name + '</a></td>')
         let td_way = $('<td>' + record.dealWay + '</td>')
         let td_result = $('<td>' + record.dealResult + '</td>')
         let td_time = $('<td>' + record.dealTime + '</td>')
@@ -482,9 +457,6 @@ $(function () {
                 }
             }
             $(this).closest('ul').prev().click()
-            //TODO:API
-            // const info = await queryImgInfo(fileStr)
-            // fillInInfo(tr, info)
         } catch (e) {
             console.error(e)
             lightyear.notify('图片信息识别失败!', 'danger', 2000, 'mdi mdi-emoticon-sad', 'top', 'center')

@@ -1,0 +1,17 @@
+.my-link {
+    color: #4d5259;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+.my-link:hover {
+    color: #33cabb;
+    text-decoration: none;
+    outline: none;
+}
+
+.my-link:focus,
+.my-link:active {
+    text-decoration: none;
+    outline: none;
+}

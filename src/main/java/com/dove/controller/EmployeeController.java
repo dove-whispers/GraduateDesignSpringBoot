@@ -8,7 +8,6 @@ import com.dove.service.impl.EmployeeServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,7 +25,6 @@ import java.util.Map;
 @Api(tags = "员工管理模块")
 @Controller
 @RequestMapping("/employee")
-@Slf4j
 public class EmployeeController extends BaseController {
     @Resource
     private EmployeeServiceImpl employeeService;
@@ -34,7 +32,6 @@ public class EmployeeController extends BaseController {
     @ApiOperation(value = "跳转至员工列表的路由")
     @GetMapping("/toList")
     public ModelAndView toList() {
-        log.info("进入员工列表");
         request.getSession().setAttribute("pageName", "员工管理");
         return new ModelAndView("employee-list");
     }
@@ -42,7 +39,6 @@ public class EmployeeController extends BaseController {
     @ApiOperation(value = "跳转至新增员工的路由")
     @GetMapping("/toAddEmployee")
     public ModelAndView toAddEmployee() {
-        log.info("新增员工");
         request.getSession().setAttribute("pageName", "新增员工");
         return new ModelAndView("employee-add");
     }
@@ -50,7 +46,6 @@ public class EmployeeController extends BaseController {
     @ApiOperation(value = "跳转至查看员工信息的路由")
     @GetMapping("/goEmployee")
     public ModelAndView goEmployee() {
-        log.info("查看员工信息");
         request.getSession().setAttribute("pageName", "员工详情");
         return new ModelAndView("employee-info");
     }
@@ -58,7 +53,6 @@ public class EmployeeController extends BaseController {
     @ApiOperation(value = "跳转至查看员工信息的路由")
     @GetMapping("/goEmployeeEdit")
     public ModelAndView goEmployeeEdit() {
-        log.info("修改员工信息");
         request.getSession().setAttribute("pageName", "修改员工信息");
         return new ModelAndView("employee-edit");
     }
@@ -67,7 +61,6 @@ public class EmployeeController extends BaseController {
     @PostMapping("/getList")
     @ResponseBody
     public Map<String, Object> getList(@RequestBody EmployeeListRequestDTO requestDTO) {
-        log.info("查询员工数据");
         Map<String, Object> map;
         try {
             map = employeeService.queryPageList(requestDTO);
@@ -83,7 +76,6 @@ public class EmployeeController extends BaseController {
     @PostMapping("/toggleEmployeeStatus")
     @ResponseBody
     public Map<String, Object> toggleEmployeeStatus(@RequestBody ToggleEmployeeRequestDTO requestDTO) {
-        log.info("修改员工状态");
         Map<String, Object> map = new HashMap<>(2);
         try {
             if (null == requestDTO) {
@@ -128,7 +120,6 @@ public class EmployeeController extends BaseController {
     @PostMapping("/queryEmployee")
     @ResponseBody
     public Map<String, Object> queryDepartment(Integer emId) {
-        log.info("查看员工信息");
         Map<String, Object> map = new HashMap<>(2);
         Employee employee;
         try {
